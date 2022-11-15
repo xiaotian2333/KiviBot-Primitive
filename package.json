@@ -6,5 +6,8 @@
     "kivibot"
   ],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "oicq": "^2.3.1"
+  }
 }
