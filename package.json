@@ -1,8 +1,10 @@
 {
   "name": "@kivibot/core",
   "version": "0.0.0",
-  "description": "",
-  "keywords": [],
+  "description": "Core library for KiviBot using oicq v2",
+  "keywords": [
+    "kivibot"
+  ],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT"
 }
