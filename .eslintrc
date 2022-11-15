@@ -1,0 +1,7 @@
+{
+  "extends": ["viki-ts", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": ["error"]
+  }
+}
