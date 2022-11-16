@@ -9,7 +9,6 @@
   "license": "MIT",
   "prettier": "@vikiboss/prettier-config",
   "scripts": {
-    "test": "cd demo && tsx index.ts",
     "lint": "eslint --ext .js,.json,.ts, .",
     "lint:fix": "eslint --fix --ext .js,.json,.ts, ."
   },
@@ -26,10 +25,8 @@
     "@vikiboss/prettier-config": "^0.2.1",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-config-viki-ts": "^0.1.0",
-    "eslint-plugin-n": "^15.5.1",
+    "eslint-config-viki-ts": "^0.1.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-promise": "^6.1.1",
     "prettier": "^2.7.1",
     "tsc-alias": "^1.7.1",
     "tsx": "^3.12.1",

@@ -1,0 +1,12 @@
+{
+  "account": 536596616,
+  "login_mode": "password",
+  "device_mode": "qrcode",
+  "password": "xxxxxxxxxxx",
+  "admins": [1141284758],
+  "plugins": [],
+  "oicq_config": {
+    "platform": 5,
+    "log_lever": "debug"
+  }
+}
