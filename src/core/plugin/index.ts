@@ -1,7 +1,7 @@
-import cron from 'node-cron'
 import EventEmitter from 'node:events'
 
 import OicqEvents from './events'
+import parseCommand from '@/utils/parseCommand'
 
 import type {
   Client,
@@ -11,18 +11,21 @@ import type {
   PrivateMessageEvent
 } from 'oicq'
 
-import type { ScheduledTask, ScheduleOptions } from 'node-cron'
-import parseCommand from '@/utils/parseCommand'
+import type { AdminArray } from '../start'
 
-type AnyFunc = (...args: any[]) => any
-type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
-type MessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
-type OicqMessageHandler = (event: MessageEvent) => any
-type MessageHandler = (event: MessageEvent, bot: Client) => any
-type MessageCmdHandler = (event: MessageEvent, args: string[], bot: Client) => any
+export type AnyFunc = (...args: any[]) => any
+export type MainAdmin = number
 
-export class PluginError extends Error {
-  name = 'PluginError'
+export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
+export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
+export type OicqMessageHandler = (event: AllMessageEvent) => any
+export type MessageHandler = (event: AllMessageEvent) => any
+export type BotHandler = (bot: Client, admins: AdminArray) => any
+export type MessageCmdHandler = (event: AllMessageEvent, args: string[]) => any
+
+/** KiviBot 插件错误类 */
+export class KiviPluginError extends Error {
+  name = 'KiviPluginError'
   pluginName: string
   message: string
 
@@ -33,31 +36,63 @@ export class PluginError extends Error {
   }
 }
 
-export class Plugin extends EventEmitter {
-  private _name = ''
-  private _bot: Client | undefined
-  private _task: ScheduledTask[] = []
+export interface KiviPlugin extends EventEmitter {
+  /** 监听 oicq 标准事件以及 KiviBot 标准事件 */
+  on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+  /** 监听自定义事件或其他插件触发的事件 */
+  on<S extends string | symbol>(
+    event: S & Exclude<S, keyof EventMap>,
+    listener: (this: this, ...args: any[]) => void
+  ): this
+  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件 */
+  once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+  /** 单次监听自定义事件或其他插件触发的事件 */
+  once<S extends string | symbol>(
+    event: S & Exclude<S, keyof EventMap>,
+    listener: (this: this, ...args: any[]) => void
+  ): this
+  /** 取消监听 oicq 标准事件以及 KiviBot 标准事件 */
+  off<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+  /** 取消监听自定义事件或其他插件触发的事件 */
+  off<S extends string | symbol>(
+    event: S & Exclude<S, keyof EventMap>,
+    listener: (this: this, ...args: any[]) => void
+  ): this
+}
+
+export class KiviPlugin extends EventEmitter {
+  private _name: string
+  private _mounted: BotHandler = () => {}
+  private _unmounted: BotHandler = () => {}
   private _events: Map<string, AnyFunc> = new Map()
   private _messageFuncs: Map<MessageHandler, OicqMessageHandler | null> = new Map()
   private _cmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
   private _adminCmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
 
+  /** KiviBot 插件类 */
   constructor(name: string) {
     super()
     this._name = name
   }
 
-  private error(message: string) {
-    throw new PluginError(this._name, message)
+  /** 抛出一个 KiviBot 插件标准错误，会被框架捕获 */
+  throwError(message: string) {
+    throw new KiviPluginError(this._name, message)
   }
 
-  // 插件被框架挂载（启用）时被框架调用
-  mount(bot: Client, admins: number[]) {
+  /** 插件被框架挂载（启用）时被框架调用 */
+  async _mount(bot: Client, admins: AdminArray) {
+    // 调用 onMounted 挂载的函数
+    const res = this._mounted(bot, admins)
+
+    // 如果是 Promise 等待其执行完
+    if (res instanceof Promise) await res
+
     // 插件监听 ociq 的所有事件
     OicqEvents.forEach((evt) => {
-      const handler = (e: FirstParam<EventMap[typeof evt]>) => this.emit(evt, e, bot)
+      const handler = (e: FirstParam<EventMap<Client>[typeof evt]>) => this.emit(evt, e)
 
-      // 插件收到事件时，将事件及数据转 emit 给插件里定义的处理函数
+      // 插件收到事件时，将事件及数据 emit 给插件里定义的处理函数
       bot.on(evt, handler)
 
       // this._event 保存所有监听函数的引用，在卸载时通过这个引用取消监听
@@ -66,7 +101,7 @@ export class Plugin extends EventEmitter {
 
     // plugin.message() 添加进来的处理函数
     this._messageFuncs.forEach((_, handler) => {
-      const oicqHandler = (e: MessageEvent) => handler(e, bot)
+      const oicqHandler = (e: AllMessageEvent) => handler(e)
       bot.on('message', oicqHandler)
       this._messageFuncs.set(handler, oicqHandler)
     })
@@ -75,10 +110,10 @@ export class Plugin extends EventEmitter {
     this._cmdFuncs.forEach((cmd, handler) => {
       const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
 
-      const oicqHandler = (e: MessageEvent) => {
+      const oicqHandler = (e: AllMessageEvent) => {
         if (reg.test(e.raw_message)) {
           const args = parseCommand(e.raw_message)
-          handler(e, args, bot)
+          handler(e, args)
         }
       }
 
@@ -91,12 +126,12 @@ export class Plugin extends EventEmitter {
     this._adminCmdFuncs.forEach((cmd, handler) => {
       const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
 
-      const oicqHandler = (e: MessageEvent) => {
+      const oicqHandler = (e: AllMessageEvent) => {
         const isAdmin = admins.includes(e.sender.user_id)
 
         if (isAdmin && reg.test(e.raw_message)) {
           const args = parseCommand(e.raw_message)
-          handler(e, args, bot)
+          handler(e, args)
         }
       }
 
@@ -106,17 +141,10 @@ export class Plugin extends EventEmitter {
     })
   }
 
-  // 插件被取消挂载（禁用）时被框架调用
-  unmount(bot: Client) {
-    // 取消所有定时任务
-    this._task.forEach((e) => e.stop())
-
+  /** 插件被取消挂载（禁用）时被框架调用 */
+  async _unmount(bot: Client, admins: AdminArray) {
     // 取消监听 oicq 的所有事件
-    OicqEvents.forEach((evt) => {
-      const handler = this._events.get(evt)!
-
-      bot.off(evt, handler)
-    })
+    OicqEvents.forEach((evt) => bot.off(evt, this._events.get(evt)!))
 
     // plugin.message() plugin.admincCmd() 和 plugin.cmd() 添加进来的处理函数
     const funcs = [...this._messageFuncs, ...this._cmdFuncs, ...this._adminCmdFuncs]
@@ -124,69 +152,38 @@ export class Plugin extends EventEmitter {
     // 取出 oicq handlers
     const oicqHandlers = funcs.map((e) => e[1] as OicqMessageHandler)
 
-    //  卸载时通过 oicq handlers 取消监听
+    // 卸载时通过 oicq handlers 取消监听
     oicqHandlers.forEach((oicqHandler) => bot.off('message', oicqHandler))
+
+    // 调用 onUnmounted 挂载的函数
+    const res = this._unmounted(bot, admins)
+
+    // 如果是 Promise 等待其执行完
+    if (res instanceof Promise) await res
   }
 
-  cron(cronStr: string, func: (bot: Client, cronStr: string) => void, options?: ScheduleOptions) {
-    const isCronValid = cron.validate(cronStr)
-
-    if (!isCronValid) {
-      this.error('Cron 表达式有误，请参考框架文档')
-    }
-
-    const handler = () => {
-      if (this._bot) {
-        func(this._bot as Client, cronStr)
-      } else {
-        this.error('Bot 实例未挂载')
-      }
-    }
-
-    const task = cron.schedule(cronStr, handler, options)
-
-    this._task.push(task)
-
-    return task
-  }
-
-  message(hander: MessageHandler) {
+  /** 添加所有消息监听函数 */
+  onMessage(hander: MessageHandler) {
     this._messageFuncs.set(hander, null)
   }
 
-  cmd(cmd: string | RegExp, hander: MessageCmdHandler) {
+  /** 添加全员命令监听函数 */
+  onCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
     this._cmdFuncs.set(hander, cmd)
   }
 
-  adminCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
+  /** 添加管理员命令监听函数 */
+  onAdminCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
     this._cmdFuncs.set(hander, cmd)
   }
 
-  // set enableGroups(number: number[]) {}
+  /** 绑定挂载函数 */
+  onMounted(func: BotHandler) {
+    this._mounted = func
+  }
+
+  /** 绑定卸载函数 */
+  onUnmounted(func: BotHandler) {
+    this._unmounted = func
+  }
 }
-
-const plugin = new Plugin('百度百科')
-
-const task1 = plugin.cron('10:20', async (bot) => {})
-const task2 = plugin.cron('10:20', (bot) => {})
-
-task1.stop()
-
-plugin.message(async (event, bot) => event.reply('Hello'))
-
-plugin.cmd('你好', (event, args, bot) => event.reply('Hello'))
-
-plugin.adminCmd('#开启本群', (event, args, bot) => {
-  // 读写 plugins.enableGroups 会自动 persist data
-  // if (event.message_type === 'group') {
-  //   if (plugin.enableGroups.has(event.group_id)) {
-  //     event.reply('当前群已经是开启状态')
-  //   } else {
-  //     plugin.enableGroups.add(event.group_id)
-  //     event.reply('已开启')
-  //   }
-  // }
-})
-
-// plugin.on('message', (e, bot) => e.reply('Hello World'))
-// plugin.on('system.', (e, bot) => e.reply('Hello World'))
