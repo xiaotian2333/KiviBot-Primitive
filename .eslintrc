@@ -3,9 +3,9 @@
   "env": {
     "browser": false
   },
-  "extends": ["viki-ts", "prettier"],
-  "plugins": ["prettier"],
+  "extends": ["viki-ts", "plugin:prettier/recommended"],
   "rules": {
-    "prettier/prettier": ["error"]
+    "camelcase": "off",
+    "@typescript-eslint/no-empty-function": "off"
   }
 }
