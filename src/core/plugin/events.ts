@@ -1,6 +1,6 @@
 import type { EventMap } from 'oicq'
 
-const events = [
+export const OicqEvents = [
   'system.login.qrcode',
   'system.login.slider',
   'system.login.device',
@@ -48,5 +48,3 @@ const events = [
   'internal.input',
   'guild.message'
 ] as (keyof EventMap)[]
-
-export default events
