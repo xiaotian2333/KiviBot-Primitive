@@ -1,4 +1,4 @@
-import exitWithError from '@/utils/exitWithError'
+import exitWithError from '@src/utils/exitWithError'
 
 /** 登录错误事件监听处理函数 */
 export default function errorListener({ code, message }: { code: number; message: string }) {

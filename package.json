@@ -17,12 +17,14 @@
     "clear": "rimraf lib types"
   },
   "files": [
-    "lib",
-    "types"
+    "lib"
   ],
   "dependencies": {
     "axios": "^1.1.3",
+    "dayjs": "^1.11.6",
+    "fast-glob": "^3.2.12",
     "fs-extra": "^10.1.0",
+    "log4js": "^6.7.0",
     "node-cron": "^3.0.2",
     "oicq": "^2.3.1",
     "ora": "^6.1.2",

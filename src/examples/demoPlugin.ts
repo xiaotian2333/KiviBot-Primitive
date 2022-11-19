@@ -1,6 +1,6 @@
 import cron from 'node-cron'
 
-import { KiviPlugin } from './plugin'
+import { KiviPlugin } from '../core/plugin/plugin'
 
 import type { ScheduledTask } from 'node-cron'
 
@@ -15,8 +15,6 @@ plugin.onMounted((bot) => {
   })
 
   tasks.push(task)
-
-  console.log(plugin.pluginDataDir)
 
   plugin.onMessage(async (event) => {
     bot.sendPrivateMsg(plugin.admins[0], 'message()')

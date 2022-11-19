@@ -1,5 +1,5 @@
 import type { Client } from 'oicq'
-import type { KiviConf } from '../start'
+import type { KiviConf } from '@/start'
 
 /** 设备锁验证监听处理函数 */
 export default function deviceHandler(

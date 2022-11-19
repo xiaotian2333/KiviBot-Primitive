@@ -5,7 +5,7 @@ import { ensureDirSync } from 'fs-extra'
 import { PluginDataDir } from '..'
 import { KiviPluginError } from './pluginError'
 import { OicqEvents } from './events'
-import parseCommand from '@/utils/parseCommand'
+import parseCommand from '@src/utils/parseCommand'
 
 import type {
   Client,
@@ -18,7 +18,6 @@ import type {
 import type { AdminArray } from '../start'
 
 export type AnyFunc = (...args: any[]) => any
-export type MainAdmin = number
 
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
@@ -28,7 +27,12 @@ export type BotHandler = (bot: Client, admins: AdminArray) => any
 export type MessageCmdHandler = (event: AllMessageEvent, args: string[]) => any
 
 export class KiviPlugin extends EventEmitter {
-  private _name: string
+  /** 插件名称 */
+  public name: string
+
+  /** 插件数据存放目录 `/data/plugins/[name]` */
+  public pluginDataDir: string
+
   private _mounted: BotHandler = () => {}
   private _unmounted: BotHandler = () => {}
   private _admins: AdminArray | undefined
@@ -37,14 +41,11 @@ export class KiviPlugin extends EventEmitter {
   private _cmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
   private _adminCmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
 
-  /** 插件数据存放目录 `/data/plugins/[name]` */
-  public pluginDataDir: string
-
   /** KiviBot 插件类 */
   constructor(name: string) {
     super()
-    this._name = name
-    this.pluginDataDir = path.join(PluginDataDir, this._name)
+    this.name = name
+    this.pluginDataDir = path.join(PluginDataDir, this.name)
 
     // 确保插件的数据目录存在
     ensureDirSync(this.pluginDataDir)
@@ -52,7 +53,7 @@ export class KiviPlugin extends EventEmitter {
 
   /** 抛出一个 KiviBot 插件标准错误，会被框架捕获 */
   throwError(message: string) {
-    throw new KiviPluginError(this._name, message)
+    throw new KiviPluginError(this.name, message)
   }
 
   /** 框架管理变动事件处理函数 */
@@ -128,6 +129,8 @@ export class KiviPlugin extends EventEmitter {
 
       this._adminCmdFuncs.set(handler, oicqHandler)
     })
+
+    return this.name
   }
 
   /** **插件请勿调用**，KiviBot 框架调用此函数禁用插件 */
