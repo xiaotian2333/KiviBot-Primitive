@@ -1,10 +1,11 @@
-import path from 'node:path'
-import EventEmitter from 'node:events'
 import { ensureDirSync } from 'fs-extra'
+import EventEmitter from 'node:events'
+import log4js from 'log4js'
+import path from 'node:path'
 
 import { PluginDataDir } from '..'
 import { KiviPluginError } from './pluginError'
-import { OicqEvents } from './events'
+import { MessageEvents, OicqEvents } from './events'
 import parseCommand from '@src/utils/parseCommand'
 
 import type {
@@ -16,9 +17,9 @@ import type {
 } from 'oicq'
 
 import type { AdminArray } from '../start'
+import type { Logger } from 'log4js'
 
 export type AnyFunc = (...args: any[]) => any
-
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
 export type OicqMessageHandler = (event: AllMessageEvent) => any
@@ -29,9 +30,10 @@ export type MessageCmdHandler = (event: AllMessageEvent, args: string[]) => any
 export class KiviPlugin extends EventEmitter {
   /** 插件名称 */
   public name: string
-
   /** 插件数据存放目录 `/data/plugins/[name]` */
   public pluginDataDir: string
+  /** 向框架输出日志 */
+  public logger: Logger = log4js.getLogger('plugin')
 
   private _mounted: BotHandler = () => {}
   private _unmounted: BotHandler = () => {}
@@ -80,7 +82,19 @@ export class KiviPlugin extends EventEmitter {
 
     // 插件监听 ociq 的所有事件
     OicqEvents.forEach((evt) => {
-      const handler = (e: FirstParam<EventMap<Client>[typeof evt]>) => this.emit(evt, e)
+      const handler = (e: FirstParam<EventMap<Client>[typeof evt]>) => {
+        if (MessageEvents.includes(evt)) {
+          const event = e as AllMessageEvent
+
+          const reply = (...args: any[]) => {
+            event.reply(args)
+          }
+
+          this.emit(evt, { ...event, reply })
+        } else {
+          this.emit(evt, e)
+        }
+      }
 
       // 插件收到事件时，将事件及数据 emit 给插件里定义的处理函数
       bot.on(evt, handler)

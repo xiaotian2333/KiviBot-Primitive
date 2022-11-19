@@ -1,12 +1,16 @@
-import { KiviPluginError } from './plugin/pluginError'
-import loadPlugins from './plugin/loadPlugins'
+import { KiviPluginError } from '../plugin/pluginError'
+import loadPlugins from '../plugin/loadPlugins'
 
 import type { Client } from 'oicq'
-import type { KiviConf } from './start'
+import type { KiviConf } from '../start'
+import { KiviLogger } from '../log'
 
 /** 监听上线事件，初始化 KiviBot */
-export async function handleOnline(bot: Client, conf: KiviConf) {
-  const error = bot.logger.error.bind(bot.logger)
+export async function onlineHandler(bot: Client, conf: KiviConf) {
+  const error = (msg: any, ...args: any[]) => {
+    bot.logger.error(msg, ...args)
+    KiviLogger.error(msg, ...args)
+  }
 
   /** 全局错误处理函数 */
   const handleGlobalError = (e: Error) => {

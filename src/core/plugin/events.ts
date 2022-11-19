@@ -1,6 +1,6 @@
 import type { EventMap } from 'oicq'
 
-export const OicqEvents = [
+export const SystemEvents = [
   'system.login.qrcode',
   'system.login.slider',
   'system.login.device',
@@ -8,14 +8,20 @@ export const OicqEvents = [
   'system.online',
   'system.offline.network',
   'system.offline.kickoff',
-  'system.offline',
+  'system.offline'
+]
+
+export const RequestEvents = [
   'request.friend.add',
   'request.friend.single',
   'request.friend',
   'request.group.add',
   'request.group.invite',
   'request.group',
-  'request',
+  'request'
+]
+
+export const MessageEvents = [
   'message.private',
   'message.private.friend',
   'message.private.group',
@@ -25,7 +31,10 @@ export const OicqEvents = [
   'message.group.normal',
   'message.group.anonymous',
   'message.discuss',
-  'message',
+  'message'
+]
+
+export const NoticeEvents = [
   'notice.friend.increase',
   'notice.friend.decrease',
   'notice.friend.recall',
@@ -39,11 +48,17 @@ export const OicqEvents = [
   'notice.group.poke',
   'notice.friend',
   'notice.group',
-  'notice',
-  'sync.message',
-  'sync.read.private',
-  'sync.read.group',
-  'sync.read',
+  'notice'
+]
+
+export const SyncEvents = ['sync.message', 'sync.read.private', 'sync.read.group', 'sync.read']
+
+export const OicqEvents = [
+  ...SystemEvents,
+  ...RequestEvents,
+  ...MessageEvents,
+  ...NoticeEvents,
+  ...SyncEvents,
   'internal.sso',
   'internal.input',
   'guild.message'

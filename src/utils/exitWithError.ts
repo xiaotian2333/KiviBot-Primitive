@@ -1,7 +1,7 @@
 import notice from './notice'
 
 const exitWithError = (msg: string) => {
-  notice.faild(msg)
+  notice.error(msg)
   process.exit(1)
 }
 

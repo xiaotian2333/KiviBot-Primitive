@@ -3,28 +3,48 @@ import log4js from 'log4js'
 import path from 'node:path'
 
 import { LogDir } from '.'
+import colors from '@src/utils/colors'
 
 import type { Config } from 'oicq'
 
 // 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad
 export const devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad']
 
-// 添加自定义 log4js Layout布局：Kivi
-log4js.addLayout('Kivi', (config) => {
-  const { qq, platform, oicq = false } = config
+export const KiviLogger = log4js.getLogger('kivi')
+export const PluginLogger = log4js.getLogger('plugin')
+
+export const LogTypeMap: Record<string, string> = {
+  all: 'gray',
+  mark: 'gray',
+  trace: 'white',
+  debug: 'blue',
+  info: 'green',
+  warn: 'yellow',
+  error: 'red',
+  fatal: 'magenta',
+  off: 'magenta'
+}
+
+// 添加自定义 log4js Layout布局：kivi
+log4js.addLayout('kivi', (config) => {
+  const { qq, platform, target = 'kivi' } = config
 
   // oicq 日志输出到日志文件（可选关闭） logs/KiviBot_YYYY-MM-DD_HH-mm-ss.log
-  if (oicq) {
+  if (target === 'oicq') {
     return (info) => {
       const now = dayjs(info.startTime).format(`YYYY-MM-DD HH:mm:ss:SSS`)
-      return `[${now}] [${info.level}] [${qq}-${devices[platform]}] ${info.data}`
+      return `[${now}] [${info.level.levelStr}] [${qq}-${devices[platform]}] ${info.data}`
     }
   }
 
-  // KiviBot 框架日志输出到控制台（可选关闭）
+  // KiviBot 框架日志输出到控制台（包括插件，可选关闭）
   return (info) => {
-    const now = dayjs(info.startTime).format('M-D HH:mm:ss')
-    return `[${now}] [${qq}-${devices[platform]}] ${info.data}`
+    const level = info.level.levelStr
+    const now = dayjs(info.startTime).format(`M-D HH:mm`)
+    const color = LogTypeMap[level.toLowerCase()] as keyof typeof colors
+    const type = target === 'kivi' ? 'KIVI' : 'PLUGIN'
+    const head = colors[color](`[${now}] [${type}] [${level}]`)
+    return head + colors.gray(' - ') + info.data
   }
 })
 
@@ -41,23 +61,30 @@ export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account:
   // 使用自定义的 Kivi Layout
   const layout = {
     platform,
-    type: 'Kivi',
+    type: 'kivi',
     qq: 536596616
   }
 
   // 配置 log4js
   log4js.configure({
     appenders: {
-      console: {
+      kivi: {
         layout,
         type: 'stdout'
+      },
+      plugin: {
+        type: 'stdout',
+        layout: {
+          ...layout,
+          target: 'pluin'
+        }
       },
       log_file: {
         type: 'file',
         filename: logFilePath,
         layout: {
           ...layout,
-          oicq: true
+          target: 'oicq'
         }
       },
       _error_file: {
@@ -65,7 +92,7 @@ export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account:
         filename: errorFilePath,
         layout: {
           ...layout,
-          oicq: true
+          target: 'oicq'
         }
       },
       error_file: {
@@ -79,8 +106,12 @@ export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account:
         appenders: ['log_file', 'error_file'],
         level: oicqLogLevel as string
       },
-      Kivi: {
-        appenders: ['console'],
+      kivi: {
+        appenders: ['kivi'],
+        level: kiviLogLevel
+      },
+      plugin: {
+        appenders: ['plugin'],
         level: kiviLogLevel
       }
     }

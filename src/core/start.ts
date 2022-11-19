@@ -1,19 +1,14 @@
 import { createClient } from 'oicq'
 import crypto from 'node:crypto'
 import fs, { ensureDirSync } from 'fs-extra'
-import path from 'node:path'
 
-import { CWD, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '.'
+import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '.'
 import { handleKiviCommand } from './commands'
-import { handleOnline } from './online'
+import { onlineHandler, deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './system'
 import { LOGO } from '@src/utils/logo'
-import { redirectLog } from './log'
+import { KiviLogger, redirectLog } from './log'
 import colors from '@src/utils/colors'
-import deviceHandler from './login/deviceHandler'
-import errorListener from './login/errorHandler'
 import exitWithError from '@src/utils/exitWithError'
-import qrCodeHandler from './login/qrCodeHandler'
-import sliderListener from './login/sliderHandler'
 
 import type { Config } from 'oicq'
 import type { KiviPlugin } from '.'
@@ -33,8 +28,6 @@ export interface KiviConf {
   oicq_config: Config
 }
 
-const configPath = path.join(CWD, 'kivi.json')
-
 export const plugins: Map<string, KiviPlugin> = new Map()
 
 /** 启动框架 */
@@ -42,13 +35,13 @@ export const start = () => {
   // 打印 logo
   console.log(colors.blue(LOGO))
 
-  if (!fs.existsSync(configPath)) {
+  if (!fs.existsSync(ConfigPath)) {
     exitWithError('配置文件 `kivi.json` 不存在')
   }
 
   try {
-    // 读取配置文件
-    const conf: KiviConf = require(configPath)
+    // 读取框架账号配置文件 `kivi.json`
+    const conf: KiviConf = require(ConfigPath)
     const { log_level, oicq_config } = conf
 
     if (!conf.account) {
@@ -61,9 +54,8 @@ export const start = () => {
 
     // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
     oicq_config.platform ??= 5
-    // ociq 数据及缓存默认保存在 data/oicq 下
-    oicq_config.data_dir ??= OicqDataDir
-    // ociq 数据及缓存默认保存在 data/oicq 下
+    // ociq 数据及缓存保存在 data/oicq 下
+    oicq_config.data_dir = OicqDataDir
     oicq_config.log_level ??= 'info'
     // 指定默认 ffmpeg 和 ffprobe 命令为全局路径
     oicq_config.ffmpeg_path ??= 'ffmpeg'
@@ -80,16 +72,25 @@ export const start = () => {
     // 初始化实例
     const bot = createClient(conf.account, oicq_config)
 
-    // 监听处理框架命令
-    bot.on('message', (event) => handleKiviCommand(event, bot, conf))
+    // 打印日志，同时监听处理框架命令
+    bot.on('message', (event) => {
+      KiviLogger.info(event.raw_message)
+      handleKiviCommand(event, bot, conf)
+    })
 
     // 监听上线事件
-    bot.on('system.online', () => handleOnline(bot, conf))
+    bot.on('system.online', () => onlineHandler(bot, conf))
+
+    // 监听内部事件
+    bot.on('internal.verbose', (verbose, level: number) => {
+      const list = ['fatal', 'mark', 'error', 'warn', 'info', 'trace'] as const
+      KiviLogger[list[level]](verbose)
+    })
 
     // 监听设备锁、滑块和登录错误的事件
     bot.on('system.login.device', deviceHandler.bind(bot, conf.device_mode))
-    bot.on('system.login.slider', sliderListener)
-    bot.on('system.login.error', errorListener)
+    bot.on('system.login.slider', sliderHandler)
+    bot.on('system.login.error', errorHandler)
 
     // 通过配置文件里指定的模式登录账号
     if (conf.login_mode === 'qrcode') {

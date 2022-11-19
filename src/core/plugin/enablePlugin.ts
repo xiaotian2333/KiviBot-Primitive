@@ -1,12 +1,20 @@
 import colors from '@src/utils/colors'
+import { KiviLogger } from '../log'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/start'
 import type { KiviPlugin } from './plugin'
 
 export default async function enablePlugin(bot: Client, conf: KiviConf, pluginPath: string) {
-  const info = (msg: string) => bot.logger.info(colors.green(msg))
-  const error = (msg: string) => bot.logger.error(colors.red(msg))
+  const error = (msg: any, ...args: any[]) => {
+    bot.logger.error(msg, ...args)
+    KiviLogger.error(msg, ...args)
+  }
+
+  const info = (msg: any, ...args: any[]) => {
+    bot.logger.info(msg, ...args)
+    KiviLogger.info(msg, ...args)
+  }
 
   const pluginName = getPluginNameByPath(pluginPath)
 

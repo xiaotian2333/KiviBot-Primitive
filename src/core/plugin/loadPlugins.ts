@@ -1,5 +1,5 @@
+import { KiviLogger } from '../log'
 import { searchAllPlugins } from './searchPlugins'
-
 import colors from '@src/utils/colors'
 import enablePlugin, { getPluginNameByPath } from './enablePlugin'
 
@@ -8,7 +8,10 @@ import type { KiviConf } from '@/start'
 
 /** 检索并加载 node_modules 和 plugins 目录下的插件 */
 export default async function loadPlugins(bot: Client, conf: KiviConf) {
-  const info = (msg: string) => bot.logger.info(colors.green(msg))
+  const info = (msg: string) => {
+    bot.logger.info(msg)
+    KiviLogger.info(msg)
+  }
 
   // 检索本地所有插件（node_modukles 里 `kivibot-plugin-` 开头的插件 和 plugins 下的插件）
   const { plugins, cnts } = await searchAllPlugins()

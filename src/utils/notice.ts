@@ -12,10 +12,10 @@ export const success = (msg: string) => {
   console.log(`${colors.green('Sucess:')} ${msg}`)
 }
 
-export const faild = (msg: string) => {
-  console.log(`${colors.red('Faild:')} ${msg}`)
+export const error = (msg: string) => {
+  console.log(`${colors.red('Error:')} ${msg}`)
 }
 
-const notice = { info, warn, success, faild }
+const notice = { info, warn, success, error }
 
 export default notice
