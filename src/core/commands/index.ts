@@ -12,12 +12,12 @@ export async function handleKiviCommand(e: AllMessageEvent, bot: Client, admins:
 
   if (isMaster || isPrivateGroup) {
     if (e.raw_message === '#卸载插件') {
-      plugins.forEach((plugin) => plugin._unmount(bot, admins))
+      plugins.forEach((plugin) => plugin.unmountKiviBotClient(bot, admins))
       killPlugin('/home/viki/Workspace/KiviBot/lib/core/plugin/demoPlugin.js')
     }
 
     if (e.raw_message === '#重载插件') {
-      plugins.forEach((plugin) => plugin._unmount(bot, admins))
+      plugins.forEach((plugin) => plugin.unmountKiviBotClient(bot, admins))
       killPlugin('/home/viki/Workspace/KiviBot/lib/core/plugin/demoPlugin.js')
 
       try {
@@ -25,7 +25,7 @@ export async function handleKiviCommand(e: AllMessageEvent, bot: Client, admins:
         plugins.add(plugin)
 
         try {
-          plugin._mount(bot, admins)
+          plugin.mountKiviBotClient(bot, admins)
         } catch (e) {
           // error(`插件挂载（onMounted）过程中发生错误: `, e)
         }

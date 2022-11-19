@@ -1,5 +1,8 @@
+import path from 'node:path'
 import EventEmitter from 'node:events'
+import { ensureDirSync } from 'fs-extra'
 
+import { PluginDataDir } from '..'
 import { KiviPluginError } from './pluginError'
 import { OicqEvents } from './events'
 import parseCommand from '@/utils/parseCommand'
@@ -34,12 +37,17 @@ export class KiviPlugin extends EventEmitter {
   private _cmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
   private _adminCmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
 
-  public CWD: string = process.cwd()
+  /** 插件数据存放目录 `/data/plugins/[name]` */
+  public pluginDataDir: string
 
   /** KiviBot 插件类 */
   constructor(name: string) {
     super()
     this._name = name
+    this.pluginDataDir = path.join(PluginDataDir, this._name)
+
+    // 确保插件的数据目录存在
+    ensureDirSync(this.pluginDataDir)
   }
 
   /** 抛出一个 KiviBot 插件标准错误，会被框架捕获 */
@@ -52,8 +60,8 @@ export class KiviPlugin extends EventEmitter {
     this._admins = event.admins
   }
 
-  /** 插件被框架挂载（启用）时被框架调用 */
-  async _mount(bot: Client, admins: AdminArray) {
+  /** **插件请勿调用**，KiviBot 框架调用此函数启用插件 */
+  async mountKiviBotClient(bot: Client, admins: AdminArray) {
     // 初始化管理员
     this._admins = [...admins]
     // 监听框架管理变动
@@ -122,8 +130,8 @@ export class KiviPlugin extends EventEmitter {
     })
   }
 
-  /** 插件被取消挂载（禁用）时被框架调用 */
-  async _unmount(bot: Client, admins: AdminArray) {
+  /** **插件请勿调用**，KiviBot 框架调用此函数禁用插件 */
+  async unmountKiviBotClient(bot: Client, admins: AdminArray) {
     // 取消监听框架管理变动
     bot.off('kivi.admins', this.adminChangeHandler)
 
@@ -150,31 +158,32 @@ export class KiviPlugin extends EventEmitter {
     }
   }
 
-  /** 添加所有消息监听函数 */
+  /** 添加消息监听函数（包括好友私聊、群消息以及讨论组消息），通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
   onMessage(hander: MessageHandler) {
     this._messageFuncs.set(hander, null)
   }
 
-  /** 添加全员命令监听函数 */
+  /** 添加命令（可以是字符串或正则表达式）监听函数（包括好友私聊、群消息以及讨论组消息），通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
   onCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
     this._cmdFuncs.set(hander, cmd)
   }
 
-  /** 添加管理员命令监听函数 */
+  /** 添加管理员命令（可以是字符串或正则表达式）监听函数（包括好友私聊、群消息以及讨论组消息），通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
   onAdminCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
     this._cmdFuncs.set(hander, cmd)
   }
 
-  /** 绑定挂载函数 */
+  /** 插件被启用时执行，所有的插件逻辑请写到传入的函数里 */
   onMounted(func: BotHandler) {
     this._mounted = func
   }
 
-  /** 绑定卸载函数 */
+  /** 插件被禁用时执行，插件善后逻辑请写到传入的函数里（比如取消定时任务、自定义监听等） */
   onUnmounted(func: BotHandler) {
     this._unmounted = func
   }
 
+  /** 框架管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的 */
   get admins() {
     return [...(this._admins || [])] as AdminArray
   }
@@ -203,4 +212,26 @@ export interface KiviPlugin extends EventEmitter {
     event: S & Exclude<S, keyof EventMap>,
     listener: (this: this, ...args: any[]) => void
   ): this
+  /** @deprecated 请使用 on 进行事件监听 */
+  addListener: never
+  /** @deprecated 不推荐使用 */
+  removeAllListeners: never
+  /** @deprecated 不推荐使用 */
+  getMaxListeners: never
+  /** @deprecated 不推荐使用 */
+  rawListeners: never
+  /** @deprecated 不推荐使用 */
+  setMaxListeners: never
+  /** @deprecated 不推荐使用 */
+  eventNames: never
+  /** @deprecated 不推荐使用 */
+  listenerCount: never
+  /** @deprecated 不推荐使用 */
+  listeners: never
+  /** @deprecated *不推荐使用 /
+  removeListener: never
+  /** @deprecated 不推荐使用 */
+  prependListener: never
+  /** @deprecated 不推荐使用 */
+  prependOnceListener: never
 }

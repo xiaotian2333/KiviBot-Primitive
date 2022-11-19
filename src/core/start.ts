@@ -39,7 +39,7 @@ export const start = () => {
 
   // 检测 KiviBot 配置文件是否存在
   if (!fs.existsSync(configPath)) {
-    exitWithError('配置文件（kivi.json）不存在')
+    exitWithError('配置文件 `kivi.json` 不存在')
   }
 
   try {
@@ -48,11 +48,11 @@ export const start = () => {
     const { oicq_config } = conf
 
     if (!conf.account) {
-      exitWithError('无效的配置文件（kivi.json）')
+      exitWithError('无效的配置文件 `kivi.json` ')
     }
 
     if (conf.admins.length <= 0) {
-      exitWithError('配置文件中（kivi.json）需要指定至少一个管理员')
+      exitWithError('配置文件 `kivi.json` 需要指定至少一个管理员')
     }
 
     // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
@@ -66,11 +66,11 @@ export const start = () => {
     // 初始化实例
     const bot = createClient(conf.account, oicq_config)
 
-    // 监听上线事件
-    bot.on('system.online', () => handleOnline(bot, conf.admins))
-
     // 监听处理框架命令
     bot.on('message', (event) => handleKiviCommand(event, bot, conf.admins))
+
+    // 监听上线事件
+    bot.on('system.online', () => handleOnline(bot, conf.admins))
 
     // 监听设备锁、滑块和登录错误的事件
     bot.on('system.login.device', deviceHandler.bind(bot, conf.device_mode))
@@ -86,6 +86,6 @@ export const start = () => {
       bot.login(md5Pwd)
     }
   } catch {
-    exitWithError('配置文件（kivi.json）不符合 JSON 格式')
+    exitWithError('配置文件 `kivi.json` 不符合 JSON 格式')
   }
 }

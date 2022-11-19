@@ -30,7 +30,7 @@ export async function handleOnline(bot: Client, admins: AdminArray) {
     const plugin = (await import('./plugin/demoPlugin')).default
     plugins.add(plugin)
     try {
-      plugin._mount(bot, admins)
+      plugin.mountKiviBotClient(bot, admins)
     } catch (e) {
       error(`插件挂载（onMounted）过程中发生错误: `, e)
     }

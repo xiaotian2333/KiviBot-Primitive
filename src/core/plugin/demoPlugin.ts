@@ -1,5 +1,8 @@
-import cron, { type ScheduledTask } from 'node-cron'
+import cron from 'node-cron'
+
 import { KiviPlugin } from './plugin'
+
+import type { ScheduledTask } from 'node-cron'
 
 const plugin = new KiviPlugin('简单关键词')
 const tasks: ScheduledTask[] = []
@@ -13,11 +16,13 @@ plugin.onMounted((bot) => {
 
   tasks.push(task)
 
+  console.log(plugin.pluginDataDir)
+
   plugin.onMessage(async (event) => {
     bot.sendPrivateMsg(plugin.admins[0], 'message()')
   })
 
-  plugin.onCmd('hi', (event, args) => {
+  plugin.onCmd(/hi/gi, (event, args) => {
     event.reply('cmd()')
     console.log(args)
   })
