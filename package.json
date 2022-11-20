@@ -14,7 +14,7 @@
     "build": "pnpm run clear && tsc && tsc-alias",
     "lint": "eslint --ext .js,.json,.ts, .",
     "lint:fix": "eslint --fix --ext .js,.json,.ts, .",
-    "clear": "rimraf lib types"
+    "clear": "rimraf lib"
   },
   "files": [
     "lib"

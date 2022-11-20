@@ -1,7 +1,7 @@
 import { KiviLogger } from '@/log'
+import colors from '@src/utils/colors'
 
 import type { Client, EventMap } from 'oicq'
-import colors from '@src/utils/colors'
 
 /** 监听处理所有通知，打印框架日志 */
 export function noticeHandler(
@@ -17,10 +17,10 @@ export function noticeHandler(
 
     if (sub_type === 'decrease') {
       // 好友减少
-      message = colors.gray(`- [好友减少:${event.nickname}(${user_id})`)
+      message = `- [好友减少:${event.nickname}(${user_id})`
     } else if (sub_type === 'increase') {
       // 好友增加
-      message = colors.gray(`+ [好友增加:${event.nickname}(${user_id})`)
+      message = `+ [好友增加:${event.nickname}(${user_id})`
     } else if (sub_type === 'poke') {
       // 好友戳一戳
       const { target_id, operator_id, friend } = event
@@ -38,7 +38,7 @@ export function noticeHandler(
         ? `${this.nickname}(${this.uin})`
         : `${friend.nickname}(${friend.user_id})`
 
-      message = colors.gray(`↓ [私聊戳:${operator}->${target}]`)
+      message = `↓ [私聊戳:${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 私聊撤回
       const { friend, operator_id, message_id } = event
@@ -49,7 +49,7 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : friendinfo
 
-      message = colors.gray(`↓ [私聊撤回:${friendinfo}] [${operator}:${message_id}]`)
+      message = `↓ [私聊撤回:${friendinfo}] [${operator}:${message_id}]`
     }
   } else if (event.notice_type === 'group') {
     // 群通知
@@ -60,9 +60,9 @@ export function noticeHandler(
       const { set } = event
 
       if (set) {
-        message = colors.gray(`+ [成为群管理:${groupInfo}-${user_id}]`)
+        message = `+ [成为群管理:${groupInfo}-${user_id}]`
       } else {
-        message = colors.gray(`- [取消群管理:${groupInfo}-${user_id}]`)
+        message = `- [取消群管理:${groupInfo}-${user_id}]`
       }
     } else if (sub_type === 'ban') {
       // 群禁言
@@ -72,14 +72,14 @@ export function noticeHandler(
       const label = isBan ? '+ [禁言' : '- [解禁'
       const desc = `${groupInfo}-${operator_id}->${user_id}${isBan ? `-${duration}分钟` : ''}`
 
-      message = colors.gray(`${label}:${desc}]`)
+      message = `${label}:${desc}]`
     } else if (sub_type === 'decrease') {
       // 群人数减少
       const { operator_id } = event
-      message = colors.gray(`- [退群:${groupInfo}-${operator_id || '主动'}-${user_id}]`)
+      message = `- [退群:${groupInfo}-${operator_id || '主动'}-${user_id}]`
     } else if (sub_type === 'increase') {
       // 群人数增加
-      message = colors.gray(`+ [进群:${groupInfo}-${user_id}]`)
+      message = `+ [进群:${groupInfo}-${user_id}]`
     } else if (sub_type === 'poke') {
       // 群戳一戳
       const { target_id, operator_id } = event
@@ -93,7 +93,7 @@ export function noticeHandler(
       // 被戳方
       const target = isTargetSelf ? `${this.nickname}(${this.uin})` : target_id
 
-      message = colors.gray(`↓ [群聊戳:${operator}->${target}]`)
+      message = `↓ [群聊戳:${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 群聊撤回
       const { operator_id, message_id } = event
@@ -103,7 +103,7 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
 
-      message = colors.gray(`↓ [群聊撤回:${groupInfo}-${operator_id}] [${operator}:${message_id}]`)
+      message = `↓ [群聊撤回:${groupInfo}-${operator_id}] [${operator}:${message_id}]`
     } else if (sub_type === 'transfer') {
       // 群聊转让
       const { operator_id } = event
@@ -113,9 +113,9 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
 
-      message = colors.gray(`↓ [群聊转让:${groupInfo}] [${operator}->${user_id}]`)
+      message = `↓ [群聊转让:${groupInfo}] [${operator}->${user_id}]`
     }
   }
 
-  KiviLogger.info(message)
+  KiviLogger.info(colors.gray(message))
 }

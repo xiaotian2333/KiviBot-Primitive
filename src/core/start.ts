@@ -14,6 +14,7 @@ import exitWithError from '@src/utils/exitWithError'
 
 import type { Config } from 'oicq'
 import type { KiviPlugin } from '.'
+import { requestHandler } from './logs/request'
 
 export type MainAdmin = number
 export type AdminArray = [MainAdmin, ...number[]]
@@ -82,8 +83,8 @@ export const start = () => {
 
     KiviLogger.info(colors.gray(`框架初始化完成`))
 
-    const device = devices[oicq_config.platform]
-    KiviLogger.info(colors.gray(`开始登录账号：${conf.account}，登录协议：${device}`))
+    const loginMessage = `开始登录账号：${conf.account}，登录协议：${devices[oicq_config.platform]}`
+    KiviLogger.info(colors.gray(loginMessage))
 
     // 初始化实例
     const bot = createClient(conf.account, oicq_config)
@@ -108,8 +109,9 @@ export const start = () => {
     bot.on('system.login.slider', ({ url }) => sliderHandler.call(bot, { isFirst: true, url }))
     bot.on('system.login.error', errorHandler)
 
+    // 监听通知、请求，打印框架日志
     bot.on('notice', noticeHandler)
-    // bot.on('request', requestHandler)
+    bot.on('request', requestHandler)
 
     // 通过配置文件里指定的模式登录账号
     if (conf.login_mode === 'qrcode') {

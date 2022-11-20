@@ -20,16 +20,16 @@ export function messageHandler(e: AllMessageEvent) {
 
   if (message_type === 'private') {
     // 私聊消息
-    message = colors.gray(`↓ [${type}:${nick}] `)
+    message = `↓ [${type}:${nick}] `
   } else if (message_type === 'discuss') {
     // 讨论组消息
     const discuss = `${e.discuss_name}(${e.discuss_id})`
-    message = colors.gray(`↓ [${type}:${discuss}:${nick}] `)
+    message = `↓ [${type}:${discuss}:${nick}] `
   } else {
     // 群聊消息
     const group = `${e.group_name}(${e.group_id})`
-    message = colors.gray(`↓ [${type}:${group}-${nick}] `)
+    message = `↓ [${type}:${group}-${nick}] `
   }
 
-  KiviLogger.info(message + e.toString())
+  KiviLogger.info(`${colors.gray(message)} ${e.toString()}`)
 }
