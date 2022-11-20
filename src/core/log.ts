@@ -6,6 +6,7 @@ import { LogDir } from '.'
 import colors from '@src/utils/colors'
 
 import type { Config } from 'oicq'
+import type { AllMessageEvent } from './plugin'
 
 // 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad
 export const devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad']
@@ -25,6 +26,44 @@ export const LogTypeMap: Record<string, string> = {
   off: 'magenta'
 }
 
+export const LogChineseMap: Record<string, string> = {
+  all: '所有',
+  mark: '提示',
+  trace: '追踪',
+  debug: '调试',
+  info: '信息',
+  warn: '警告',
+  error: '错误',
+  fatal: '致命',
+  off: '关闭'
+}
+
+const MessageTypeMap = {
+  private: '私聊',
+  discuss: '讨论组',
+  group: '群'
+} as const
+
+export function MessageLogHandler(e: AllMessageEvent) {
+  const { sender, message_type } = e
+
+  const type = MessageTypeMap[e.message_type]
+  const nick = `${sender.nickname}(${sender.user_id})`
+
+  if (message_type === 'private') {
+    const head = colors.gray(`↓ [${type}:${nick}] `)
+    KiviLogger.info(head + e.raw_message)
+  } else if (message_type === 'discuss') {
+    const discuss = `${e.discuss_name}(${e.discuss_id})`
+    const head = colors.gray(`↓ [${type}:${discuss}:${nick}] `)
+    KiviLogger.info(head + e.raw_message)
+  } else {
+    const group = `${e.group_name}(${e.group_id})`
+    const head = colors.gray(`↓ [${type}:${group}-${nick}] `)
+    KiviLogger.info(head + e.raw_message)
+  }
+}
+
 // 添加自定义 log4js Layout布局：kivi
 log4js.addLayout('kivi', (config) => {
   const { qq, platform, target = 'kivi' } = config
@@ -39,11 +78,11 @@ log4js.addLayout('kivi', (config) => {
 
   // KiviBot 框架日志输出到控制台（包括插件，可选关闭）
   return (info) => {
-    const level = info.level.levelStr
-    const now = dayjs(info.startTime).format(`M-D HH:mm`)
-    const color = LogTypeMap[level.toLowerCase()] as keyof typeof colors
+    const level = info.level.levelStr.toLowerCase()
+    const now = dayjs(info.startTime).format(`MM-DD HH:mm:ss`)
+    const color = LogTypeMap[level] as keyof typeof colors
     const type = target === 'kivi' ? 'KIVI' : 'PLUGIN'
-    const head = colors[color](`[${now}] [${type}] [${level}]`)
+    const head = colors[color](`[${now}] [${type}] [${LogChineseMap[level]}]`)
     return head + colors.gray(' - ') + info.data
   }
 })

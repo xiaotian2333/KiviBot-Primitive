@@ -6,11 +6,18 @@ import type { KiviConf } from '../start'
 import { KiviLogger } from '../log'
 
 /** 监听上线事件，初始化 KiviBot */
-export async function onlineHandler(bot: Client, conf: KiviConf) {
+export async function onlineHandler(this: Client, conf: KiviConf) {
   const error = (msg: any, ...args: any[]) => {
-    bot.logger.error(msg, ...args)
+    this.logger.error(msg, ...args)
     KiviLogger.error(msg, ...args)
   }
+
+  const info = (msg: any, ...args: any[]) => {
+    this.logger.info(msg, ...args)
+    KiviLogger.info(msg, ...args)
+  }
+
+  info(`${this.nickname}(${this.uin}) 上线成功！欢迎使用 KiviBot`)
 
   /** 全局错误处理函数 */
   const handleGlobalError = (e: Error) => {
@@ -28,5 +35,5 @@ export async function onlineHandler(bot: Client, conf: KiviConf) {
   process.on('uncaughtException', handleGlobalError)
 
   // 检索并加载插件
-  await loadPlugins(bot, conf)
+  await loadPlugins(this, conf)
 }
