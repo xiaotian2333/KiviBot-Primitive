@@ -21,10 +21,7 @@ const searchPlugins = async (cwd: string, pattern: string) => {
 
 export async function searchAllPlugins() {
   const npmPlugins = await searchNpmPlugin()
-  const localPlugins = [
-    ...(await searchLocalPlugin()),
-    '/home/viki/Workspace/kivibot/lib/examples/demoPlugin.js'
-  ]
+  const localPlugins = await searchLocalPlugin()
 
   const plugins = [...npmPlugins, ...localPlugins]
 
@@ -35,10 +32,13 @@ export async function searchAllPlugins() {
   const cnts = { npm, local, all }
 
   return {
-    /** npm 数量 */
+    /** npm 插件数量 */
     npmPlugins,
+    /** 本地插件数量 */
     localPlugins,
+    /** 所有插件 */
     plugins,
+    /** 所有数目 */
     cnts
   }
 }

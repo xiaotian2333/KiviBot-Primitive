@@ -1,6 +1,6 @@
 {
   "name": "@kivibot/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Core library for KiviBot using oicq v2",
   "main": "lib/index.js",
   "keywords": [

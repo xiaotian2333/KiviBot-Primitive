@@ -20,15 +20,15 @@ export function messageHandler(e: AllMessageEvent) {
 
   if (message_type === 'private') {
     // 私聊消息
-    message = `↓ [${type}:${nick}] `
+    message = `↓ [${type}:${nick}]`
   } else if (message_type === 'discuss') {
     // 讨论组消息
     const discuss = `${e.discuss_name}(${e.discuss_id})`
-    message = `↓ [${type}:${discuss}:${nick}] `
+    message = `↓ [${type}:${discuss}:${nick}]`
   } else {
     // 群聊消息
     const group = `${e.group_name}(${e.group_id})`
-    message = `↓ [${type}:${group}-${nick}] `
+    message = `↓ [${type}:${group}-${nick}]`
   }
 
   KiviLogger.info(`${colors.gray(message)} ${e.toString()}`)

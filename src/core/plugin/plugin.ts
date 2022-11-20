@@ -3,9 +3,9 @@ import EventEmitter from 'node:events'
 import log4js from 'log4js'
 import path from 'node:path'
 
-import { PluginDataDir } from '..'
+import { PluginDataDir } from '@src'
 import { KiviPluginError } from './pluginError'
-import { MessageEvents, OicqEvents } from '../events'
+import { MessageEvents, OicqEvents } from '@/events'
 import parseCommand from '@src/utils/parseCommand'
 
 import type {

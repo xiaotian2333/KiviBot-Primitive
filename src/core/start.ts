@@ -44,7 +44,7 @@ export const start = () => {
 
   /** 捕获 Ctrl C 中断退出 */
   process.on('SIGINT', () => {
-    console.log(colors.green('已成功退出 KiviBot'))
+    console.log(colors.yellow('已成功退出 KiviBot'))
     process.exit(0)
   })
 
@@ -86,6 +86,9 @@ export const start = () => {
 
     // 初始化实例
     const bot = createClient(conf.account, oicq_config)
+
+    // 取消监听函数个数限制
+    bot.setMaxListeners(Infinity)
 
     // 监听消息，打印日志，同时处理框架命令
     bot.on('message', (event) => {
