@@ -1,5 +1,6 @@
 import { KiviLogger } from './log'
 import { KiviPluginError } from './plugin/pluginError'
+import colors from '@src/utils/colors'
 import loadPlugins from './plugin/loadPlugins'
 
 import type { Client } from 'oicq'
@@ -17,7 +18,7 @@ export async function onlineHandler(this: Client, conf: KiviConf) {
     KiviLogger.info(msg, ...args)
   }
 
-  info(`${this.nickname}(${this.uin}) 上线成功！欢迎使用 KiviBot`)
+  info(colors.green(`${this.nickname}(${this.uin}) 上线成功！`))
 
   /** 全局错误处理函数 */
   const handleGlobalError = (e: Error) => {
@@ -35,5 +36,26 @@ export async function onlineHandler(this: Client, conf: KiviConf) {
   process.on('uncaughtException', handleGlobalError)
 
   // 检索并加载插件
-  await loadPlugins(this, conf)
+  const { all, cnt, npm, local } = await loadPlugins(this, conf)
+  info(colors.cyan(`检索到 ${all} 个插件 (${npm}/${local})，成功启用 ${cnt} 个`))
+
+  // 上线通知，通知机器人主管理
+  const mainAdmin = this.pickFriend(conf.admins[0])
+
+  if (!mainAdmin) {
+    error(colors.red('请添加机器人为好友以控制机器人'))
+  } else {
+    if (all > 0) {
+      if (cnt > 0) {
+        mainAdmin.sendMsg(`✅ 上线成功，启用了 ${cnt} 个插件`)
+      } else {
+        mainAdmin.sendMsg(`✅ 上线成功，未启用插件`)
+      }
+    } else {
+      mainAdmin.sendMsg(`✅ 上线成功，未检测到插件`)
+    }
+  }
+
+  // 初始化完成
+  KiviLogger.info(colors.gray('框架初始化完成，开始处理消息...'))
 }

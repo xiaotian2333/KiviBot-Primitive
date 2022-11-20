@@ -73,7 +73,7 @@ export const start = () => {
     // 重定向日志，oicq 的日志输出到日志文件，KiviBot 的日志输出到 console
     redirectLog(log_level, oicq_config, conf.account)
 
-    KiviLogger.info(colors.cyan(`欢迎使用 KiviBot，文档：https://kivibot.com，企鹅群：296732038`))
+    KiviLogger.info(colors.cyan('欢迎使用 KiviBot，使用文档：https://kivibot.com'))
     KiviLogger.info(colors.gray(`使用配置文件：${ConfigPath}`))
 
     // 确保 KiviBot 框架相关目录存在
@@ -81,9 +81,7 @@ export const start = () => {
     ensureDirSync(PluginDir)
     ensureDirSync(PluginDataDir)
 
-    KiviLogger.info(colors.gray(`框架初始化完成`))
-
-    const loginMessage = `开始登录账号：${conf.account}，登录协议：${devices[oicq_config.platform]}`
+    const loginMessage = `开始登录账号：${conf.account}，使用协议：${devices[oicq_config.platform]}`
     KiviLogger.info(colors.gray(loginMessage))
 
     // 初始化实例
