@@ -51,23 +51,4 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, con
   if (cmd === '#设置') {
     return handleConfigCommand(bot, params, reply)
   }
-
-  // if (raw_message === '#重载插件') {
-  //   plugins.forEach((p) => p.unmountKiviBotClient(bot, conf.admins))
-
-  //   killPlugin('/home/viki/Workspace/KiviBot/lib/examples/demoPlugin.js')
-
-  //   try {
-  //     const plugin = (await import('../../examples/demoPlugin')).default
-  //     plugins.set('demoPlugin', plugin)
-
-  //     try {
-  //       plugin.mountKiviBotClient(bot, conf.admins)
-  //     } catch (e) {
-  //       // error(`插件挂载（onMounted）过程中发生错误: `, e)
-  //     }
-  //   } catch (e) {
-  //     // error(`插件导入（import）过程中发生错误: `, e)
-  //   }
-  // }
 }
