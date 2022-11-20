@@ -5,7 +5,7 @@ import path from 'node:path'
 
 import { PluginDataDir } from '..'
 import { KiviPluginError } from './pluginError'
-import { MessageEvents, OicqEvents } from './events'
+import { MessageEvents, OicqEvents } from '../events'
 import parseCommand from '@src/utils/parseCommand'
 
 import type {
@@ -16,7 +16,7 @@ import type {
   PrivateMessageEvent
 } from 'oicq'
 
-import type { AdminArray } from '../start'
+import type { AdminArray } from '@/start'
 import type { Logger } from 'log4js'
 
 export type AnyFunc = (...args: any[]) => any

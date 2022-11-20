@@ -1,6 +1,6 @@
 import clipboard from 'clipboardy'
 
-import { KiviLogger } from '../log'
+import { KiviLogger } from '@/log'
 
 import type { Client } from 'oicq'
 

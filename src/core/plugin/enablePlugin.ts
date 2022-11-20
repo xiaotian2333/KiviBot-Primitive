@@ -1,5 +1,5 @@
 import colors from '@src/utils/colors'
-import { KiviLogger } from '../log'
+import { KiviLogger } from '@/log'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/start'

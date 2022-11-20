@@ -1,4 +1,4 @@
-import { KiviLogger } from '../log'
+import { KiviLogger } from '@/log'
 import { searchAllPlugins } from './searchPlugins'
 import colors from '@src/utils/colors'
 import enablePlugin, { getPluginNameByPath } from './enablePlugin'
