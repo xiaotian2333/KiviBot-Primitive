@@ -6,7 +6,6 @@ import { LogDir } from '.'
 import colors from '@src/utils/colors'
 
 import type { Config } from 'oicq'
-import type { AllMessageEvent } from './plugin'
 
 // 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad
 export const devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad']
@@ -36,32 +35,6 @@ export const LogChineseMap: Record<string, string> = {
   error: '错误',
   fatal: '致命',
   off: '关闭'
-}
-
-const MessageTypeMap = {
-  private: '私聊',
-  discuss: '讨论组',
-  group: '群'
-} as const
-
-export function MessageLogHandler(e: AllMessageEvent) {
-  const { sender, message_type } = e
-
-  const type = MessageTypeMap[e.message_type]
-  const nick = `${sender.nickname}(${sender.user_id})`
-
-  if (message_type === 'private') {
-    const head = colors.gray(`↓ [${type}:${nick}] `)
-    KiviLogger.info(head + e.raw_message)
-  } else if (message_type === 'discuss') {
-    const discuss = `${e.discuss_name}(${e.discuss_id})`
-    const head = colors.gray(`↓ [${type}:${discuss}:${nick}] `)
-    KiviLogger.info(head + e.raw_message)
-  } else {
-    const group = `${e.group_name}(${e.group_id})`
-    const head = colors.gray(`↓ [${type}:${group}-${nick}] `)
-    KiviLogger.info(head + e.raw_message)
-  }
 }
 
 // 添加自定义 log4js Layout布局：kivi

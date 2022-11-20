@@ -1,4 +1,4 @@
-import type { EventMap } from 'oicq'
+import type { Client, EventMap } from 'oicq'
 
 export const SystemEvents = [
   'system.login.qrcode',
@@ -62,4 +62,4 @@ export const OicqEvents = [
   'internal.sso',
   'internal.input',
   'guild.message'
-] as (keyof EventMap)[]
+] as (keyof EventMap<Client>)[]

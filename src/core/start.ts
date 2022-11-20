@@ -3,10 +3,12 @@ import crypto from 'node:crypto'
 import fs, { ensureDirSync } from 'fs-extra'
 
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '.'
+import { devices, KiviLogger, redirectLog } from './log'
 import { handleKiviCommand } from './commands'
-import { onlineHandler, deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './system'
 import { LOGO } from '@src/utils/logo'
-import { devices, KiviLogger, MessageLogHandler, redirectLog } from './log'
+import { messageHandler } from './message'
+import { noticeHandler } from './notice'
+import { onlineHandler, deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './system'
 import colors from '@src/utils/colors'
 import exitWithError from '@src/utils/exitWithError'
 
@@ -88,7 +90,7 @@ export const start = () => {
 
     // 监听消息，打印日志，同时处理框架命令
     bot.on('message', (event) => {
-      MessageLogHandler(event)
+      messageHandler(event)
       handleKiviCommand(event, bot, conf)
     })
 
@@ -105,6 +107,9 @@ export const start = () => {
     bot.on('system.login.device', deviceHandler.bind(bot, conf.device_mode))
     bot.on('system.login.slider', ({ url }) => sliderHandler.call(bot, { isFirst: true, url }))
     bot.on('system.login.error', errorHandler)
+
+    bot.on('notice', noticeHandler)
+    // bot.on('request', requestHandler)
 
     // 通过配置文件里指定的模式登录账号
     if (conf.login_mode === 'qrcode') {
