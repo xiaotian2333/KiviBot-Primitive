@@ -1,3 +1,4 @@
+import clipboard from 'clipboardy'
 import { KiviLogger } from '../log'
 
 import type { Client } from 'oicq'
@@ -37,7 +38,10 @@ export function deviceHandler(
       inputSms()
     })
   } else {
-    info(`请打开以下链接扫码完成设备锁验证，验证完按 \`Enter\` 键继续：${event.url}`)
+    clipboard.writeSync(event.url)
+
+    info(`已将设备锁扫码验证链接复制到剪切板，请在验证完后按 \`Enter\` 键继续`)
+
     process.stdin.once('data', () => this.login())
   }
 }
