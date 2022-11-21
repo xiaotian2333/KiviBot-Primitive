@@ -43,17 +43,9 @@ export async function onlineHandler(this: Client, conf: KiviConf) {
   const mainAdmin = this.pickFriend(conf.admins[0])
 
   if (!mainAdmin) {
-    error(colors.red('请添加机器人为好友以控制机器人'))
+    error(colors.red('请使用管理员 QQ 添加机器人为好友，使用管理员消息控制机器人'))
   } else {
-    if (all > 0) {
-      if (cnt > 0) {
-        mainAdmin.sendMsg(`✅ 上线成功，启用了 ${cnt} 个插件`)
-      } else {
-        mainAdmin.sendMsg(`✅ 上线成功，未启用插件`)
-      }
-    } else {
-      mainAdmin.sendMsg(`✅ 上线成功，未检测到插件`)
-    }
+    mainAdmin.sendMsg(`q(≧▽≦q) 摩西摩西`)
   }
 
   // 初始化完成

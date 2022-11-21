@@ -3,18 +3,18 @@ import crypto from 'node:crypto'
 import fs, { ensureDirSync } from 'fs-extra'
 
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '.'
-import { devices, KiviLogger, redirectLog } from './log'
+import { Devices, KiviLogger, redirectLog } from './log'
 import { handleKiviCommand } from './commands'
 import { LOGO } from '@src/utils/logo'
 import { messageHandler } from './logs/message'
 import { noticeHandler } from './logs/notice'
 import { onlineHandler, deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './login'
+import { requestHandler } from './logs/request'
 import colors from '@src/utils/colors'
 import exitWithError from '@src/utils/exitWithError'
 
 import type { Config } from 'oicq'
 import type { KiviPlugin } from '.'
-import { requestHandler } from './logs/request'
 
 export type MainAdmin = number
 export type AdminArray = [MainAdmin, ...number[]]
@@ -81,7 +81,7 @@ export const start = () => {
     ensureDirSync(PluginDir)
     ensureDirSync(PluginDataDir)
 
-    const loginMessage = `开始登录账号：${conf.account}，使用协议：${devices[oicq_config.platform]}`
+    const loginMessage = `开始登录账号：${conf.account}，使用协议：${Devices[oicq_config.platform]}`
     KiviLogger.info(colors.gray(loginMessage))
 
     // 初始化实例

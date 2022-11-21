@@ -5,7 +5,8 @@ export const PluginText = `
 #插件 启用 <插件名>
 #插件 重载 <插件名>
 #插件 禁用 <插件名>
-#插件 信息 <插件名>`.trim()
+#插件 启用所有
+#插件 禁用所有`.trim()
 
 export async function handlePluginCommand(
   bot: Client,
@@ -14,6 +15,32 @@ export async function handlePluginCommand(
 ) {
   if (!params.length) {
     return await reply(PluginText)
+  }
+
+  const [secondCmd, pluginName] = params
+
+  if (secondCmd === '列表') {
+    return reply('插件列表 TODO')
+  }
+
+  if (secondCmd === '启用') {
+    return reply('插件启用 TODO')
+  }
+
+  if (secondCmd === '重载') {
+    return reply('插件重载 TODO')
+  }
+
+  if (secondCmd === '禁用') {
+    return reply('插件禁用 TODO')
+  }
+
+  if (secondCmd === '启用所有') {
+    return reply('插件启用所有 TODO')
+  }
+
+  if (secondCmd === '禁用所有') {
+    return reply('插件禁用所有 TODO')
   }
 
   // if (raw_message === '#重载插件') {

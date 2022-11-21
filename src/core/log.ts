@@ -8,7 +8,7 @@ import colors from '@src/utils/colors'
 import type { Config } from 'oicq'
 
 // 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad
-export const devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad']
+export const Devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad']
 
 export const KiviLogger = log4js.getLogger('kivi')
 export const PluginLogger = log4js.getLogger('plugin')
@@ -45,7 +45,7 @@ log4js.addLayout('kivi', (config) => {
   if (target === 'oicq') {
     return (info) => {
       const now = dayjs(info.startTime).format(`YYYY-MM-DD HH:mm:ss:SSS`)
-      return `[${now}] [${info.level.levelStr}] [${qq}-${devices[platform]}] ${info.data}`
+      return `[${now}] [${info.level.levelStr}] [${qq}-${Devices[platform]}] ${info.data}`
     }
   }
 
@@ -66,7 +66,7 @@ export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account:
 
   // 定义输出文件名和路径
   const now = dayjs().format('YYYY-MM-DD_HH-mm-ss')
-  const filename = `KiviBot_${now}_${account}_${devices[platform]}`
+  const filename = `KiviBot_${now}_${account}_${Devices[platform]}`
   const logFilePath = path.join(LogDir, `${filename}.log`)
   const errorFilePath = path.join(LogDir, `${filename}_error.log`)
 

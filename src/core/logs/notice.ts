@@ -17,10 +17,10 @@ export function noticeHandler(
 
     if (sub_type === 'decrease') {
       // 好友减少
-      message = `- [好友减少:${event.nickname}(${user_id})`
+      message = `- [好友减少:${event.nickname}(${user_id})]`
     } else if (sub_type === 'increase') {
       // 好友增加
-      message = `+ [好友增加:${event.nickname}(${user_id})`
+      message = `+ [好友增加:${event.nickname}(${user_id})]`
     } else if (sub_type === 'poke') {
       // 好友戳一戳
       const { target_id, operator_id, friend } = event

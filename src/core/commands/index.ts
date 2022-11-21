@@ -1,4 +1,4 @@
-import { fetchStatus } from './status'
+import { fetchStatus, pkg } from './status'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import parseCommand from '@src/utils/parseCommand'
@@ -12,9 +12,9 @@ const HelpText = `
 #设置 | #关于`.trim()
 
 const AboutText = `
-KiviBot v1.0.0
-轻量、跨平台的机器人框架
-使用文档：kivibot.com`.trim()
+KiviBot v${pkg.version || '未知'}
+轻量跨平台的QQ机器人框架
+使用 Node.js 和 oicq2 构建`.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
 export async function handleKiviCommand(event: AllMessageEvent, bot: Client, conf: KiviConf) {
@@ -22,27 +22,35 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, con
 
   const reply = event.reply.bind(event)
 
+  // 是否是管理员
+  const isAdmin = conf.admins.includes(sender.user_id)
   // 是否是主管理员
   const isMainAdmin = conf.admins[0] === sender.user_id
 
-  // 忽略非主管理员命令
-  if (!isMainAdmin) return
+  if (!isAdmin) return
 
-  // 解析框架命令和参数
-  const { cmd, params, nums } = parseCommand(raw_message)
-
-  if (cmd === '#帮助' && nums === 0) {
+  if (raw_message === '#帮助') {
     return reply(HelpText)
   }
 
-  if (cmd === '#关于' && nums === 0) {
+  if (raw_message === '#关于') {
     return reply(AboutText)
   }
 
-  if (cmd === '#状态' && nums === 0) {
-    const status = await fetchStatus(bot)
-    return reply(status)
+  if (raw_message === '#状态') {
+    try {
+      const status = await fetchStatus(bot)
+      return reply(status)
+    } catch (e) {
+      return reply('状态加载异常，错误信息：' + e)
+    }
   }
+
+  // 过滤非主管理员命令
+  if (!isMainAdmin) return
+
+  // 解析框架命令和参数
+  const { cmd, params } = parseCommand(raw_message)
 
   if (cmd === '#插件') {
     return handlePluginCommand(bot, params, reply)
