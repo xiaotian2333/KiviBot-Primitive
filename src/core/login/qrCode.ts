@@ -2,7 +2,7 @@ import { KiviLogger } from '@/log'
 
 import type { Client } from 'oicq'
 
-/** 处理二维码扫描 */
+/** 处理二维码扫描，自动轮询登录 */
 export function qrCodeHandler(this: Client) {
   let hasShowReadMessage = false
 

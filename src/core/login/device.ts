@@ -23,6 +23,7 @@ export function deviceHandler(
 
       info(`验证码已发送至 ${event.phone}，输入验证码后按 \`Enter\` 键继续`)
 
+      /** 输入短信验证码 */
       const inputSms = () => {
         process.stdin.once('data', (data: Buffer) => {
           const code = String(data).trim()
