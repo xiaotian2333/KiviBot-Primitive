@@ -6,7 +6,7 @@ import type { KiviConf } from '@/start'
 import type { KiviPlugin } from './plugin'
 
 /** 通过插件模块路径启用单个插件 */
-export default async function enablePlugin(bot: Client, conf: KiviConf, pluginPath: string) {
+export default async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: string) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
     KiviLogger.error(msg, ...args)
@@ -24,7 +24,7 @@ export default async function enablePlugin(bot: Client, conf: KiviConf, pluginPa
 
     if (plugin.mountKiviBotClient) {
       try {
-        const name = await plugin.mountKiviBotClient(bot, conf.admins)
+        const name = await plugin.mountKiviBotClient(bot, kiviConf.admins)
         info(`插件「${name}（${pluginName}）」加载成功`)
         return true
       } catch (e) {

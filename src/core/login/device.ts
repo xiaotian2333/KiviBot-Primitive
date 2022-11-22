@@ -28,7 +28,7 @@ export async function deviceHandler(
         type: 'number',
         name: 'sms',
         max: 999999,
-        validate: (sms) => (!sms ? '验证码不为空' : true),
+        validate: (sms: number) => (!sms ? '验证码不为空' : true),
         message: `请输入短信验证码 (${event.phone})`
       })
 

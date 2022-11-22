@@ -1,4 +1,7 @@
+import { kiviConf } from '../config'
+
 import type { Client, MessageRet, Sendable } from 'oicq'
+import parseUin from '@src/utils/parseUin'
 
 export const ConfigText = `
 #设置 详情
@@ -22,11 +25,17 @@ export async function handleConfigCommand(
   const [secondCmd, value] = params
 
   if (secondCmd === '详情') {
-    return reply('设置详情 TODO')
+    return reply(JSON.stringify(kiviConf, null, 2))
   }
 
   if (secondCmd === '加管理') {
-    return reply('设置加管理 TODO')
+    const qq = parseUin(value)
+
+    if (!qq) {
+      return reply('格式错误')
+    } else {
+      return reply(qq)
+    }
   }
 
   if (secondCmd === '删管理') {

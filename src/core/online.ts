@@ -7,7 +7,7 @@ import type { Client } from 'oicq'
 import type { KiviConf } from './start'
 
 /** 监听上线事件，初始化 KiviBot */
-export async function onlineHandler(this: Client, conf: KiviConf) {
+export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   const error = (msg: any, ...args: any[]) => {
     this.logger.error(msg, ...args)
     KiviLogger.error(msg, ...args)
@@ -25,7 +25,7 @@ export async function onlineHandler(this: Client, conf: KiviConf) {
     if (e instanceof KiviPluginError) {
       error(`插件发生错误，来源：${e.pluginName}，报错信息: ${e.message}`)
     } else {
-      error(`发生未知错误: `, e?.stack || e)
+      error(e?.message || e?.stack || JSON.stringify(e))
     }
   }
 
@@ -36,11 +36,11 @@ export async function onlineHandler(this: Client, conf: KiviConf) {
   process.on('uncaughtException', handleGlobalError)
 
   // 检索并加载插件
-  const { all, cnt, npm, local } = await loadPlugins(this, conf)
+  const { all, cnt, npm, local } = await loadPlugins(this, kiviConf)
   info(colors.cyan(`检索到 ${all} 个插件 (${npm}/${local})，成功启用 ${cnt} 个`))
 
   // 上线通知，通知机器人主管理
-  const mainAdmin = this.pickFriend(conf.admins[0])
+  const mainAdmin = this.pickFriend(kiviConf.admins[0])
 
   if (!mainAdmin) {
     error(colors.red('请使用管理员 QQ 添加机器人为好友，使用管理员消息控制机器人'))

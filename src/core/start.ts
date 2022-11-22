@@ -5,6 +5,7 @@ import fs, { ensureDirSync } from 'fs-extra'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '.'
 import { Devices, KiviLogger, redirectLog } from './log'
 import { handleKiviCommand } from './commands'
+import { kiviConf } from './config'
 import { LOGO } from '@src/utils/logo'
 import { messageHandler } from './logs/message'
 import { noticeHandler } from './logs/notice'
@@ -61,17 +62,19 @@ export const start = () => {
       exitWithError('配置文件 `kivi.json` 需要指定至少一个管理员')
     }
 
-    // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
+    // 载入配置到内存
+    Object.assign(kiviConf, conf)
+
     oicq_config.platform ??= 5
-    // ociq 数据及缓存保存在 data/oicq 下
+
     oicq_config.data_dir = OicqDataDir
     oicq_config.log_level ??= 'info'
-    // 指定默认 ffmpeg 和 ffprobe 命令为全局路径
+
     oicq_config.ffmpeg_path ??= 'ffmpeg'
     oicq_config.ffprobe_path ??= 'ffprobe'
 
     // 重定向日志，oicq 的日志输出到日志文件，KiviBot 的日志输出到 console
-    redirectLog(log_level, oicq_config, conf.account)
+    redirectLog(log_level, oicq_config, kiviConf.account)
 
     KiviLogger.info(colors.cyan('欢迎使用 KiviBot，使用文档：https://kivibot.com'))
     KiviLogger.info(colors.gray(`使用配置文件：${ConfigPath}`))
@@ -81,11 +84,23 @@ export const start = () => {
     ensureDirSync(PluginDir)
     ensureDirSync(PluginDataDir)
 
-    const loginMessage = `开始登录账号：${conf.account}，使用协议：${Devices[oicq_config.platform]}`
+    const protocol = Devices[oicq_config.platform] || '未知'
+    const loginMessage = `开始登录账号：${kiviConf.account}，使用协议：${protocol}`
+
     KiviLogger.info(colors.gray(loginMessage))
 
     // 初始化实例
-    const bot = createClient(conf.account, oicq_config)
+    const bot = createClient(kiviConf.account, {
+      ...oicq_config,
+      // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
+      platform: oicq_config.platform ?? 5,
+      // ociq 数据及缓存保存在 data/oicq 下
+      data_dir: oicq_config.data_dir ?? OicqDataDir,
+      log_level: oicq_config.log_level ?? 'info',
+      // 指定默认 ffmpeg 和 ffprobe 命令为全局路径
+      ffmpeg_path: oicq_config.ffmpeg_path ?? 'ffmpeg',
+      ffprobe_path: oicq_config.ffprobe_path ?? 'ffprobe'
+    })
 
     // 取消监听函数个数限制
     bot.setMaxListeners(Infinity)
@@ -93,17 +108,11 @@ export const start = () => {
     // 监听消息，打印日志，同时处理框架命令
     bot.on('message', (event) => {
       messageHandler(event)
-      handleKiviCommand(event, bot, conf)
+      handleKiviCommand(event, bot, kiviConf)
     })
 
     // 监听上线事件
-    bot.on('system.online', onlineHandler.bind(bot, conf))
-
-    // 监听内部事件
-    // bot.on('internal.verbose', (verbose, level: number) => {
-    //   const list = ['fatal', 'mark', 'error', 'warn', 'info', 'trace'] as const
-    //   KiviLogger[list[level]](verbose)
-    // })
+    bot.on('system.online', onlineHandler.bind(bot, kiviConf))
 
     // 监听设备锁、滑块和登录错误的事件
     bot.on('system.login.device', deviceHandler.bind(bot, conf.device_mode))
