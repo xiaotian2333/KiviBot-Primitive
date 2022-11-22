@@ -1,11 +1,6 @@
-import ora from 'ora'
-import prompts from 'prompts'
-
-import exitWithError from '@src/utils/exitWithError'
+import { KiviLogger } from '../log'
 
 import type { Client } from 'oicq'
-
-export const loading = ora({ color: 'cyan' })
 
 /** 处理二维码扫描，自动轮询登录 */
 export function qrCodeHandler(this: Client) {
@@ -16,35 +11,23 @@ export function qrCodeHandler(this: Client) {
     const { retcode, uin } = await this.queryQrcodeResult()
 
     if (retcode === 53 && !hasShowReadMessage) {
-      loading.succeed('扫码成功，等待确认...')
+      KiviLogger.info(`扫码成功，等待确认...`)
       hasShowReadMessage = true
       return
     }
 
     if (retcode === 54) {
-      loading.warn('扫码登录被手动取消')
+      KiviLogger.warn('扫码授权被手动取消，流程结束')
+      KiviLogger.warn('按 `Enter` 键重新获取二维码，Ctrl + C 退出框架')
 
       clearInterval(interval_id)
 
-      const { reScan } = await prompts({
-        type: 'confirm',
-        name: 'reScan',
-        initial: true,
-        message: '按 `Enter` 重新获取二维码'
-      })
-
-      if (reScan) {
-        this.login()
-      } else {
-        exitWithError('已退出')
-      }
+      process.stdin.once('data', () => this.login())
     }
 
     if (retcode === 17) {
-      loading.warn('二维码已过期，重新申请二维码')
-
+      KiviLogger.warn('二维码已过期，重新申请二维码')
       clearInterval(interval_id)
-
       this.login()
     }
 
@@ -53,28 +36,17 @@ export function qrCodeHandler(this: Client) {
       clearInterval(interval_id)
 
       if (uin === this.uin) {
-        loading.succeed('扫码授权登录成功')
+        KiviLogger.info(`账号 ${uin} 扫码授权成功`)
         this.login()
         return
       }
 
-      loading.warn('你小子能不能看清账号再扫啊（扫码账号与登录账号不一致）')
+      KiviLogger.warn('你小子能不能看清账号再扫啊（扫码账号与登录账号不一致）')
+      KiviLogger.warn('确认账号正确后按 `Enter` 键重新获取二维码')
 
-      const { reScan } = await prompts({
-        type: 'confirm',
-        name: 'reScan',
-        initial: true,
-        message: '按 `Enter` 重新获取二维码'
-      })
-
-      if (reScan) {
-        this.login()
-      } else {
-        exitWithError('已退出')
-      }
+      process.stdin.once('data', () => this.login())
     }
   }, 1000)
 
-  loading.color = 'cyan'
-  loading.start(`等待 ${this.uin} 扫描二维码`)
+  KiviLogger.info(`等待账号 ${this.uin} 扫描二维码`)
 }
