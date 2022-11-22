@@ -12,10 +12,10 @@ interface SliderEvent {
 /** 滑块事件监听处理函数 */
 export function sliderHandler(this: Client, { url, isFirst }: SliderEvent) {
   if (isFirst) {
-    // 复制链接到剪切板
     clipboard.writeSync(url)
-
-    KiviLogger.info('需要滑块验证，已将链接复制到剪切板，请获取并输入 `ticket` 后按 `Enter` 键')
+    KiviLogger.info(
+      `需要滑块验证，已将链接复制到剪切板，请获取并输入 \`ticket\` 后按 \`Enter\` 键，如无法粘贴请手动复制：${url}`
+    )
   }
 
   const inputTicket = () => {

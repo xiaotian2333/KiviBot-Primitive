@@ -44,7 +44,7 @@ export const start = () => {
 
   /** 捕获 Ctrl C 中断退出 */
   process.on('SIGINT', () => {
-    console.log(colors.yellow('已成功退出 KiviBot'))
+    process.stdout.write(colors.yellow('\n已成功退出 KiviBot'))
     process.exit(0)
   })
 

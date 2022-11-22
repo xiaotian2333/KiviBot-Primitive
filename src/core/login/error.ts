@@ -1,6 +1,7 @@
 import { LoginErrorCode } from 'oicq'
 
 import { KiviLogger } from '@/log'
+import exitWithError from '@src/utils/exitWithError'
 
 import type { Client } from 'oicq'
 
@@ -9,11 +10,6 @@ export function errorHandler(this: Client, { code, message }: { code: number; me
   const error = (msg: any, ...args: any[]) => {
     this.logger.error(msg, ...args)
     KiviLogger.error(msg, ...args)
-  }
-
-  const warn = (msg: any, ...args: any[]) => {
-    this.logger.warn(msg, ...args)
-    KiviLogger.warn(msg, ...args)
   }
 
   if (code === LoginErrorCode.AccountFrozen) {
@@ -27,17 +23,11 @@ export function errorHandler(this: Client, { code, message }: { code: number; me
   }
 
   if (code === LoginErrorCode.TooManySms) {
-    warn('验证码发送过于频繁，请稍后再尝试登录')
-    process.exit(0)
+    exitWithError('验证码发送过于频繁，请稍后再尝试登录')
   }
 
   if (code === LoginErrorCode.WrongSmsCode) {
-    error('短信验证码输入有误，请退出重试')
-    process.exit(0)
-  }
-
-  if (code === LoginErrorCode.WrongTicket) {
-    error('`ticket` 输入有误，请退出重试')
+    error('短信验证码输入有误，请重试')
     process.exit(0)
   }
 
