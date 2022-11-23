@@ -1,4 +1,4 @@
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 import { colors } from '@src/utils'
 
 import type { Client, EventMap } from 'oicq'

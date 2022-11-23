@@ -1,5 +1,5 @@
 import { colors } from '@src/utils'
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 import { kiviConf } from '@/config'
 
 import type { AllMessageEvent } from '@/plugin'

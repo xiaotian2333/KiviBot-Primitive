@@ -7,7 +7,7 @@ import {
 } from '@/plugin'
 import { plugins } from '@/start'
 import { kiviConf, saveKiviConf } from '@/config'
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 

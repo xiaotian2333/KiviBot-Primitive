@@ -1,6 +1,6 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'

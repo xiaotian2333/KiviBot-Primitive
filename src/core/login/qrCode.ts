@@ -1,4 +1,4 @@
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 
 import type { Client } from 'oicq'
 

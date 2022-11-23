@@ -2,14 +2,13 @@ import { createClient } from 'oicq'
 import crypto from 'node:crypto'
 import fs, { ensureDirSync } from 'fs-extra'
 
+import { colors, LOGO, exitWithError } from '@src/utils'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from './path'
 import { deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './login'
-import { Devices, KiviLogger, redirectLog } from './log'
-import { handleKiviCommand } from './commands'
+import { Devices, KiviLogger, redirectLog } from './logger'
 import { kiviConf } from './config'
-import { messageHandler, requestHandler, noticeHandler, offlineHandler } from './logs'
+import { offlineHandler } from './logs'
 import { onlineHandler } from './online'
-import { colors, LOGO, exitWithError } from '@src/utils'
 
 import type { KiviPlugin } from './plugin'
 import type { KiviConf } from './config'
@@ -34,24 +33,29 @@ export const start = () => {
   try {
     // 读取框架账号配置文件 `kivi.json`
     const conf: KiviConf = require(ConfigPath)
-    const { log_level, oicq_config } = conf
-
-    if (!conf.account) {
-      exitWithError('无效的配置文件 `kivi.json` ')
-    }
-
-    if (conf.admins.length <= 0) {
-      exitWithError('配置文件 `kivi.json` 需要指定至少一个管理员')
-    }
 
     // 载入配置到内存
     Object.assign(kiviConf, conf)
 
+    const { log_level, oicq_config } = kiviConf
+
+    if (!kiviConf.account) {
+      exitWithError('无效的配置文件 `kivi.json` ')
+    }
+
+    if (kiviConf.admins.length <= 0) {
+      exitWithError('配置文件 `kivi.json` 需要指定至少一个管理员')
+    }
+
+    // 缺省 oicq 配置
+
+    // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
     oicq_config.platform ??= 5
-
+    // ociq 数据及缓存保存在 data/oicq 下
     oicq_config.data_dir = OicqDataDir
+    // oicq 默认日志等级为 info
     oicq_config.log_level ??= 'info'
-
+    // 指定默认 ffmpeg 和 ffprobe 命令为全局路径
     oicq_config.ffmpeg_path ??= 'ffmpeg'
     oicq_config.ffprobe_path ??= 'ffprobe'
 
@@ -72,26 +76,10 @@ export const start = () => {
     KiviLogger.info(colors.gray(loginMessage))
 
     // 初始化实例
-    const bot = createClient(kiviConf.account, {
-      ...oicq_config,
-      // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
-      platform: oicq_config.platform ?? 5,
-      // ociq 数据及缓存保存在 data/oicq 下
-      data_dir: oicq_config.data_dir ?? OicqDataDir,
-      log_level: oicq_config.log_level ?? 'info',
-      // 指定默认 ffmpeg 和 ffprobe 命令为全局路径
-      ffmpeg_path: oicq_config.ffmpeg_path ?? 'ffmpeg',
-      ffprobe_path: oicq_config.ffprobe_path ?? 'ffprobe'
-    })
+    const bot = createClient(kiviConf.account, oicq_config)
 
     // 取消监听函数个数限制
     bot.setMaxListeners(Infinity)
-
-    // 监听消息，打印日志，同时处理框架命令
-    bot.on('message', (event) => {
-      messageHandler(event)
-      handleKiviCommand(event, bot, kiviConf)
-    })
 
     // 监听上线事件
     bot.on('system.online', onlineHandler.bind(bot, kiviConf))
@@ -103,10 +91,6 @@ export const start = () => {
 
     // 监听下线事件
     bot.on('system.offline', offlineHandler)
-
-    // 监听通知、请求，打印框架日志
-    bot.on('notice', noticeHandler)
-    bot.on('request', requestHandler)
 
     // 通过配置文件里指定的模式登录账号
     if (conf.login_mode === 'qrcode') {

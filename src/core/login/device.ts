@@ -1,4 +1,4 @@
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 import clipboard from 'clipboardy'
 import prompts from 'prompts'
 

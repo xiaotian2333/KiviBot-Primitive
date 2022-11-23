@@ -1,6 +1,6 @@
 import { LoginErrorCode } from 'oicq'
 
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 import { exitWithError } from '@src/utils'
 
 import type { Client } from 'oicq'

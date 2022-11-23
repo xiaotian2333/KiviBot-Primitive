@@ -1,6 +1,8 @@
 import { colors } from '@src/utils'
-import { KiviLogger } from './log'
+import { handleKiviCommand } from './commands'
+import { KiviLogger } from './logger'
 import { KiviPluginError, loadPlugins } from './plugin'
+import { messageHandler, noticeHandler, requestHandler } from './logs'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from './config'
@@ -33,6 +35,16 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
 
   // 捕获全局 Exception，防止框架崩溃
   process.on('uncaughtException', handleGlobalError)
+
+  // 监听消息，打印日志，同时处理框架命令
+  this.on('message', (event) => {
+    messageHandler(event)
+    handleKiviCommand(event, this, kiviConf)
+  })
+
+  // 监听通知、请求，打印框架日志
+  this.on('notice', noticeHandler)
+  this.on('request', requestHandler)
 
   // 检索并加载插件
   const { all, cnt, npm, local } = await loadPlugins(this, kiviConf)

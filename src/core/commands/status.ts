@@ -2,7 +2,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { version as OicqVersion } from 'oicq/package.json'
 
-import { Devices } from '@/log'
+import { Devices } from '@/logger'
 import { formatDateDiff, formatFileSize } from '@src/utils'
 import { plugins } from '@/start'
 import { searchAllPlugins } from '@/plugin'

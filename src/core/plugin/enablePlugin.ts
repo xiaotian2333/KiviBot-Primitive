@@ -1,6 +1,6 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { colors } from '@src/utils'
-import { KiviLogger } from '@/log'
+import { KiviLogger } from '@/logger'
 import { plugins } from '@/start'
 
 import type { Client } from 'oicq'
