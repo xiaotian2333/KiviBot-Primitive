@@ -64,8 +64,6 @@ ${pluginInfo.join('\n')}
     }
 
     ps.forEach(async (path, i) => {
-      KiviLogger.debug('开始处理 npm ', path)
-
       const pluginName = getPluginNameByPath(path)
 
       if (plugins.has(pluginName)) {
@@ -95,8 +93,6 @@ ${pluginInfo.join('\n')}
     Array.from(plugins.entries()).forEach(async ([pluginName, plugin], i) => {
       const targetPluginPath = await getPluginPathByName(pluginName)
 
-      KiviLogger.debug('禁用所有: ' + targetPluginPath)
-
       if (targetPluginPath) {
         await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
 
@@ -104,8 +100,6 @@ ${pluginInfo.join('\n')}
       }
 
       if (i + 1 === size) {
-        KiviLogger.debug('禁用所有 - plugins.size: ' + plugins.size)
-
         saveKiviConf(plugins)
 
         return reply('〓 已禁用所有插件 〓')

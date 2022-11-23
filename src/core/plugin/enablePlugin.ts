@@ -5,7 +5,6 @@ import { plugins } from '@/start'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
-import type { KiviPlugin } from './plugin'
 
 /** 通过插件模块路径启用单个插件 */
 export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: string) {

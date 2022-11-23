@@ -1,5 +1,3 @@
-import { KiviLogger } from '@/log'
-
 /** 从 require 缓存中删除对应模块路径的插件缓存 */
 export function killPlugin(modulePath: string) {
   const mod = require.cache[modulePath]
@@ -9,8 +7,6 @@ export function killPlugin(modulePath: string) {
   }
 
   delete require.cache[modulePath]
-
-  KiviLogger.debug('delete module cache: ' + modulePath)
 
   const idx = require.main?.children?.indexOf(mod)
 
@@ -26,8 +22,6 @@ export function killPlugin(modulePath: string) {
 
     if (valid) {
       delete require.cache[fullpath]
-
-      KiviLogger.debug('delete module cache: ' + fullpath)
     }
   }
 }
