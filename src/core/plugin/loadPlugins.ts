@@ -2,7 +2,7 @@ import { searchAllPlugins } from './searchPlugins'
 import enablePlugin, { getPluginNameByPath } from './enablePlugin'
 
 import type { Client } from 'oicq'
-import type { KiviConf } from '@/start'
+import type { KiviConf } from '@/config'
 
 /** 检索并加载 node_modules 和 plugins 目录下的插件 */
 export default async function loadPlugins(bot: Client, kiviConf: KiviConf) {

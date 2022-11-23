@@ -1,7 +1,7 @@
 import fg from 'fast-glob'
 import path from 'node:path'
 
-import { NodeModulesDir, PluginDir } from '..'
+import { NodeModulesDir, PluginDir } from '@/path'
 
 /** 检索 `node_modules` 中可用的插件模块 */
 export async function searchNpmPlugin() {

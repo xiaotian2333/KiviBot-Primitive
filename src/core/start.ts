@@ -2,35 +2,21 @@ import { createClient } from 'oicq'
 import crypto from 'node:crypto'
 import fs, { ensureDirSync } from 'fs-extra'
 
-import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '.'
+import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from './path'
+import { deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './login'
 import { Devices, KiviLogger, redirectLog } from './log'
 import { handleKiviCommand } from './commands'
 import { kiviConf } from './config'
 import { LOGO } from '@src/utils/logo'
 import { messageHandler } from './logs/message'
 import { noticeHandler } from './logs/notice'
-import { onlineHandler, deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './login'
+import { onlineHandler } from './online'
 import { requestHandler } from './logs/request'
 import colors from '@src/utils/colors'
 import exitWithError from '@src/utils/exitWithError'
 
-import type { Config } from 'oicq'
-import type { KiviPlugin } from '.'
-
-export type MainAdmin = number
-export type AdminArray = [MainAdmin, ...number[]]
-
-/** KiviBot 配置文件 */
-export interface KiviConf {
-  account: number
-  login_mode: 'password' | 'qrcode'
-  device_mode: 'qrcode' | 'sms'
-  password: string
-  admins: AdminArray
-  plugins: string[]
-  log_level: Config['log_level']
-  oicq_config: Config
-}
+import type { KiviPlugin } from './plugin'
+import type { KiviConf } from './config'
 
 export const plugins: Map<string, KiviPlugin> = new Map()
 

@@ -5,8 +5,7 @@ import parseCommand from '@src/utils/parseCommand'
 
 import type { AllMessageEvent } from '@/plugin'
 import type { Client } from 'oicq'
-import type { KiviConf } from '@/start'
-import { KiviLogger } from '../log'
+import type { KiviConf } from '@/config'
 
 const HelpText = `
 #插件 | #状态
@@ -14,7 +13,7 @@ const HelpText = `
 
 const AboutText = `
 KiviBot v${pkg.version || '未知'}
-轻量跨平台的QQ机器人框架
+轻量、跨平台の QQ 机器人框架
 使用 Node.js 和 oicq2 构建`.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
@@ -49,8 +48,6 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
 
   // 过滤非主管理员命令
   if (!isMainAdmin) return
-
-  KiviLogger.log(raw_message)
 
   // 解析框架命令和参数
   const { cmd, params } = parseCommand(event.toString())

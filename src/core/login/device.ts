@@ -3,7 +3,7 @@ import clipboard from 'clipboardy'
 import prompts from 'prompts'
 
 import type { Client } from 'oicq'
-import type { KiviConf } from '@/start'
+import type { KiviConf } from '@/config'
 
 /** 设备锁验证监听处理函数 */
 export async function deviceHandler(

@@ -2,7 +2,7 @@ import colors from '@src/utils/colors'
 import { KiviLogger } from '@/log'
 
 import type { Client } from 'oicq'
-import type { KiviConf } from '@/start'
+import type { KiviConf } from '@/config'
 import type { KiviPlugin } from './plugin'
 
 /** 通过插件模块路径启用单个插件 */

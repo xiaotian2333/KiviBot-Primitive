@@ -16,7 +16,7 @@ import type {
   PrivateMessageEvent
 } from 'oicq'
 
-import type { AdminArray } from '@/start'
+import type { AdminArray } from '@/config'
 import type { Logger } from 'log4js'
 
 export type AnyFunc = (...args: any[]) => any
