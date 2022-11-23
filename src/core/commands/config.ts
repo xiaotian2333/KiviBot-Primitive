@@ -45,13 +45,9 @@ export async function handleConfigCommand(
 - 好友增加：${friend.increase ? '开启' : '关闭'}
 - 好友减少：${friend.decrease ? '开启' : '关闭'}
 - 私聊消息：${friend.message ? '开启' : '关闭'}
-- 私聊撤回：${friend.recall ? '开启' : '关闭'}
-- 私聊闪照：${friend.flash ? '开启' : '关闭'}
 〇 群聊设置：
 - 群禁言：${group.ban ? '开启' : '关闭'}
-- 群撤回：${group.recall ? '开启' : '关闭'}
-- 群闪照：${group.flash ? '开启' : '关闭'}
-- 群转让：${group.flash ? '开启' : '关闭'}
+- 群转让：${group.transfer ? '开启' : '关闭'}
 - 群增加：${group.increase ? '开启' : '关闭'}
 - 群减少：${group.decrease ? '开启' : '关闭'}
 - 邀请进群：${group.request.enable ? '开启' : '关闭'}
