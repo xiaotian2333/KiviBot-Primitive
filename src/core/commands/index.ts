@@ -8,12 +8,13 @@ import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
 
 const HelpText = `
+〓 KiviBot 〓
 #插件 | #状态
 #设置 | #关于`.trim()
 
 const AboutText = `
-KiviBot v${pkg.version || '未知'}
-轻量、跨平台の QQ 机器人框架
+〓 KiviBot v${pkg.version || '未知'} 〓
+轻量跨平台 の QQ 机器人框架
 使用 Node.js 和 oicq2 构建`.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */

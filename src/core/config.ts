@@ -71,14 +71,25 @@ export interface NoticeConf {
 
 /** KiviBot 配置文件 */
 export interface KiviConf {
+  /** 登录账号 */
   account: number
+  /** 登录模式，可选 password，qrcode */
   login_mode: 'password' | 'qrcode'
+  /** 设备锁验证模式，可选 qrcode，sms */
   device_mode: 'qrcode' | 'sms'
+  /** 消息模式（日志里是否显示 cq 码等复杂消息的详细参数），可选：short 或 detail */
+  message_mode: 'short' | 'detail'
+  /** 账号登录密码，会经过 base64 编码 */
   password: string
+  /** 管理员列表，第一个为主管理员 */
   admins: AdminArray
+  /** 通知设置 */
   notice: NoticeConf
+  /** 启用插件列表 */
   plugins: string[]
+  /** KiviBot 日志显示等级 */
   log_level: Config['log_level']
+  /** oicq 相关配置 */
   oicq_config: Config
 }
 

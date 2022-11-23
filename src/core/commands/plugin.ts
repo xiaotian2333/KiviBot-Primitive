@@ -1,6 +1,7 @@
 import type { Client, MessageRet, Sendable } from 'oicq'
 
 export const PluginText = `
+〓 插件指令 〓
 #插件 列表
 #插件 启用 <插件名>
 #插件 重载 <插件名>

@@ -5,6 +5,7 @@ import { parseUin, exitWithError } from '@src/utils'
 import type { Client, MessageRet, Sendable } from 'oicq'
 
 export const ConfigText = `
+〓 设置指令 〓
 #设置 详情
 #设置 加管理 <qq>
 #设置 删管理 <qq>
@@ -35,10 +36,10 @@ export async function handleConfigCommand(
 通知状态：${kiviConf.notice.enable ? '开启' : '关闭'}
 `.trim()
 
-    const plugin = `
-〓 启用插件 〓
-${kiviConf.plugins.join('\n')}
-`.trim()
+    //     const plugin = `
+    // 〓 启用插件 〓
+    // ${kiviConf.plugins.join('\n')}
+    // `.trim()
 
     const { group, friend } = kiviConf.notice
 
@@ -65,9 +66,14 @@ ${kiviConf.plugins.join('\n')}
 - 邀请进群：${ActionMap[friend.request.action] ?? ''}
 `.trim()
 
+    // const hasPlugin = kiviConf.plugins.length > 0
     const isNoticeEnable = kiviConf.notice.enable
 
-    const message = `${detail}\n\n${plugin}${isNoticeEnable ? `\n\n${noticeDetail}` : ''}`
+    // const pluginInfo = hasPlugin ? `\n\n${plugin}` : ''
+    const noticeInfo = isNoticeEnable ? `\n\n${noticeDetail}` : ''
+
+    // const message = `${detail}${pluginInfo}${noticeInfo}`
+    const message = `${detail}${noticeInfo}`
 
     return reply(message)
   }
