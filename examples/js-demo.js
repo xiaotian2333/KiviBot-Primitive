@@ -1,21 +1,9 @@
-import cron from 'node-cron'
-
-import { KiviPlugin } from '../core/plugin/plugin'
-
-import type { ScheduledTask } from 'node-cron'
+const { KiviPlugin } = reqiure('@kivibot/core')
 
 const plugin = new KiviPlugin('简单关键词', '1.0.0')
-const tasks: ScheduledTask[] = []
 
 plugin.onMounted((bot) => {
   bot.sendPrivateMsg(plugin.admins[0], 'Mounted')
-
-  const task = cron.schedule('0,10,20,30,40,50 * * * * *', () => {
-    bot.sendPrivateMsg(plugin.admins[0], 'cron()')
-    plugin.logger.info('cron()')
-  })
-
-  tasks.push(task)
 
   plugin.onMessage(async (event) => {
     bot.sendPrivateMsg(plugin.admins[0], 'message()')
@@ -38,8 +26,4 @@ plugin.onMounted((bot) => {
   })
 })
 
-plugin.onUnmounted(() => {
-  tasks.forEach((task) => task.stop())
-})
-
-export default plugin
+module.exports = plugin
