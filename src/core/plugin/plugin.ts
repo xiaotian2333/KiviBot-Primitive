@@ -30,6 +30,8 @@ export type MessageCmdHandler = (event: AllMessageEvent, args: string[]) => any
 export class KiviPlugin extends EventEmitter {
   /** 插件名称 */
   public name: string
+  /** 插件版本 */
+  public version: string
   /** 插件数据存放目录 `/data/plugins/[name]` */
   public pluginDataDir: string
   /** 向框架输出日志 */
@@ -43,10 +45,16 @@ export class KiviPlugin extends EventEmitter {
   private _cmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
   private _adminCmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
 
-  /** KiviBot 插件类 */
-  constructor(name: string) {
+  /**
+   * KiviBot 插件类
+   *
+   * @param {string} name 插件名称，建议英文，插件数据目录以他结尾
+   * @param {string} version 插件版本，如 1.0.0
+   */
+  constructor(name: string, version: string) {
     super()
-    this.name = name
+    this.name = name ?? 'null'
+    this.version = version ?? '0.0.0'
     this.pluginDataDir = path.join(PluginDataDir, this.name)
 
     // 确保插件的数据目录存在
@@ -111,12 +119,12 @@ export class KiviPlugin extends EventEmitter {
     })
 
     // plugin.cmd() 添加进来的处理函数
-    this._cmdFuncs.forEach((cmd, handler) => {
+    for (const [handler, cmd] of this._cmdFuncs) {
       const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
 
       const oicqHandler = (e: AllMessageEvent) => {
-        if (reg.test(e.raw_message)) {
-          const { params } = parseCommand(e.raw_message)
+        if (reg.test(e.toString())) {
+          const { params } = parseCommand(e.toString())
           handler(e, params)
         }
       }
@@ -124,17 +132,17 @@ export class KiviPlugin extends EventEmitter {
       bot.on('message', oicqHandler)
 
       this._cmdFuncs.set(handler, oicqHandler)
-    })
+    }
 
     // plugin.adminCmd() 添加进来的处理函数
-    this._adminCmdFuncs.forEach((cmd, handler) => {
+    for (const [handler, cmd] of this._adminCmdFuncs) {
       const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
 
       const oicqHandler = (e: AllMessageEvent) => {
         const isAdmin = admins.includes(e.sender.user_id)
 
-        if (isAdmin && reg.test(e.raw_message)) {
-          const { params } = parseCommand(e.raw_message)
+        if (isAdmin && reg.test(e.toString())) {
+          const { params } = parseCommand(e.toString())
           handler(e, params)
         }
       }
@@ -142,7 +150,7 @@ export class KiviPlugin extends EventEmitter {
       bot.on('message', oicqHandler)
 
       this._adminCmdFuncs.set(handler, oicqHandler)
-    })
+    }
 
     return this.name
   }
@@ -175,19 +183,19 @@ export class KiviPlugin extends EventEmitter {
     }
   }
 
-  /** 添加消息监听函数（包括好友私聊、群消息以及讨论组消息），通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
+  /** 添加消息监听函数，包括好友私聊、群消息以及讨论组消息，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
   onMessage(hander: MessageHandler) {
     this._messageFuncs.set(hander, null)
   }
 
-  /** 添加命令（可以是字符串或正则表达式）监听函数（包括好友私聊、群消息以及讨论组消息），通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
+  /** 添加命令监听函数，命令可以是字符串或正则表达式，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
   onCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
     this._cmdFuncs.set(hander, cmd)
   }
 
-  /** 添加管理员命令（可以是字符串或正则表达式）监听函数（包括好友私聊、群消息以及讨论组消息），通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
+  /** 添加管理员命令监听函数，命令可以是字符串或正则表达式，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
   onAdminCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
-    this._cmdFuncs.set(hander, cmd)
+    this._adminCmdFuncs.set(hander, cmd)
   }
 
   /** 插件被启用时执行，所有的插件逻辑请写到传入的函数里 */

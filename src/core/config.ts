@@ -3,6 +3,7 @@ import { writeJsonSync } from 'fs-extra'
 import { ConfigPath } from './path'
 
 import type { Config } from 'oicq'
+import { plugins } from './start'
 
 export type MainAdmin = number
 export type AdminArray = [MainAdmin, ...number[]]
@@ -98,6 +99,8 @@ export const kiviConf = {} as KiviConf
 /** 保存 KiviBot 框架配置到配置文件`kivi.json` */
 export const saveKiviConf = () => {
   try {
+    kiviConf.plugins = [...plugins.keys()]
+
     writeJsonSync(ConfigPath, kiviConf, { encoding: 'utf-8', spaces: 2 })
     return true
   } catch (e) {

@@ -1,6 +1,7 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { colors } from '@src/utils'
 import { KiviLogger } from '@/log'
+import { plugins } from '@/start'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
@@ -20,13 +21,19 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
   const pluginName = getPluginNameByPath(pluginPath)
 
+  console.log(pluginPath)
+
   try {
     const plugin: KiviPlugin = (await import(pluginPath)).default
 
-    if (plugin.mountKiviBotClient) {
+    if (plugin?.mountKiviBotClient) {
       try {
-        const name = await plugin.mountKiviBotClient(bot, kiviConf.admins)
-        info(`插件「${name}（${pluginName}）」加载成功`)
+        await plugin.mountKiviBotClient(bot, kiviConf.admins)
+
+        plugins.set(pluginName, plugin)
+
+        info(`插件「${pluginName}」启用成功`)
+
         return true
       } catch (e) {
         error(`插件启用过程中发生错误: ${e}`)
@@ -37,5 +44,8 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
   } catch (e) {
     error(`插件「${pluginName}」导入过程中发生错误: ${e}`)
   }
+
+  plugins.delete(pluginName)
+
   return false
 }

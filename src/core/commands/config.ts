@@ -36,11 +36,6 @@ export async function handleConfigCommand(
 通知状态：${kiviConf.notice.enable ? '开启' : '关闭'}
 `.trim()
 
-    //     const plugin = `
-    // 〓 启用插件 〓
-    // ${kiviConf.plugins.join('\n')}
-    // `.trim()
-
     const { group, friend } = kiviConf.notice
 
     const noticeDetail = `
@@ -66,13 +61,8 @@ export async function handleConfigCommand(
 - 邀请进群：${ActionMap[friend.request.action] ?? ''}
 `.trim()
 
-    // const hasPlugin = kiviConf.plugins.length > 0
     const isNoticeEnable = kiviConf.notice.enable
-
-    // const pluginInfo = hasPlugin ? `\n\n${plugin}` : ''
     const noticeInfo = isNoticeEnable ? `\n\n${noticeDetail}` : ''
-
-    // const message = `${detail}${pluginInfo}${noticeInfo}`
     const message = `${detail}${noticeInfo}`
 
     return reply(message)

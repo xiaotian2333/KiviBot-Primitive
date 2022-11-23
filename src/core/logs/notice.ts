@@ -76,7 +76,7 @@ export function noticeHandler(
     } else if (sub_type === 'decrease') {
       // 群人数减少
       const { operator_id } = event
-      message = `- [退群:${groupInfo}-${operator_id || '主动'}-${user_id}]`
+      message = `- [退群:${groupInfo}-${operator_id || '主动'}->${user_id}]`
     } else if (sub_type === 'increase') {
       // 群人数增加
       message = `+ [进群:${groupInfo}-${user_id}]`

@@ -4,7 +4,7 @@ import { KiviPlugin } from '../core/plugin/plugin'
 
 import type { ScheduledTask } from 'node-cron'
 
-const plugin = new KiviPlugin('简单关键词')
+const plugin = new KiviPlugin('简单关键词', '1.0.0')
 const tasks: ScheduledTask[] = []
 
 plugin.onMounted((bot) => {

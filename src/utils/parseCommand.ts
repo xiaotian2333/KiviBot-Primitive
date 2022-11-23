@@ -8,7 +8,7 @@ export function parseCommand(lineStr: string, nums = 123) {
     lineStr = lineStr.replace(/[^\S\n\r\t]+/, '__[br]__')
   }
 
-  const arr = lineStr.split('__[br]__')
+  const arr = lineStr.split('__[br]__').filter((e) => !!e)
 
   return { cmd: arr.shift() || lineStr, params: arr, nums: arr.length }
 }
