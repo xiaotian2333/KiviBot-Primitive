@@ -1,4 +1,4 @@
-# KiviBot Core
+# @KiviBot/Core（KiviBot 核心库）
 
 > WIP. 缓慢开发中...
 
