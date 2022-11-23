@@ -28,6 +28,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   // 是否是主管理员
   const isMainAdmin = kiviConf.admins[0] === sender.user_id
 
+  // 过滤非管理员消息
   if (!isAdmin) return
 
   if (raw_message === '#帮助') {
