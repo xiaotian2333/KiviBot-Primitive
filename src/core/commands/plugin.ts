@@ -149,6 +149,7 @@ ${pluginInfo.join('\n')}
     const isOK = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
 
     if (isOK) {
+      plugins.delete(pluginName)
       saveKiviConf()
     }
 

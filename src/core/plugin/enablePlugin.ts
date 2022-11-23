@@ -23,9 +23,9 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
   const pluginName = getPluginNameByPath(pluginPath)
 
   try {
-    console.log('plugin.pluginPath: ' + pluginPath)
+    KiviLogger.debug('plugin.pluginPath: ' + pluginPath)
     const plugin = await require(pluginPath)
-    console.log('plugin.name: ' + plugin.name)
+    KiviLogger.debug('plugin.name: ' + plugin.name)
 
     if (plugin?.mountKiviBotClient) {
       try {

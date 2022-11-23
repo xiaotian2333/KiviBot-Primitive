@@ -117,7 +117,7 @@ export const start = () => {
       bot.login(md5Pwd)
     }
   } catch (e) {
-    console.log(e)
+    KiviLogger.debug(e)
     exitWithError('配置文件 `kivi.json` 不符合 JSON 格式')
   }
 }
