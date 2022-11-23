@@ -1,4 +1,4 @@
-# KiviBot
+# KiviBot Core
 
 > WIP. 新版缓慢开发中...
 
