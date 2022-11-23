@@ -11,15 +11,15 @@ export const RoleMap: Record<GroupRole, string> = {
   owner: '群主'
 }
 
-const { notice, admins } = kiviConf
-const { friend, group } = notice
-
 function buildNotice(title: string, avatar: ImageElem, content: string) {
   return [`〓 ${title} 〓\n`, avatar, `\n${content}`]
 }
 
 /** 处理消息通知 */
 export function configNotice(bot: Client) {
+  const { notice, admins } = kiviConf
+  const { friend, group } = notice
+
   const mainAdmin = bot.pickUser(admins[0])
 
   // 好友私聊
@@ -27,6 +27,9 @@ export function configNotice(bot: Client) {
     if (!kiviConf.notice.enable || !friend.message) return
 
     const { sender, message } = event
+
+    if (sender.user_id === admins[0]) return
+
     const avatar = segment.image(getQQAvatarLink(sender.user_id, 100))
 
     const msg = `
@@ -34,7 +37,6 @@ export function configNotice(bot: Client) {
 QQ: ${sender.user_id}
 
 〓 消息内容 〓\n`.trimStart()
-
     mainAdmin.sendMsg([...buildNotice('私聊通知', avatar, msg), ...message])
   })
 

@@ -31,15 +31,15 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   // 过滤非管理员消息
   if (!isAdmin) return
 
-  if (raw_message === '#帮助') {
+  if (raw_message.trim() === '#帮助') {
     return reply(HelpText)
   }
 
-  if (raw_message === '#关于') {
+  if (raw_message.trim() === '#关于') {
     return reply(AboutText)
   }
 
-  if (raw_message === '#状态') {
+  if (raw_message.trim() === '#状态') {
     try {
       const status = await fetchStatus(bot)
       return reply(status)
