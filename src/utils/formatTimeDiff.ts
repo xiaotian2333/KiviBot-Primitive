@@ -13,7 +13,7 @@
  * oim.formatDateDiff(new Date('2020/02/07 02:07', false) - new Date('2001/04/07 04:07'));
  *    // => '19y1mo9d22h'
  */
-export const formatDateDiff = (millisecond: number, isZh = true) => {
+export function formatDateDiff(millisecond: number, isZh = true) {
   const [ms, s, m, h, d, mo] = [1000, 60, 60, 24, 30, 12]
   const [sl, ml, hl, dl, mol, yl] = [
     ms,

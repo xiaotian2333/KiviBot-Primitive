@@ -1,7 +1,6 @@
+import { colors } from '@src/utils'
 import { KiviLogger } from './log'
-import { KiviPluginError } from './plugin/pluginError'
-import colors from '@src/utils/colors'
-import loadPlugins from './plugin/loadPlugins'
+import { KiviPluginError, loadPlugins } from './plugin'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from './config'

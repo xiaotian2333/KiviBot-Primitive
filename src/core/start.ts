@@ -7,13 +7,9 @@ import { deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './log
 import { Devices, KiviLogger, redirectLog } from './log'
 import { handleKiviCommand } from './commands'
 import { kiviConf } from './config'
-import { LOGO } from '@src/utils/logo'
-import { messageHandler } from './logs/message'
-import { noticeHandler } from './logs/notice'
+import { messageHandler, requestHandler, noticeHandler, offlineHandler } from './logs'
 import { onlineHandler } from './online'
-import { requestHandler } from './logs/request'
-import colors from '@src/utils/colors'
-import exitWithError from '@src/utils/exitWithError'
+import { colors, LOGO, exitWithError } from '@src/utils'
 
 import type { KiviPlugin } from './plugin'
 import type { KiviConf } from './config'
@@ -104,6 +100,9 @@ export const start = () => {
     bot.on('system.login.device', deviceHandler.bind(bot, conf.device_mode))
     bot.on('system.login.slider', ({ url }) => sliderHandler.call(bot, { isFirst: true, url }))
     bot.on('system.login.error', errorHandler)
+
+    // 监听下线事件
+    bot.on('system.offline', offlineHandler)
 
     // 监听通知、请求，打印框架日志
     bot.on('notice', noticeHandler)

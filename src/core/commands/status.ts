@@ -3,10 +3,9 @@ import path from 'node:path'
 import { version as OicqVersion } from 'oicq/package.json'
 
 import { Devices } from '@/log'
-import { formatDateDiff } from '@src/utils/formatTimeDiff'
-import { formatFileSize } from '@src/utils/formatFileSize'
+import { formatDateDiff, formatFileSize } from '@src/utils'
 import { plugins } from '@/start'
-import { searchAllPlugins } from '@/plugin/searchPlugins'
+import { searchAllPlugins } from '@/plugin'
 
 import type { Client } from 'oicq'
 

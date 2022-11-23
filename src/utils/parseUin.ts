@@ -1,4 +1,5 @@
-export default function parseUin(qqLikeStr: string) {
+/** 解析 qq，支持艾特，可以是 `1141284758` 或者是 `{at:1141284758}` */
+export function parseUin(qqLikeStr: string) {
   let qq = 0
 
   if (/^\{at:\d+\}$/.test(qqLikeStr)) {

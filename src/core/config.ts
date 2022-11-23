@@ -11,13 +11,13 @@ export const ActionMap: Record<'ignore' | 'accept' | 'refuse', string> = {
   ignore: '自动忽略',
   accept: '自动同意',
   refuse: '自动拒绝'
-}
+} as const
 
 export const ModeMap: Record<'qrcode' | 'sms' | 'password', string> = {
   password: '使用密码',
   qrcode: '二维码',
   sms: '短信验证码'
-}
+} as const
 
 /** 通知配置 */
 export interface NoticeConf {
@@ -84,6 +84,7 @@ export interface KiviConf {
 
 export const kiviConf = {} as KiviConf
 
+/** 保存 KiviBot 框架配置到配置文件`kivi.json` */
 export const saveKiviConf = () => {
   try {
     writeJsonSync(ConfigPath, kiviConf, { encoding: 'utf-8', spaces: 2 })

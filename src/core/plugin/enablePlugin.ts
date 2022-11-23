@@ -1,4 +1,5 @@
-import colors from '@src/utils/colors'
+import { getPluginNameByPath } from './getPluginNameByPath'
+import { colors } from '@src/utils'
 import { KiviLogger } from '@/log'
 
 import type { Client } from 'oicq'
@@ -6,7 +7,7 @@ import type { KiviConf } from '@/config'
 import type { KiviPlugin } from './plugin'
 
 /** 通过插件模块路径启用单个插件 */
-export default async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: string) {
+export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: string) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
     KiviLogger.error(msg, ...args)
@@ -37,10 +38,4 @@ export default async function enablePlugin(bot: Client, kiviConf: KiviConf, plug
     error(`插件「${pluginName}」导入过程中发生错误: ${e}`)
   }
   return false
-}
-
-/** 通过模块路径获取插件名称，如果是 `npm` 插件，则自动去掉 `kivibot-plugin-` 前缀 */
-export function getPluginNameByPath(path: string) {
-  const paths = path.split('/')
-  return paths[paths.length - 1].replace('kivibot-plugin-', '')
 }

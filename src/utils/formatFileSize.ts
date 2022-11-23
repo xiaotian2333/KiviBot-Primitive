@@ -1,3 +1,4 @@
+/** 格式化文件格式大小 */
 export function formatFileSize(size: number, hasUnit = true): string {
   const units = ['B', 'K', 'M', 'G', 'T', 'P', 'E']
   for (let i = 0; i < units.length; i++) {

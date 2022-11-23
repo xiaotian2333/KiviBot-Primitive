@@ -1,5 +1,5 @@
 import { KiviLogger } from '@/log'
-import colors from '@src/utils/colors'
+import { colors } from '@src/utils'
 
 import type { Client, EventMap } from 'oicq'
 

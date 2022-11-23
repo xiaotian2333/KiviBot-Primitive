@@ -6,7 +6,7 @@ import path from 'node:path'
 import { PluginDataDir } from '@src'
 import { KiviPluginError } from './pluginError'
 import { MessageEvents, OicqEvents } from '@/events'
-import parseCommand from '@src/utils/parseCommand'
+import { parseCommand } from '@src/utils'
 
 import type {
   Client,

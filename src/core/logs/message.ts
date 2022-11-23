@@ -1,4 +1,4 @@
-import colors from '@src/utils/colors'
+import { colors } from '@src/utils'
 import { KiviLogger } from '@/log'
 
 import type { AllMessageEvent } from '@/plugin'

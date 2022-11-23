@@ -3,7 +3,7 @@ import log4js from 'log4js'
 import path from 'node:path'
 
 import { LogDir } from './path'
-import colors from '@src/utils/colors'
+import { colors } from '@src/utils'
 
 import type { Config } from 'oicq'
 

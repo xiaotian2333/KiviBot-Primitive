@@ -1,7 +1,7 @@
 import { fetchStatus, pkg } from './status'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
-import parseCommand from '@src/utils/parseCommand'
+import { parseCommand } from '@src/utils'
 
 import type { AllMessageEvent } from '@/plugin'
 import type { Client } from 'oicq'

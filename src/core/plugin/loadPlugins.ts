@@ -1,11 +1,12 @@
+import { enablePlugin } from './enablePlugin'
+import { getPluginNameByPath } from './getPluginNameByPath'
 import { searchAllPlugins } from './searchPlugins'
-import enablePlugin, { getPluginNameByPath } from './enablePlugin'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
 
 /** 检索并加载 node_modules 和 plugins 目录下的插件 */
-export default async function loadPlugins(bot: Client, kiviConf: KiviConf) {
+export async function loadPlugins(bot: Client, kiviConf: KiviConf) {
   // 检索本地所有插件（node_modukles 里 `kivibot-plugin-` 开头的插件 和 plugins 下的插件）
   const { plugins, cnts } = await searchAllPlugins()
   const { all, npm, local } = cnts

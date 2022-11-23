@@ -1,7 +1,6 @@
 import { ActionMap, kiviConf, ModeMap, saveKiviConf } from '@/config'
 
-import parseUin from '@src/utils/parseUin'
-import exitWithError from '@src/utils/exitWithError'
+import { parseUin, exitWithError } from '@src/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 
