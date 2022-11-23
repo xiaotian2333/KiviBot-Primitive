@@ -3,6 +3,7 @@ import { handleKiviCommand } from './commands'
 import { KiviLogger } from './logger'
 import { KiviPluginError, loadPlugins } from './plugin'
 import { messageHandler, noticeHandler, requestHandler } from './logs'
+import { configNotice } from './notice'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from './config'
@@ -45,6 +46,9 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   // 监听通知、请求，打印框架日志
   this.on('notice', noticeHandler)
   this.on('request', requestHandler)
+
+  // 设置消息通知
+  configNotice(this)
 
   // 检索并加载插件
   const { all, cnt, npm, local } = await loadPlugins(this, kiviConf)

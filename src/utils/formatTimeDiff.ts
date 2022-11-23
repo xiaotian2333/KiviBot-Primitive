@@ -13,7 +13,7 @@
  * oim.formatDateDiff(new Date('2020/02/07 02:07', false) - new Date('2001/04/07 04:07'));
  *    // => '19y1mo9d22h'
  */
-export function formatDateDiff(millisecond: number, isZh = true) {
+export function formatDateDiff(millisecond: number, isZh = true, full = false) {
   const [ms, s, m, h, d, mo] = [1000, 60, 60, 24, 30, 12]
   const [sl, ml, hl, dl, mol, yl] = [
     ms,
@@ -30,8 +30,8 @@ export function formatDateDiff(millisecond: number, isZh = true) {
   const months = Math.floor((millisecond % yl) / mol)
   const years = Math.floor(millisecond / yl)
   const sStr = seconds > 0 ? seconds + (isZh ? '秒' : 's') : ''
-  const mStr = minutes > 0 ? minutes + (isZh ? '分' : 'm') : ''
-  const hStr = hours > 0 ? hours + (isZh ? '时' : 'h') : ''
+  const mStr = minutes > 0 ? minutes + (isZh ? (full ? '分钟' : '分') : 'm') : ''
+  const hStr = hours > 0 ? hours + (isZh ? (full ? '小时' : '时') : 'h') : ''
   const dStr = days > 0 ? days + (isZh ? '天' : 'd') : ''
   const moStr = months > 0 ? months + (isZh ? '月' : 'mo') : ''
   const yStr = years > 0 ? years + (isZh ? '年' : 'y') : ''

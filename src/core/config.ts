@@ -40,10 +40,6 @@ export interface NoticeConf {
     decrease: boolean
     /** 私聊消息 */
     message: boolean
-    /** 私聊撤回消息 */
-    recall: boolean
-    /** 私聊闪照 */
-    flash: boolean
   }
   /** 群聊、讨论组相关（所有群） */
   group: {
@@ -54,20 +50,16 @@ export interface NoticeConf {
       /** 如何处理邀请机器人进群请求，可选：ignore 忽略消息，accept 自动接受，refuse 自动拒绝 */
       action: 'ignore' | 'accept' | 'refuse'
     }
-    /** 群聊增加 */
+    /** Bot 的群聊增加 */
     increase: boolean
-    /** 群聊减少，主动或被动退出群聊 */
+    /** Bot 的群聊减少，主动或被动退出群聊 */
     decrease: boolean
-    /** 群员被禁言 */
+    /** Bot 被禁言 */
     ban: boolean
     /** 群管理员变动 */
     admin: boolean
     /** 群转让 */
     transfer: boolean
-    /** 群聊撤回消息 */
-    recall: boolean
-    /** 群聊闪照 */
-    flash: boolean
   }
 }
 
