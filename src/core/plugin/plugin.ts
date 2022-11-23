@@ -54,7 +54,7 @@ export class KiviPlugin extends EventEmitter {
   constructor(name: string, version: string) {
     super()
     this.name = name ?? 'null'
-    this.version = version ?? '0.0.0'
+    this.version = version ?? '未知'
     this.pluginDataDir = path.join(PluginDataDir, this.name)
 
     // 确保插件的数据目录存在
@@ -79,6 +79,8 @@ export class KiviPlugin extends EventEmitter {
     bot.on('kivi.admins', this.adminChangeHandler)
 
     try {
+      this.logger.debug('_mounted: ' + this.name)
+
       // 调用 onMounted 挂载的函数
       const res = this._mounted(bot, [...this._admins])
 
@@ -119,7 +121,7 @@ export class KiviPlugin extends EventEmitter {
     })
 
     // plugin.cmd() 添加进来的处理函数
-    for (const [handler, cmd] of this._cmdFuncs) {
+    this._cmdFuncs.forEach((cmd, handler) => {
       const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
 
       const oicqHandler = (e: AllMessageEvent) => {
@@ -132,10 +134,10 @@ export class KiviPlugin extends EventEmitter {
       bot.on('message', oicqHandler)
 
       this._cmdFuncs.set(handler, oicqHandler)
-    }
+    })
 
     // plugin.adminCmd() 添加进来的处理函数
-    for (const [handler, cmd] of this._adminCmdFuncs) {
+    this._adminCmdFuncs.forEach((cmd, handler) => {
       const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
 
       const oicqHandler = (e: AllMessageEvent) => {
@@ -150,7 +152,7 @@ export class KiviPlugin extends EventEmitter {
       bot.on('message', oicqHandler)
 
       this._adminCmdFuncs.set(handler, oicqHandler)
-    }
+    })
 
     return this.name
   }
@@ -175,6 +177,8 @@ export class KiviPlugin extends EventEmitter {
     try {
       // 调用 onUnmounted 挂载的函数
       const res = this._unmounted(bot, admins)
+
+      this.logger.debug('_unmounted: ' + this.name)
 
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res

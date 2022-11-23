@@ -1,7 +1,6 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
 import { KiviLogger } from '@/log'
-import { plugins } from '@/start'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
@@ -12,7 +11,7 @@ export async function disablePlugin(
   bot: Client,
   kiviConf: KiviConf,
   plugin: KiviPlugin,
-  targetPluginPath: string
+  pluginPath: string
 ) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
@@ -24,24 +23,23 @@ export async function disablePlugin(
     KiviLogger.info(msg, ...args)
   }
 
-  const pluginName = getPluginNameByPath(targetPluginPath)
+  KiviLogger.debug('disablePlugin: ' + pluginPath)
+
+  const pluginName = getPluginNameByPath(pluginPath)
 
   try {
     // 调用插件挂载的禁用函数
     await plugin.unmountKiviBotClient(bot, kiviConf.admins)
 
     // 删除 require 缓存
-    killPlugin(targetPluginPath)
+    killPlugin(pluginPath)
 
-    info(`插件「${pluginName}」禁用成功`)
+    info(`插件 [${pluginName}] 禁用成功`)
 
     return true
   } catch (e) {
     error(`插件禁用过程中发生错误: ${e}`)
   }
-
-  // 从插件列表删除插件
-  plugins.delete(pluginName)
 
   return false
 }

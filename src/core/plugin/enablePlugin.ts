@@ -19,12 +19,14 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
     KiviLogger.info(msg, ...args)
   }
 
+  KiviLogger.debug('enablePlugin: ' + pluginPath)
+
   const pluginName = getPluginNameByPath(pluginPath)
 
-  console.log(pluginPath)
-
   try {
-    const plugin: KiviPlugin = (await import(pluginPath)).default
+    console.log('plugin.pluginPath: ' + pluginPath)
+    const plugin = await require(pluginPath)
+    console.log('plugin.name: ' + plugin.name)
 
     if (plugin?.mountKiviBotClient) {
       try {
@@ -32,17 +34,17 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
         plugins.set(pluginName, plugin)
 
-        info(`插件「${pluginName}」启用成功`)
+        info(`插件 [${pluginName}] 启用成功`)
 
         return true
       } catch (e) {
         error(`插件启用过程中发生错误: ${e}`)
       }
     } else {
-      error(colors.red(`插件「${pluginName}」没有默认导出 \`KiviPlugin\` 实例，请检查`))
+      error(colors.red(`插件 [${pluginName}] 没有默认导出 \`KiviPlugin\` 实例，请检查`))
     }
   } catch (e) {
-    error(`插件「${pluginName}」导入过程中发生错误: ${e}`)
+    error(`插件 [${pluginName}] 导入过程中发生错误: ${e}`)
   }
 
   plugins.delete(pluginName)

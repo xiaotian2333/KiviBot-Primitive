@@ -1,8 +1,8 @@
 import { colors } from '@src/utils'
 import { KiviLogger } from '@/log'
+import { kiviConf } from '@/config'
 
 import type { AllMessageEvent } from '@/plugin'
-import { kiviConf } from '../config'
 
 const MessageTypeMap = {
   private: '私聊',

@@ -1,10 +1,15 @@
-import { enablePlugin, getPluginNameByPath, searchAllPlugins } from '../plugin'
-import { plugins } from '../start'
+import {
+  enablePlugin,
+  getPluginNameByPath,
+  searchAllPlugins,
+  getPluginPathByName,
+  disablePlugin
+} from '@/plugin'
+import { plugins } from '@/start'
+import { kiviConf, saveKiviConf } from '@/config'
+import { KiviLogger } from '@/log'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
-import { kiviConf, saveKiviConf } from '../config'
-import { disablePlugin } from '../plugin/disablePlugin'
-import { getPluginPathByName } from '../plugin/getPluginPathByName'
 
 export const PluginText = `
 〓 插件指令 〓
@@ -20,8 +25,6 @@ export async function handlePluginCommand(
   params: string[],
   reply: (content: Sendable, quote?: boolean | undefined) => Promise<MessageRet>
 ) {
-  console.log(params)
-
   if (!params.length) {
     return await reply(PluginText)
   }
@@ -40,21 +43,80 @@ export async function handlePluginCommand(
     const message = `
 〓 插件列表 〓
 ${pluginInfo.join('\n')}
+共 ${pluginInfo.length} 个，启用 ${plugins.size} 个
 `.trim()
 
     return reply(message)
   }
 
   if (secondCmd === '启用所有') {
-    return reply('插件启用所有 TODO')
+    const {
+      plugins: ps,
+      cnts: { all }
+    } = await searchAllPlugins()
+
+    if (!all) {
+      return reply('〓 本地插件为空 〓')
+    }
+
+    if (ps.length === plugins.size) {
+      return reply('〓 已启用所有插件 〓')
+    }
+
+    ps.forEach(async (path, i) => {
+      KiviLogger.debug('开始处理 npm ', path)
+
+      const pluginName = getPluginNameByPath(path)
+
+      if (plugins.has(pluginName)) {
+        // 过滤已经启用了的插件
+        return
+      }
+
+      await enablePlugin(bot, kiviConf, path)
+
+      if (i + 1 === all) {
+        saveKiviConf()
+
+        return reply('〓 已启用所有插件 〓')
+      }
+    })
+
+    return
   }
 
   if (secondCmd === '禁用所有') {
-    return reply('插件禁用所有 TODO')
+    const size = plugins.size
+
+    if (!size) {
+      return reply('〓 已禁用所有插件 〓')
+    }
+
+    Array.from(plugins.entries()).forEach(async ([pluginName, plugin], i) => {
+      const targetPluginPath = await getPluginPathByName(pluginName)
+
+      KiviLogger.debug('禁用所有: ' + targetPluginPath)
+
+      if (targetPluginPath) {
+        await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
+
+        plugins.delete(pluginName)
+      }
+
+      if (i + 1 === size) {
+        KiviLogger.debug('禁用所有 - plugins.size: ' + plugins.size)
+
+        saveKiviConf(plugins)
+
+        return reply('〓 已禁用所有插件 〓')
+      }
+    })
+
+    return
   }
 
   if (!pluginName) {
-    return reply('〓 求你了，看文档 〓')
+    return reply('〓 命令格式错误 〓')
   }
 
   if (secondCmd === '启用') {
@@ -62,6 +124,10 @@ ${pluginInfo.join('\n')}
 
     if (!targetPluginPath) {
       return reply(`〓 插件 ${pluginName.slice(0, 12)} 不存在 〓`)
+    }
+
+    if (plugins.has(pluginName)) {
+      return reply('〓 插件已是启用状态 〓')
     }
 
     const isOK = await enablePlugin(bot, kiviConf, targetPluginPath)
@@ -77,7 +143,7 @@ ${pluginInfo.join('\n')}
     const plugin = plugins.get(pluginName)
 
     if (!plugin) {
-      return reply('〓 这插件您开了吗您 〓')
+      return reply('〓 插件未启用，无法禁用 〓')
     }
 
     const targetPluginPath = await getPluginPathByName(pluginName)

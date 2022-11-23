@@ -12,7 +12,7 @@ export const ConfigText = `
 #设置 开启通知
 #设置 关闭通知
 #设置 检查更新
-#设置 终止进程
+#设置 退出
 `.trim()
 
 export async function handleConfigCommand(
@@ -40,14 +40,14 @@ export async function handleConfigCommand(
 
     const noticeDetail = `
 〓 通知详细设置 〓
-好友设置：
+〇 好友设置：
 - 好友请求：${friend.request ? '开启' : '关闭'}
 - 好友增加：${friend.increase ? '开启' : '关闭'}
 - 好友减少：${friend.decrease ? '开启' : '关闭'}
 - 私聊消息：${friend.message ? '开启' : '关闭'}
 - 私聊撤回：${friend.recall ? '开启' : '关闭'}
 - 私聊闪照：${friend.flash ? '开启' : '关闭'}
-群聊设置：
+〇 群聊设置：
 - 群禁言：${group.ban ? '开启' : '关闭'}
 - 群撤回：${group.recall ? '开启' : '关闭'}
 - 群闪照：${group.flash ? '开启' : '关闭'}
@@ -56,7 +56,7 @@ export async function handleConfigCommand(
 - 群减少：${group.decrease ? '开启' : '关闭'}
 - 邀请进群：${group.request.enable ? '开启' : '关闭'}
 - 管理变动：${group.admin ? '开启' : '关闭'}
-请求处理：
+〇 请求处理：
 - 好友申请：${ActionMap[friend.request.action] ?? ''}
 - 邀请进群：${ActionMap[friend.request.action] ?? ''}
 `.trim()
@@ -74,12 +74,12 @@ export async function handleConfigCommand(
     const qq = parseUin(value)
 
     if (!qq) {
-      return reply('〓 求你了，看文档 〓')
+      return reply('〓 命令格式错误 〓')
     } else {
       const set = new Set(kiviConf.admins.splice(1))
 
       if (set.has(qq) || qq === mainAdmin) {
-        return reply('〓 你为什么要给他加两遍 〓')
+        return reply('〓 目标已是管理员 〓')
       }
 
       set.add(qq)
@@ -96,16 +96,16 @@ export async function handleConfigCommand(
     const qq = parseUin(value)
 
     if (!qq) {
-      return reply('〓 求你了，看文档 〓')
+      return reply('〓 命令格式错误 〓')
     } else {
       const set = new Set(kiviConf.admins.slice(1))
 
       if (qq === mainAdmin) {
-        return reply('〓 铁咩，八嘎亚咯 👊 〓')
+        return reply('〓 无法删除主管理员 〓')
       }
 
       if (!set.has(qq)) {
-        return reply('〓 他是机器人管理吗你删删删 〓')
+        return reply('〓 目标不是管理员 〓')
       }
 
       set.delete(qq)
@@ -138,8 +138,8 @@ export async function handleConfigCommand(
     return reply('TODO')
   }
 
-  if (secondCmd === '终止进程') {
-    await reply('〓 长风破浪会有时，你等着 〓')
+  if (secondCmd === '退出') {
+    await reply('〓 下次见 〓')
 
     exitWithError('进程已由主管理员通过消息命令停止')
   }

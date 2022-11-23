@@ -24,7 +24,6 @@ plugin.onMounted((bot) => {
 
   plugin.onCmd(/hi/gi, (event, args) => {
     event.reply('cmd()')
-    console.log(args)
     plugin.logger.info('123')
   })
 
