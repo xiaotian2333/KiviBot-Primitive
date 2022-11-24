@@ -71,9 +71,9 @@ export const start = () => {
     ensureDirSync(PluginDataDir)
 
     const protocol = Devices[oicq_config.platform] || '未知'
-    const loginMessage = `开始登录账号：${kiviConf.account}，使用协议：${protocol}`
 
-    KiviLogger.info(colors.gray(loginMessage))
+    KiviLogger.info(colors.gray(`开始登录账号：${kiviConf.account}，使用协议：${protocol}`))
+    KiviLogger.info(colors.gray(`正在查找可用服务器...`))
 
     // 初始化实例
     const bot = createClient(kiviConf.account, oicq_config)
@@ -102,6 +102,6 @@ export const start = () => {
     }
   } catch (e) {
     KiviLogger.debug(e)
-    exitWithError('配置文件 `kivi.json` 不符合 JSON 格式')
+    exitWithError('配置文件 `kivi.json` 无效')
   }
 }
