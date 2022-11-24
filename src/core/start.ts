@@ -37,27 +37,27 @@ export const start = () => {
     // 载入配置到内存
     Object.assign(kiviConf, conf)
 
-    const { log_level, oicq_config } = kiviConf
+    const { log_level = 'info', oicq_config = {} } = kiviConf
 
-    if (!kiviConf.account) {
+    if (!kiviConf?.account) {
       exitWithError('无效的配置文件 `kivi.json` ')
     }
 
-    if (kiviConf.admins.length <= 0) {
+    if (!kiviConf?.admins || kiviConf?.admins?.length <= 0) {
       exitWithError('配置文件 `kivi.json` 需要指定至少一个管理员')
     }
 
     // 缺省 oicq 配置
 
     // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
-    oicq_config.platform ??= 5
+    oicq_config.platform = oicq_config?.platform ?? 5
     // ociq 数据及缓存保存在 data/oicq 下
     oicq_config.data_dir = OicqDataDir
     // oicq 默认日志等级为 info
-    oicq_config.log_level ??= 'info'
+    oicq_config.log_level = oicq_config?.log_level ?? 'info'
     // 指定默认 ffmpeg 和 ffprobe 命令为全局路径
-    oicq_config.ffmpeg_path ??= 'ffmpeg'
-    oicq_config.ffprobe_path ??= 'ffprobe'
+    oicq_config.ffmpeg_path = oicq_config?.ffmpeg_path ?? 'ffmpeg'
+    oicq_config.ffprobe_path = oicq_config?.ffprobe_path ?? 'ffprobe'
 
     // 重定向日志，oicq 的日志输出到日志文件，KiviBot 的日志输出到 console
     redirectLog(log_level, oicq_config, kiviConf.account)
