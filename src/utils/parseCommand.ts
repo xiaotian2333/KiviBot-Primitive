@@ -1,4 +1,4 @@
-/** 解析命令行参数，请传入 `event.toString()` 确保消息正常解析 */
+/** 解析消息命令及其参数，请传入 `event.toString()` 确保消息正常解析 */
 export function parseCommand(lineStr: string, nums = 123) {
   const spaces = lineStr.match(/[^\S\n\r\t]+/g)?.length || 0
 
