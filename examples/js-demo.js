@@ -1,29 +1,31 @@
-const { KiviPlugin } = reqiure('@kivibot/core')
+// 从 @kivibot/core 里引入 KiviPlugin 插件类
+import { KiviPlugin } from '@kivibot/core'
 
-const plugin = new KiviPlugin('简单关键词', '1.0.0')
+// new 一个 KiviBot 插件实例
+const plugin = new KiviPlugin('JS插件示例', '1.0.0')
 
-plugin.onMounted((bot) => {
-  bot.sendPrivateMsg(plugin.admins[0], 'Mounted')
+// 插件被启用（被挂载）
+plugin.onMounted((bot, admins) => {
+  // 插件里有关 bot API 调用相关逻辑放在这个函数里，只有插件被挂载了，才能访问到 bot 实例
 
-  plugin.onMessage(async (event) => {
-    bot.sendPrivateMsg(plugin.admins[0], 'message()')
-    plugin.logger.info('message()')
-  })
+  // 调用 bot 实例上的方法
+  bot.sendPrivateMsg(admins[0], '插件被启用')
 
-  plugin.onCmd(/hi/gi, (event, args) => {
-    event.reply('cmd()')
-    plugin.logger.info('123')
-  })
+  // 监听 oicq 事件，事件详情参考文档
+  plugin.on('message', (e) => e.reply(e.message))
 
-  plugin.onAdminCmd('#开启本群', (event, args) => {
-    event.reply('adminCmd()')
-    plugin.logger.info('adminCmd()')
-  })
+  // 监听命令（命令和参数之间要有空格才能触发，比如：`跟我说 你好`）
+  plugin.onCmd('跟我说', (e, args) => e.reply(args[0] || '你倒是说让我说什么啊'))
 
-  plugin.on('message', (e) => {
-    bot.sendPrivateMsg(1141284758, 'on("message")')
-    plugin.logger.info("on('message')")
-  })
+  // 监听管理员命令，仅对管理员生效（包括主管理员和副管理员）
+  plugin.onAdminCmd('我是谁', (e) => e.reply('你是管理员'))
 })
 
-module.exports = plugin
+// 插件被禁用
+plugin.onUnmounted((bot, admins) => {
+  // 调用 bot 实例上的方法
+  bot.sendPrivateMsg(admins[0], '插件被禁用')
+})
+
+// 默认导出 KiviPlugin 实例
+export default plugin
