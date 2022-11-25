@@ -18,7 +18,7 @@ export const plugins: Map<string, KiviPlugin> = new Map()
 /** 启动框架 */
 export const start = () => {
   // 打印 KiviBot logo
-  console.log(colors.blue(LOGO))
+  console.log(colors.cyan(LOGO))
 
   if (!fs.existsSync(ConfigPath)) {
     exitWithError('配置文件 `kivi.json` 不存在')

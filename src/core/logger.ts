@@ -17,7 +17,7 @@ export const LogTypeMap: Record<string, string> = {
   all: 'gray',
   mark: 'gray',
   trace: 'white',
-  debug: 'blue',
+  debug: 'cyan',
   info: 'green',
   warn: 'yellow',
   error: 'red',
