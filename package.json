@@ -1,6 +1,6 @@
 {
   "name": "@kivibot/core",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Core library for KiviBot base on oicq v2",
   "repository": "KiviBotLab/KiviBot",
   "homepage": "https://github.com/KiviBotLab/KiviBot#readme",
@@ -33,6 +33,7 @@
     "fs-extra": "^10.1.0",
     "log4js": "^6.7.0",
     "minimist": "^1.2.7",
+    "node-cron": "^3.0.2",
     "oicq": "^2.3.1",
     "prompts": "^2.4.2"
   },
@@ -48,7 +49,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-viki-ts": "^0.1.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "node-cron": "^3.0.2",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "tsc-alias": "^1.7.1",
