@@ -102,7 +102,7 @@ export const start = () => {
     if (conf.login_mode === 'qrcode') {
       bot.on('system.login.qrcode', qrCodeHandler).login()
     } else {
-      const plainPwd = Buffer.from(conf.password, 'base64').toString()
+      const plainPwd = Buffer.from(conf.password || '', 'base64').toString()
       const md5Pwd = crypto.createHash('md5').update(plainPwd).digest()
       bot.login(md5Pwd)
     }

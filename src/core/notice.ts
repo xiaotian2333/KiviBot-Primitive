@@ -3,13 +3,13 @@ import { segment } from 'oicq'
 import { ActionMap, kiviConf } from './config'
 import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@src/utils'
 
-import type { Client, ImageElem, GroupRole } from 'oicq'
+import type { Client, ImageElem } from 'oicq'
 
-export const RoleMap: Record<GroupRole, string> = {
+export const RoleMap = {
   admin: '群管理员',
   member: '群成员',
   owner: '群主'
-}
+} as const
 
 function buildNotice(title: string, avatar: ImageElem, content: string) {
   return [`〓 ${title} 〓\n`, avatar, `\n${content}`]

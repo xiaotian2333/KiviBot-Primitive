@@ -7,13 +7,13 @@ import { colors } from '@src/utils'
 
 import type { Config } from 'oicq'
 
-// 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad
-export const Devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad']
+/** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
+export const Devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad'] as const
 
 export const KiviLogger = log4js.getLogger('kivi')
 export const PluginLogger = log4js.getLogger('plugin')
 
-export const LogTypeMap: Record<string, string> = {
+export const LogTypeMap = {
   all: 'gray',
   mark: 'gray',
   trace: 'white',
@@ -23,9 +23,9 @@ export const LogTypeMap: Record<string, string> = {
   error: 'red',
   fatal: 'magenta',
   off: 'magenta'
-}
+} as const
 
-export const LogChineseMap: Record<string, string> = {
+export const LogChineseMap = {
   all: '所有',
   mark: '提示',
   trace: '追踪',
@@ -35,7 +35,7 @@ export const LogChineseMap: Record<string, string> = {
   error: '错误',
   fatal: '致命',
   off: '关闭'
-}
+} as const
 
 // 添加自定义 log4js Layout布局：kivi
 log4js.addLayout('kivi', (config) => {
@@ -51,7 +51,7 @@ log4js.addLayout('kivi', (config) => {
 
   // KiviBot 框架日志输出到控制台（包括插件，可选关闭）
   return (info) => {
-    const level = info.level.levelStr.toLowerCase()
+    const level = info.level.levelStr.toLowerCase() as keyof typeof LogTypeMap
     const now = dayjs(info.startTime).format(`MM-DD HH:mm:ss`)
     const color = LogTypeMap[level] as keyof typeof colors
     const type = target === 'kivi' ? 'KIVI' : 'PLUGIN'

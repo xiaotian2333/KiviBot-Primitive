@@ -50,6 +50,7 @@ export type MessageCmdHandler = (
 ) => any
 
 export interface KiviPluginConf {
+  debug?: boolean
   enableGroups?: number[]
   enableFriends?: number[]
 }
@@ -87,8 +88,10 @@ export class KiviPlugin extends EventEmitter {
     this.dataDir = path.join(PluginDataDir, this.name)
     this._conf = conf ?? {}
 
-    // 确保插件的数据目录存在
-    fs.ensureDirSync(this.dataDir)
+    if (!conf?.debug) {
+      // 正式环境下确保插件的数据目录存在
+      fs.ensureDirSync(this.dataDir)
+    }
   }
 
   /**

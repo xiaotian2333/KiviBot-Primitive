@@ -1,5 +1,5 @@
 import { ActionMap, kiviConf, ModeMap, saveKiviConf } from '@/config'
-import { parseUin, exitWithError } from '@src/utils'
+import { parseUin, update, exitWithError } from '@src/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 
@@ -138,7 +138,9 @@ export async function handleConfigCommand(
   }
 
   if (secondCmd === '检查更新') {
-    return reply('TODO')
+    reply('开始更新...')
+    const isOK = await update()
+    return reply(isOK ? '〓 更新成功 〓' : '〓 更新失败 〓')
   }
 
   if (secondCmd === '退出') {
