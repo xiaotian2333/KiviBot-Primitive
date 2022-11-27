@@ -1,10 +1,9 @@
 import os from 'node:os'
-import path from 'node:path'
 import { version as OicqVersion } from 'oicq/package.json'
 
 import { Devices } from '@/logger'
 import { formatDateDiff, formatFileSize } from '@src/utils'
-import { plugins } from '@/start'
+import { pkg, plugins } from '@/start'
 import { searchAllPlugins } from '@/plugin'
 
 import type { Client } from 'oicq'
@@ -21,8 +20,6 @@ export const ArchMap: Record<string, string> = {
   arm64: 'arm64',
   x64: 'x64'
 }
-
-export const pkg = require(path.join(__dirname, '../../..', 'package.json'))
 
 /** 运行状态指令处理函数 */
 export async function fetchStatus(bot: Client) {
@@ -49,7 +46,7 @@ export async function fetchStatus(bot: Client) {
 收发: ${recv_msg_cnt} p，${sent_msg_cnt} p
 实时: ${msg_cnt_per_min} p/min
 运行: ${runTime}
-框架: v${pkg?.version || '0.0.0'}-${formatFileSize(rss)}-${per(rss)}%
+框架: ${pkg?.version || '未知'}-${formatFileSize(rss)}-${per(rss)}%
 协议: oicq-v${OicqVersion}-${Devices[bot.config.platform]}
 系统: ${SystemMap[os.type()] || 'other'}-${arch}-node${nodeVersion}
 内存: ${formatFileSize(used)}/${formatFileSize(total)}-${per(used)}%

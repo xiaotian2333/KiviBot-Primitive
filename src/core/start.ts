@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { createClient } from 'oicq'
 import crypto from 'node:crypto'
 import fs, { ensureDirSync } from 'fs-extra'
@@ -15,8 +16,13 @@ import type { KiviConf } from './config'
 
 export const plugins: Map<string, KiviPlugin> = new Map()
 
+export const pkg = require(path.join(__dirname, '../..', 'package.json'))
+
 /** 启动框架 */
 export const start = () => {
+  // 设置终端标题
+  process.title = `KiviBot ${pkg?.version ?? '未知'} `
+
   // 打印 KiviBot logo
   console.log(colors.cyan(LOGO))
 

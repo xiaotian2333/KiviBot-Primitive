@@ -1,5 +1,4 @@
 import { ActionMap, kiviConf, ModeMap, saveKiviConf } from '@/config'
-
 import { parseUin, exitWithError } from '@src/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
@@ -84,6 +83,10 @@ export async function handleConfigCommand(
 
       const isOK = saveKiviConf()
 
+      if (isOK) {
+        bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
+      }
+
       return reply(isOK ? '〓 已添加 Bot 管理员 〓' : '〓 添加失败，读写异常 〓')
     }
   }
@@ -109,6 +112,10 @@ export async function handleConfigCommand(
       kiviConf.admins = [mainAdmin, ...set]
 
       const isOK = saveKiviConf()
+
+      if (isOK) {
+        bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
+      }
 
       return reply(isOK ? '〓 已删除 Bot 管理员 〓' : '〓 添加失败，配置读写异常 〓')
     }

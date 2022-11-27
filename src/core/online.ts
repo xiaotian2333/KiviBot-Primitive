@@ -58,9 +58,9 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   const mainAdmin = this.pickFriend(kiviConf.admins[0])
 
   if (!mainAdmin) {
-    error(colors.red('请使用管理员 QQ 添加机器人为好友，使用管理员消息控制机器人'))
+    error(colors.red('主管理员必须添加机器人为好友才能进行控制'))
   } else {
-    mainAdmin.sendMsg(`q(≧▽≦q) 摩西摩西`)
+    mainAdmin.sendMsg(`Hello KiviBot`)
   }
 
   // 初始化完成

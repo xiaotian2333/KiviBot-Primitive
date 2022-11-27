@@ -86,8 +86,8 @@ QQ: ${user_id}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-  昵称: ${nickname}
-  QQ: ${user_id}
+昵称: ${nickname}
+QQ: ${user_id}
   `.trim()
 
     mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
