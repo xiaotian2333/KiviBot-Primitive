@@ -16,7 +16,7 @@ import type { KiviConf } from './config'
 
 export const plugins: Map<string, KiviPlugin> = new Map()
 
-export const pkg = require(path.join(__dirname, '../..', 'package.json'))
+export const pkg = require(path.join(__dirname, '../../package.json'))
 
 /** 启动框架 */
 export const start = () => {

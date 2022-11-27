@@ -1,12 +1,14 @@
-import { ensureDirSync } from 'fs-extra'
 import EventEmitter from 'node:events'
+import fs from 'fs-extra'
 import log4js from 'log4js'
+import minimist from 'minimist'
+import nodeCron from 'node-cron'
 import path from 'node:path'
 
-import { PluginDataDir } from '@src'
+import { ensureArray } from '@src/utils'
 import { KiviPluginError } from './pluginError'
 import { MessageEvents, OicqEvents } from '@/events'
-import { parseCommand } from '@src/utils'
+import { PluginDataDir } from '@src'
 
 import type {
   Client,
@@ -15,66 +17,166 @@ import type {
   GroupMessageEvent,
   PrivateMessageEvent
 } from 'oicq'
-
-import type { AdminArray } from '@/config'
+import type { AdminArray, MainAdmin } from '@/config'
 import type { Logger } from 'log4js'
+import type { ScheduledTask } from 'node-cron'
 
 export type AnyFunc = (...args: any[]) => any
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
 export type OicqMessageHandler = (event: AllMessageEvent) => any
 export type MessageHandler = (event: AllMessageEvent) => any
+
+/**
+ * 处理函数
+ *
+ * @param {Client} bot 机器人实例
+ * @param {AdminArray} admins 管理员列表
+ */
 export type BotHandler = (bot: Client, admins: AdminArray) => any
-export type MessageCmdHandler = (event: AllMessageEvent, args: string[]) => any
+
+/**
+ * 消息处理函数
+ * @param {AllMessageEvent} event ociq 消息事件，包含了群聊、私聊与讨论组消息
+ * @param {string[]} params 由 minimist 解析后的 `_` 值（不包含命令），可以看作命令的其余参数
+ * @param {{[arg: string]: any}} options 由 minimist 解析后的值（不包含 `_` 和 `--`），可以看作命令选项
+ */
+export type MessageCmdHandler = (
+  event: AllMessageEvent,
+  params: string[],
+  options: {
+    [arg: string]: any
+  }
+) => any
+
+export interface KiviPluginConf {
+  enableGroups?: number[]
+  enableFriends?: number[]
+}
 
 export class KiviPlugin extends EventEmitter {
   /** 插件名称 */
   public name: string
   /** 插件版本 */
   public version: string
-  /** 插件数据存放目录 `/data/plugins/[name]` */
-  public pluginDataDir: string
-  /** 向框架输出日志 */
+  /** 插件数据存放目录，`data/plugins/[name]` 注意这里的 name 是实例化的时候传入的 name */
+  public dataDir: string
+  /** 向框架输出日志记录器，是 log4js 的实例 */
   public logger: Logger = log4js.getLogger('plugin')
+  /** 挂载的 Bot 实例 */
+  public bot: Client | null = null
 
   private _mounted: BotHandler = () => {}
   private _unmounted: BotHandler = () => {}
   private _admins: AdminArray | undefined
-  private _events: Map<string, AnyFunc> = new Map()
-  private _messageFuncs: Map<MessageHandler, OicqMessageHandler | null> = new Map()
-  private _cmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
-  private _adminCmdFuncs: Map<MessageCmdHandler, OicqMessageHandler | string | RegExp> = new Map()
+  private _conf: KiviPluginConf = {}
+  private _cronTasks: ScheduledTask[] = []
+  private _handlers: Map<string, AnyFunc[]> = new Map()
 
   /**
    * KiviBot 插件类
    *
-   * @param {string} name 插件名称，建议英文，插件数据目录以他结尾
+   * @param {string} name 插件名称，建议英文，插件数据目录以此结尾
    * @param {string} version 插件版本，如 1.0.0
    */
-  constructor(name: string, version: string) {
+  constructor(name: string, version: string, conf?: KiviPluginConf) {
     super()
+
     this.name = name ?? 'null'
     this.version = version ?? '未知'
-    this.pluginDataDir = path.join(PluginDataDir, this.name)
+    this.dataDir = path.join(PluginDataDir, this.name)
+    this._conf = conf ?? {}
 
     // 确保插件的数据目录存在
-    ensureDirSync(this.pluginDataDir)
+    fs.ensureDirSync(this.dataDir)
   }
 
-  /** 抛出一个 KiviBot 插件标准错误，会被框架捕获 */
-  throwError(message: string) {
+  /**
+   * 抛出一个 KiviBot 插件标准错误，会被框架捕获
+   *
+   * @param {string} message 错误信息
+   */
+  throwPluginError(message: string) {
     throw new KiviPluginError(this.name, message)
   }
 
-  /** 框架管理变动事件处理函数 */
+  /**
+   * 检测是否已经挂载 bot 实例，未挂载抛出插件错误
+   */
+  private checkMountStatus() {
+    if (!this.bot) {
+      this.throwPluginError('Bot 实例还未挂载。请在 onMounted 与 onUnmounted 中进行调用。')
+    }
+  }
+
+  /**
+   * 框架管理变动事件处理函数
+   */
   private adminChangeHandler(event: { admins: AdminArray }) {
     this._admins = event.admins
   }
 
-  /** **插件请勿调用**，KiviBot 框架调用此函数启用插件 */
-  async mountKiviBotClient(bot: Client, admins: AdminArray) {
+  /**
+   * 添加监听函数
+   */
+  private addHandler(eventName: string, handler: AnyFunc) {
+    const handlers = this._handlers.get(eventName)
+    this._handlers.set(eventName, handlers ? [...handlers, handler] : [handler])
+  }
+
+  /**
+   * 取消所有监听
+   */
+  private removeAllHandler() {
+    for (const [eventName, handlers] of this._handlers) {
+      handlers.forEach((handler) => this.bot!.off(eventName, handler))
+    }
+  }
+
+  /**
+   * 清理所有定时任务
+   */
+  private clearCronTasks() {
+    this._cronTasks.forEach((task) => task.stop())
+  }
+
+  /** 目标群或者好友是否被启用 */
+  private isTargetOn(event: AllMessageEvent) {
+    const { enableFriends, enableGroups } = this._conf
+
+    const isPrivate = event.message_type === 'private'
+    const isGroup = event.message_type === 'group'
+    const isDiscuss = event.message_type === 'discuss'
+
+    const isUserEnable = isPrivate && enableFriends?.includes(event.sender.user_id)
+    const isGroupEnable =
+      (isGroup && enableGroups?.includes(event.group_id)) ||
+      (isDiscuss && enableGroups?.includes(event.discuss_id))
+
+    if (isPrivate && (!enableFriends || isUserEnable)) {
+      return true
+    }
+
+    if (!isPrivate && (!enableGroups || isGroupEnable)) {
+      return true
+    }
+
+    return false
+  }
+
+  /**
+   * **插件请勿调用**，KiviBot 框架调用此函数启用插件
+   * @param {Client} bot oicq 机器人实例
+   * @param {AdminArray} admins 框架管理员列表
+   * @return {Promise<KiviPlugin>} 插件实例
+   */
+  async mountKiviBotClient(bot: Client, admins: AdminArray): Promise<KiviPlugin> {
+    // 挂载 Bot
+    this.bot = bot
+
     // 初始化管理员
     this._admins = [...admins]
+
     // 监听框架管理变动
     bot.on('kivi.admins', this.adminChangeHandler)
 
@@ -87,20 +189,18 @@ export class KiviPlugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e: any) {
-      this.throwError('插件挂载（onMounted）过程中发生错误: ' + e)
+      this.throwPluginError('插件挂载（onMounted）过程中发生错误: ' + e)
     }
 
     // 插件监听 ociq 的所有事件
     OicqEvents.forEach((evt) => {
       const handler = (e: FirstParam<EventMap<Client>[typeof evt]>) => {
-        if (MessageEvents.includes(evt)) {
+        if (MessageEvents.includes(evt as any)) {
           const event = e as AllMessageEvent
 
-          const reply = (...args: any[]) => {
-            event.reply(args)
+          if (this.isTargetOn(event)) {
+            this.emit(evt, { ...event, reply: event.reply.bind(event) })
           }
-
-          this.emit(evt, { ...event, reply })
         } else {
           this.emit(evt, e)
         }
@@ -109,70 +209,21 @@ export class KiviPlugin extends EventEmitter {
       // 插件收到事件时，将事件及数据 emit 给插件里定义的处理函数
       bot.on(evt, handler)
 
-      // this._event 保存所有监听函数的引用，在卸载时通过这个引用取消监听
-      this._events.set(evt, handler)
+      // 收集监听函数
+      this.addHandler(evt, handler)
     })
 
-    // plugin.message() 添加进来的处理函数
-    this._messageFuncs.forEach((_, handler) => {
-      const oicqHandler = (e: AllMessageEvent) => handler(e)
-      bot.on('message', oicqHandler)
-      this._messageFuncs.set(handler, oicqHandler)
-    })
-
-    // plugin.cmd() 添加进来的处理函数
-    this._cmdFuncs.forEach((cmd, handler) => {
-      const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
-
-      const oicqHandler = (e: AllMessageEvent) => {
-        if (reg.test(e.toString())) {
-          const { params } = parseCommand(e.toString())
-          handler(e, params)
-        }
-      }
-
-      bot.on('message', oicqHandler)
-
-      this._cmdFuncs.set(handler, oicqHandler)
-    })
-
-    // plugin.adminCmd() 添加进来的处理函数
-    this._adminCmdFuncs.forEach((cmd, handler) => {
-      const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}($|\\s+)`)
-
-      const oicqHandler = (e: AllMessageEvent) => {
-        const isAdmin = admins.includes(e.sender.user_id)
-
-        if (isAdmin && reg.test(e.toString())) {
-          const { params } = parseCommand(e.toString())
-          handler(e, params)
-        }
-      }
-
-      bot.on('message', oicqHandler)
-
-      this._adminCmdFuncs.set(handler, oicqHandler)
-    })
-
-    return this.name
+    return this
   }
 
-  /** **插件请勿调用**，KiviBot 框架调用此函数禁用插件 */
+  /**
+   * **插件请勿调用**，KiviBot 框架调用此函数禁用插件
+   * @param {Client} bot oicq 机器人实例
+   * @param {AdminArray} admins 框架管理员列表
+   */
   async unmountKiviBotClient(bot: Client, admins: AdminArray) {
     // 取消监听框架管理变动
     bot.off('kivi.admins', this.adminChangeHandler)
-
-    // 取消监听 oicq 的所有事件
-    OicqEvents.forEach((evt) => bot.off(evt, this._events.get(evt)!))
-
-    // plugin.message() plugin.admincCmd() 和 plugin.cmd() 添加进来的处理函数
-    const funcs = [...this._messageFuncs, ...this._cmdFuncs, ...this._adminCmdFuncs]
-
-    // 取出 oicq handlers
-    const oicqHandlers = funcs.map((e) => e[1] as OicqMessageHandler)
-
-    // 卸载时通过 oicq handlers 取消监听
-    oicqHandlers.forEach((oicqHandler) => bot.off('message', oicqHandler))
 
     try {
       // 调用 onUnmounted 挂载的函数
@@ -183,42 +234,262 @@ export class KiviPlugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e: any) {
-      this.throwError('插件卸载（onUnmounted）过程中发生错误: ' + e)
+      this.throwPluginError('插件卸载（onUnmounted）过程中发生错误: ' + e)
+    }
+
+    this.removeAllHandler()
+    this.clearCronTasks()
+
+    this.bot = null
+  }
+
+  /**
+   * 从插件数据目录加载保存的数据（储存为 JSON 格式，读取为普通 JS 对象）
+   * @param {string} filepath 保存文件路径，默认为插件数据目录下的 `config.json`
+   * @param {string | fs.ReadOptions | undefined} options 加载配置的选项
+   */
+  loadConfig(
+    filepath: string = path.join(this.dataDir, 'config.json'),
+    options: string | fs.ReadOptions | undefined = {}
+  ) {
+    try {
+      return fs.readJsonSync(filepath, options)
+    } catch {
+      return {}
     }
   }
 
-  /** 添加消息监听函数，包括好友私聊、群消息以及讨论组消息，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
-  onMessage(hander: MessageHandler) {
-    this._messageFuncs.set(hander, null)
+  /**
+   * 将数据保存到插件数据目录（传入普通 JS 对象，储存为 JSON 格式）
+   * @param {any} data 待保存的普通 JS 对象插件数据目录下的 `config.json`
+   * @param {string | fs.ReadOptions | undefined}
+   * @param {string} filepath 保存文件路径，默认为 options 写入配置的选项
+   * @return {boolean} 是否写入成功
+   */
+  saveConfig(
+    data: any,
+    filepath: string = path.join(this.dataDir, 'config.json'),
+    options: string | fs.ReadOptions | undefined = {}
+  ): boolean {
+    try {
+      fs.writeJsonSync(filepath, data, options)
+      return true
+    } catch {
+      return false
+    }
   }
 
-  /** 添加命令监听函数，命令可以是字符串或正则表达式，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
-  onCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
-    this._cmdFuncs.set(hander, cmd)
+  /**
+   * 添加消息监听函数，包括好友私聊、群消息以及讨论组消息，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')`
+   * @param {MessageHandler} handler 消息处理函数，包含群消息，讨论组消息和私聊消息
+   */
+  onMessage(handler: MessageHandler) {
+    this.checkMountStatus()
+
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (this.isTargetOn(e)) {
+        handler(e)
+      }
+    }
+
+    this.bot!.on('message', oicqHandler)
+    this.addHandler('message', oicqHandler)
   }
 
-  /** 添加管理员命令监听函数，命令可以是字符串或正则表达式，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')` */
-  onAdminCmd(cmd: string | RegExp, hander: MessageCmdHandler) {
-    this._adminCmdFuncs.set(hander, cmd)
+  /**
+   * 消息匹配函数，传入字符串或正则，或字符串和正则的数组，进行精确匹配，匹配成功则调用函数
+   * @param {string | RegExp | (string | RegExp)[]} matches 待匹配的内容，字符串或者正则，对整个消息进行匹配
+   * @param {MessageHandler} handler 消息处理函数，包含群消息，讨论组消息和私聊消息
+   */
+  onMatch(matches: string | RegExp | (string | RegExp)[], handler: MessageHandler) {
+    this.checkMountStatus()
+
+    const matchList = ensureArray(matches)
+
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (this.isTargetOn(e)) {
+        for (const match of matchList) {
+          const reg = match instanceof RegExp ? match : new RegExp(`^${match as string}$`)
+
+          if (reg.test(e.toString())) {
+            handler(e)
+            break
+          }
+        }
+      }
+    }
+
+    this.bot!.on('message', oicqHandler)
+    this.addHandler('message', oicqHandler)
   }
 
-  /** 插件被启用时执行，所有的插件逻辑请写到传入的函数里 */
+  /**
+   * 管理员消息匹配函数，传入字符串或正则，或字符串和正则的数组，进行精确匹配，匹配成功则调用函数
+   * @param {string | RegExp | (string | RegExp)[]} matches 待匹配的内容，字符串或者正则，对整个消息进行匹配
+   * @param {MessageHandler} handler 消息处理函数，包含群消息，讨论组消息和私聊消息
+   */
+  onAdminMatch(matches: string | RegExp | (string | RegExp)[], handler: MessageHandler) {
+    this.checkMountStatus()
+
+    const matchList = ensureArray(matches)
+
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (this.isTargetOn(e)) {
+        if (this.admins.includes(e.sender.user_id)) {
+          for (const match of matchList) {
+            const reg = match instanceof RegExp ? match : new RegExp(`^${match as string}$`)
+
+            if (reg.test(e.toString())) {
+              handler(e)
+              break
+            }
+          }
+        }
+      }
+    }
+
+    this.bot!.on('message', oicqHandler)
+    this.addHandler('message', oicqHandler)
+  }
+
+  /**
+   * 添加命令监听函数，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')`
+   * @param {string | RegExp | (string | RegExp)[]} cmds 监听的命令，可以是字符串或正则表达式，或字符串和正则的数组
+   * @param {MessageCmdHandler} handler 消息处理函数，包含群消息，讨论组消息和私聊消息
+   */
+  onCmd(cmds: string | RegExp | (string | RegExp)[], handler: MessageCmdHandler) {
+    this.checkMountStatus()
+
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (this.isTargetOn(e)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { _: params, '--': __, ...options } = minimist(e.toString().trim().split(/\s+/))
+        const inputCmd = params.shift() || ''
+
+        const cmdList = ensureArray(cmds)
+
+        for (const cmd of cmdList) {
+          const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}$`)
+
+          if (reg.test(inputCmd)) {
+            handler(e, params, options)
+            break
+          }
+        }
+      }
+    }
+
+    this.bot!.on('message', oicqHandler)
+    this.addHandler('message', oicqHandler)
+  }
+
+  /**
+   * 添加管理员命令监听函数，通过 `message_type` 判断消息类型。如果只需要监听特定的消息类型，请使用 `on` 监听，比如 `on('message.group')`
+   * @param {string | RegExp | (string | RegExp)[]} cmds 监听的命令，可以是字符串或正则表达式，或字符串和正则的数组
+   * @param {MessageCmdHandler} handler 消息处理函数，包含群消息，讨论组消息和私聊消息
+   */
+  onAdminCmd(cmds: string | RegExp | (string | RegExp)[], handler: MessageCmdHandler) {
+    this.checkMountStatus()
+
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (this.isTargetOn(e)) {
+        if (this.admins.includes(e.sender.user_id)) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { _: params, '--': __, ...options } = minimist(e.toString().trim().split(/\s+/))
+          const inputCmd = params.shift() || ''
+
+          const cmdList = ensureArray(cmds)
+
+          for (const cmd of cmdList) {
+            const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}$`)
+
+            if (reg.test(inputCmd)) {
+              handler(e, params, options)
+              break
+            }
+          }
+        }
+      }
+    }
+
+    this.bot!.on('message', oicqHandler)
+    this.addHandler('message', oicqHandler)
+  }
+
+  /**
+   * 插件被启用时执行，所有的插件实例调用相关的逻辑请写到传入的函数里
+   * @param {BotHandler} func 插件被挂载后的执行函数
+   */
   onMounted(func: BotHandler) {
     this._mounted = func
   }
 
-  /** 插件被禁用时执行，插件善后逻辑请写到传入的函数里（比如取消定时任务、自定义监听等） */
+  /**
+   * 插件被禁用时执行，所有的插件实例调用相关的逻辑请写到传入的函数里
+   * @param {BotHandler} func 插件被取消挂载后的执行函数
+   */
   onUnmounted(func: BotHandler) {
     this._unmounted = func
   }
 
-  /** 框架管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的 */
+  /**
+   * 打印消息到控制台，用于插件调试
+   */
+  log(msg: any, ...args: any[]) {
+    this.logger.info(msg, ...args)
+  }
+
+  /**
+   * 定时任务( [秒], 分, 时, 日, 月, 星期 ) `[*] * * * * *`
+   *
+   * @param {string} cronExpression corntab 表达式
+   * @param {BotHandler} fn 定时触发的函数
+   * @return {ScheduledTask} 定时任务
+   */
+  cron(cronExpression: string, fn: BotHandler): ScheduledTask {
+    this.checkMountStatus()
+
+    const isSytaxOK = nodeCron.validate(cronExpression)
+
+    if (!isSytaxOK) {
+      this.throwPluginError('cron 表达式无效，请检查')
+    }
+
+    const task = nodeCron.schedule(cronExpression, () => fn(this.bot!, this._admins!))
+
+    this._cronTasks.push(task)
+
+    return task
+  }
+
+  /**
+   * 框架管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
+   */
   get admins() {
+    this.checkMountStatus()
     return [...(this._admins || [])] as AdminArray
+  }
+
+  /**
+   * 框架主管理员 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
+   */
+  get mainAdmin() {
+    this.checkMountStatus()
+    return [...(this._admins || [])][0] as MainAdmin
+  }
+
+  /**
+   * 框架副管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
+   */
+  get subAdmins() {
+    this.checkMountStatus()
+    return (this._admins || []).slice(1) as number[]
   }
 }
 
-/** KiviBot 插件类 */
+/**
+ * KiviBot 插件类
+ */
 export interface KiviPlugin extends EventEmitter {
   /** 监听 oicq 标准事件以及 KiviBot 标准事件 */
   on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this

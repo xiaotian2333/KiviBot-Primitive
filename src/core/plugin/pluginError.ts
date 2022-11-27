@@ -1,3 +1,5 @@
+import log4js from 'log4js'
+
 /** KiviBot 插件错误类 */
 export class KiviPluginError extends Error {
   name = 'KiviPluginError'
@@ -8,5 +10,10 @@ export class KiviPluginError extends Error {
     super()
     this.pluginName = name
     this.message = message ?? ''
+  }
+
+  log() {
+    const logger = log4js.getLogger('plugin')
+    logger.error(`[${this.pluginName}] 插件出错，错误信息：${this.message}`)
   }
 }

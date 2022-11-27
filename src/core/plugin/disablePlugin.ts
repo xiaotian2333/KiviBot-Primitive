@@ -1,6 +1,7 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
 import { KiviLogger } from '@/logger'
+import { KiviPluginError } from './pluginError'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
@@ -38,7 +39,11 @@ export async function disablePlugin(
 
     return true
   } catch (e) {
-    error(`插件禁用过程中发生错误: ${e}`)
+    if (e instanceof KiviPluginError) {
+      e.log()
+    } else {
+      error(`插件禁用过程中发生错误: ${e}`)
+    }
   }
 
   return false

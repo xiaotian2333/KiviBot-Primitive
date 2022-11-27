@@ -9,7 +9,7 @@ export const SystemEvents = [
   'system.offline.network',
   'system.offline.kickoff',
   'system.offline'
-]
+] as const
 
 export const RequestEvents = [
   'request.friend.add',
@@ -19,7 +19,7 @@ export const RequestEvents = [
   'request.group.invite',
   'request.group',
   'request'
-]
+] as const
 
 export const MessageEvents = [
   'message.private',
@@ -32,7 +32,7 @@ export const MessageEvents = [
   'message.group.anonymous',
   'message.discuss',
   'message'
-]
+] as const
 
 export const NoticeEvents = [
   'notice.friend.increase',
@@ -49,9 +49,14 @@ export const NoticeEvents = [
   'notice.friend',
   'notice.group',
   'notice'
-]
+] as const
 
-export const SyncEvents = ['sync.message', 'sync.read.private', 'sync.read.group', 'sync.read']
+export const SyncEvents = [
+  'sync.message',
+  'sync.read.private',
+  'sync.read.group',
+  'sync.read'
+] as const
 
 export const OicqEvents = [
   ...SystemEvents,
