@@ -180,8 +180,14 @@ ${pluginInfo.length} in total, ${plugins.size} on
     }
   }
 
+  let shortName = pluginName
+
+  if (/^kivibot-plugin-/i.test(shortName)) {
+    shortName = shortName.replace(/^kivibot-plugin-/i, '')
+  }
+
   if (secondCmd === 'add') {
-    if (await install(pluginName)) {
+    if (await install(`kivibot-plugin-${shortName}`)) {
       return reply('〓 done 〓')
     } else {
       return reply('〓 faild 〓')
@@ -189,7 +195,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'update') {
-    if (await update(pluginName)) {
+    if (await update(`kivibot-plugin-${shortName}`)) {
       return reply('〓 done 〓')
     } else {
       return reply('〓 faild 〓')
