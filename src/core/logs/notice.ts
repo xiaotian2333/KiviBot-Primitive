@@ -17,10 +17,10 @@ export function noticeHandler(
 
     if (sub_type === 'decrease') {
       // 好友减少
-      message = `- [好友减少:${event.nickname}(${user_id})]`
+      message = `- [friend decrease:${event.nickname}(${user_id})]`
     } else if (sub_type === 'increase') {
       // 好友增加
-      message = `+ [好友增加:${event.nickname}(${user_id})]`
+      message = `+ [friend increase:${event.nickname}(${user_id})]`
     } else if (sub_type === 'poke') {
       // 好友戳一戳
       const { target_id, operator_id, friend } = event
@@ -38,7 +38,7 @@ export function noticeHandler(
         ? `${this.nickname}(${this.uin})`
         : `${friend.nickname}(${friend.user_id})`
 
-      message = `↓ [私聊戳:${operator}->${target}]`
+      message = `↓ [prvate poke:${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 私聊撤回
       const { friend, operator_id, message_id } = event
@@ -49,7 +49,7 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : friendinfo
 
-      message = `↓ [私聊撤回:${friendinfo}] [${operator}:${message_id}]`
+      message = `↓ [prvate recall:${friendinfo}] [${operator}:${message_id}]`
     }
   } else if (event.notice_type === 'group') {
     // 群通知
@@ -60,26 +60,26 @@ export function noticeHandler(
       const { set } = event
 
       if (set) {
-        message = `+ [成为群管理:${groupInfo}-${user_id}]`
+        message = `+ [new admin:${groupInfo}-${user_id}]`
       } else {
-        message = `- [取消群管理:${groupInfo}-${user_id}]`
+        message = `- [cancel admin:${groupInfo}-${user_id}]`
       }
     } else if (sub_type === 'ban') {
       // 群禁言
       const { duration, operator_id } = event
 
       const isBan = duration !== 0
-      const label = isBan ? '+ [禁言' : '- [解禁'
-      const desc = `${groupInfo}-${operator_id}->${user_id}${isBan ? `-${duration}分钟` : ''}`
+      const label = isBan ? '+ [ban' : '- [unban'
+      const desc = `${groupInfo}-${operator_id}->${user_id}${isBan ? `-${duration}min` : ''}`
 
       message = `${label}:${desc}]`
     } else if (sub_type === 'decrease') {
       // 群人数减少
       const { operator_id } = event
-      message = `- [退群:${groupInfo}-${operator_id || '主动'}->${user_id}]`
+      message = `- [leave group:${groupInfo}-${operator_id || 'subjective'}->${user_id}]`
     } else if (sub_type === 'increase') {
       // 群人数增加
-      message = `+ [进群:${groupInfo}-${user_id}]`
+      message = `+ [join group:${groupInfo}-${user_id}]`
     } else if (sub_type === 'poke') {
       // 群戳一戳
       const { target_id, operator_id } = event
@@ -93,7 +93,7 @@ export function noticeHandler(
       // 被戳方
       const target = isTargetSelf ? `${this.nickname}(${this.uin})` : target_id
 
-      message = `↓ [群聊戳:${operator}->${target}]`
+      message = `↓ [group poke:${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 群聊撤回
       const { operator_id, message_id } = event
@@ -103,7 +103,7 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
 
-      message = `↓ [群聊撤回:${groupInfo}-${operator_id}] [${operator}:${message_id}]`
+      message = `↓ [group recall:${groupInfo}-${operator_id}] [${operator}:${message_id}]`
     } else if (sub_type === 'transfer') {
       // 群聊转让
       const { operator_id } = event
@@ -113,7 +113,7 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
 
-      message = `↓ [群聊转让:${groupInfo}] [${operator}->${user_id}]`
+      message = `↓ [group transfer:${groupInfo}] [${operator}->${user_id}]`
     }
   }
 

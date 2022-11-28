@@ -35,14 +35,14 @@ export async function disablePlugin(
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    info(`插件 [${pluginName}] 禁用成功`)
+    info(`[${pluginName}] is now off`)
 
     return true
   } catch (e) {
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(`插件禁用过程中发生错误: ${e}`)
+      error(`error occurred during unmount: ${e}`)
     }
   }
 

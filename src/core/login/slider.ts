@@ -14,7 +14,7 @@ export function sliderHandler(this: Client, { url, isFirst }: SliderEvent) {
   if (isFirst) {
     clipboard.writeSync(url)
     KiviLogger.info(
-      `需要滑块验证，已将链接复制到剪切板，请获取并输入 \`ticket\` 后按 \`Enter\` 键，如无法粘贴请手动复制：${url}`
+      `need to verify slider, the verification link has been copied to clipboard, press \`Enter\` after inputing \`ticket\`, you can also copy url manually when needed: ${url}`
     )
   }
 

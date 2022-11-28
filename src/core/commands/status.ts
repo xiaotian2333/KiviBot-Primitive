@@ -38,18 +38,18 @@ export async function fetchStatus(bot: Client) {
   const arch = ArchMap[process.arch] || process.arch
 
   const message = `
-〓 KiviBot 状态 〓
-昵称: ${bot.nickname}
-账号: ${bot.uin}
-列表: ${bot.fl.size} 好友，${bot.gl.size} 群
-插件: 启用 ${plugins.size} 个，共 ${cnts.all} 个
-收发: ${recv_msg_cnt} p，${sent_msg_cnt} p
-实时: ${msg_cnt_per_min} p/min
-运行: ${runTime}
-框架: ${pkg?.version || '未知'}-${formatFileSize(rss)}-${per(rss)}%
-协议: oicq-v${OicqVersion}-${Devices[bot.config.platform]}
-系统: ${SystemMap[os.type()] || 'other'}-${arch}-node${nodeVersion}
-内存: ${formatFileSize(used)}/${formatFileSize(total)}-${per(used)}%
+〓 KiviBot Status 〓
+nickname: ${bot.nickname}
+account: ${bot.uin}
+list: ${bot.fl.size} friends, ${bot.gl.size} group
+plugin: ${plugins.size} on, ${cnts.all} in total
+message: ${recv_msg_cnt} R, ${sent_msg_cnt} S
+current: ${msg_cnt_per_min} p/min
+duration: ${runTime}
+frame: ${pkg?.version || 'unknown'}-${formatFileSize(rss)}-${per(rss)}%
+protocal: oicq-v${OicqVersion}-${Devices[bot.config.platform]}
+system: ${SystemMap[os.type()] || 'other'}-${arch}-node${nodeVersion}
+memory: ${formatFileSize(used)}/${formatFileSize(total)}-${per(used)}%
 `.trim()
 
   return message

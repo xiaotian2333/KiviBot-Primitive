@@ -17,19 +17,19 @@ export async function deviceHandler(
   }
 
   if (device_mode === 'sms') {
-    info(`需要验证设备锁，按 \`Enter\` 键向绑定手机 ${event.phone} 发送验证码`)
+    info(`need to verify device lock, press \`Enter\` to send sms to ${event.phone}`)
 
     process.stdin.once('data', async () => {
       this.sendSmsCode()
 
-      info(`验证码已发送至 ${event.phone}，输入验证码后按 \`Enter\` 键继续`)
+      info(`sms code has been sent to ${event.phone}, press \`Enter\` to continue after input`)
 
       const { sms } = await prompts({
         type: 'number',
         name: 'sms',
         max: 999999,
-        validate: (sms: number) => (!sms ? '验证码不为空' : true),
-        message: `请输入短信验证码 (${event.phone})`
+        validate: (sms: number) => (!sms ? 'sms code is required' : true),
+        message: `input sms code (${event.phone})`
       })
 
       this.submitSmsCode(sms)
@@ -38,7 +38,7 @@ export async function deviceHandler(
     clipboard.writeSync(event.url)
 
     info(
-      `需要验证设备锁，已将扫码验证链接复制到剪切板，验证完成后按 \`Enter\` 键继续，如无法粘贴请手动复制：${event.url}`
+      `need to verify device lock, the verification link has been copied to clipboard, press \`Enter\` after verification, you can also copy it manually when needed: ${event.url}`
     )
 
     process.stdin.once('data', () => this.login())

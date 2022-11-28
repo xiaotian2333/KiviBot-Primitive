@@ -455,7 +455,7 @@ export class KiviPlugin extends EventEmitter {
     const isSytaxOK = nodeCron.validate(cronExpression)
 
     if (!isSytaxOK) {
-      this.throwPluginError('cron 表达式无效，请检查')
+      this.throwPluginError('invalid cron expression')
     }
 
     const task = nodeCron.schedule(cronExpression, () => fn(this.bot!, this._admins!))

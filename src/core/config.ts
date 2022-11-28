@@ -9,18 +9,6 @@ import type { KiviPlugin } from './plugin'
 export type MainAdmin = number
 export type AdminArray = [MainAdmin, ...number[]]
 
-export const ActionMap: Record<'ignore' | 'accept' | 'refuse', string> = {
-  ignore: '自动忽略',
-  accept: '自动同意',
-  refuse: '自动拒绝'
-} as const
-
-export const ModeMap: Record<'qrcode' | 'sms' | 'password', string> = {
-  password: '密码',
-  qrcode: '二维码',
-  sms: '短信验证码'
-} as const
-
 /** 通知配置 */
 export interface NoticeConf {
   /** 是否启用通知功能 */

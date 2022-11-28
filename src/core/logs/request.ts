@@ -5,12 +5,6 @@ import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'oi
 
 export type AllRequestEvent = FriendRequestEvent | GroupRequestEvent | GroupInviteEvent
 
-const RoleMap: Record<string, string> = {
-  admin: `群管理`,
-  owner: `群主`,
-  member: `群员`
-} as const
-
 /** 请求监听函数，打印框架日志 */
 export function requestHandler(event: AllRequestEvent) {
   const { request_type, sub_type, user_id, nickname } = event
@@ -22,9 +16,9 @@ export function requestHandler(event: AllRequestEvent) {
     const { comment, source } = event
 
     if (sub_type === 'add') {
-      message = `+ [好友申请:${userInfo}-${source}-${comment}]`
+      message = `+ [friend request:${userInfo}-${source}-${comment}]`
     } else if (sub_type === 'single') {
-      message = `+ [单向好友:${userInfo}-${source}-${comment}]`
+      message = `+ [singer friend:${userInfo}-${source}-${comment}]`
     }
   } else if (request_type === 'group') {
     // 群通知
@@ -32,10 +26,10 @@ export function requestHandler(event: AllRequestEvent) {
     const groupInfo = `${group_name}(${group_id})`
 
     if (sub_type === 'add') {
-      message = `+ [申请进群:${groupInfo}-${userInfo}]`
+      message = `+ [request to join group:${groupInfo}-${userInfo}]`
     } else if (sub_type === 'invite') {
       const { role } = event
-      message = `+ [邀请进群:${groupInfo}-${userInfo}-${RoleMap[role]}]`
+      message = `+ [invited to join group:${groupInfo}-${userInfo}-${role}]`
     }
   }
 

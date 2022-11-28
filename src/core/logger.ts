@@ -25,18 +25,6 @@ export const LogTypeMap = {
   off: 'magenta'
 } as const
 
-export const LogChineseMap = {
-  all: '所有',
-  mark: '提示',
-  trace: '追踪',
-  debug: '调试',
-  info: '信息',
-  warn: '警告',
-  error: '错误',
-  fatal: '致命',
-  off: '关闭'
-} as const
-
 // 添加自定义 log4js Layout布局：kivi
 log4js.addLayout('kivi', (config) => {
   const { qq, platform, target = 'kivi' } = config
@@ -55,7 +43,7 @@ log4js.addLayout('kivi', (config) => {
     const now = dayjs(info.startTime).format(`MM-DD HH:mm:ss`)
     const color = LogTypeMap[level] as keyof typeof colors
     const type = target === 'kivi' ? 'KIVI' : 'PLUGIN'
-    const head = colors[color](`[${now}] [${type}] [${LogChineseMap[level]}]`)
+    const head = colors[color](`[${now}] [${type}] [${level}]`)
     return head + colors.gray(' - ') + info.data
   }
 })

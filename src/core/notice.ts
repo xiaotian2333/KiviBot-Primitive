@@ -1,15 +1,9 @@
 import { segment } from 'oicq'
 
-import { ActionMap, kiviConf } from './config'
+import { kiviConf } from './config'
 import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@src/utils'
 
 import type { Client, ImageElem } from 'oicq'
-
-export const RoleMap = {
-  admin: '群管理员',
-  member: '群成员',
-  owner: '群主'
-} as const
 
 function buildNotice(title: string, avatar: ImageElem, content: string) {
   return [`〓 ${title} 〓\n`, avatar, `\n${content}`]
@@ -33,11 +27,10 @@ export function configNotice(bot: Client) {
     const avatar = segment.image(getQQAvatarLink(sender.user_id, 100))
 
     const msg = `
-昵称: ${sender.nickname}
-QQ: ${sender.user_id}
-
-〓 消息内容 〓\n`.trimStart()
-    mainAdmin.sendMsg([...buildNotice('私聊通知', avatar, msg), ...message])
+nickname: ${sender.nickname}
+qq: ${sender.user_id}
+〓 Content 〓\n`.trimStart()
+    mainAdmin.sendMsg([...buildNotice('Friend Message', avatar, msg), ...message])
   })
 
   // 好友申请
@@ -53,14 +46,14 @@ QQ: ${sender.user_id}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-昵称: ${nickname}
-QQ: ${user_id}
-来源: ${source}
-附加信息: ${comment}
-已${ActionMap[friend.request.action]}
+nickname: ${nickname}
+qq: ${user_id}
+from: ${source}
+comment: ${comment}
+operation: ${[friend.request.action]}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Friend Request', avatar, msg))
   })
 
   // 新增好友
@@ -71,11 +64,11 @@ QQ: ${user_id}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-昵称: ${nickname}
-QQ: ${user_id}
+nickname: ${nickname}
+qq: ${user_id}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('新增好友', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Friend Increase', avatar, msg))
   })
 
   // 好友减少
@@ -86,11 +79,11 @@ QQ: ${user_id}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-昵称: ${nickname}
+nickname: ${nickname}
 QQ: ${user_id}
   `.trim()
 
-    mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Friend Decrease', avatar, msg))
   })
 
   // 邀请机器人进群
@@ -106,15 +99,13 @@ QQ: ${user_id}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-目标群名: ${group_name}
-目标群号: ${group_id}
-邀请人昵称: ${nickname}
-邀请人QQ: ${user_id}
-邀请人群身份: ${RoleMap[role]}
-已${ActionMap[group.request.action]}
+target group: ${group_name}
+target group id: ${group_id}
+invitor: ${nickname}(${user_id}, ${role})
+operation: ${group.request.action}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('邀请 Bot 进群', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Invit to Group', avatar, msg))
   })
 
   // 新增群聊
@@ -131,11 +122,11 @@ QQ: ${user_id}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-群名: ${name}
-群号: ${group_id}
+group name: ${name}
+group id: ${group_id}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('新增群聊', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Group Increase', avatar, msg))
   })
 
   // 群聊减少
@@ -154,12 +145,12 @@ QQ: ${user_id}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-群名: ${name}
-群号: ${group_id}
-${isKick ? `操作人: ${operator_id}` : ''}
+group name: ${name}
+group id: ${group_id}
+${isKick ? `operator: ${operator_id}` : ''}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice(isKick ? 'Bot 被踢' : 'Bot 主动退群', avatar, msg))
+    mainAdmin.sendMsg(buildNotice(isKick ? 'Bot been Kick' : 'Leave Group', avatar, msg))
   })
 
   // 群管理变动
@@ -177,12 +168,12 @@ ${isKick ? `操作人: ${operator_id}` : ''}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-群名: ${name}
-群号: ${group_id}
-被操作 QQ: ${user_id}
+group name: ${name}
+group id: ${group_id}
+target: ${user_id}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice(set ? '新增群管理' : '群管理被取消', avatar, msg))
+    mainAdmin.sendMsg(buildNotice(set ? 'New Group Admin' : 'Cancel Group Admin', avatar, msg))
   })
 
   // Bot 被禁言
@@ -201,13 +192,13 @@ ${isKick ? `操作人: ${operator_id}` : ''}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-群名: ${name}
-群号: ${group_id}
-操作 QQ: ${operator_id}
-禁言时长: ${formatDateDiff(duration * 1000, true, true)}
+group name: ${name}
+group id: ${group_id}
+operator: ${operator_id}
+duration: ${formatDateDiff(duration * 1000, true, true)}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Bot 被禁言', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Bot been Banned', avatar, msg))
   })
 
   // 群转让
@@ -223,12 +214,12 @@ ${isKick ? `操作人: ${operator_id}` : ''}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-群名: ${name}
-群号: ${group_id}
-原群主 QQ: ${operator_id}
-新群主 QQ: ${user_id}
+group name: ${name}
+group id: ${group_id}
+operator: ${operator_id}
+new owner: ${user_id}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('群聊被转让', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Transfer Group', avatar, msg))
   })
 }

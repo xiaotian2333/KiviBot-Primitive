@@ -20,12 +20,12 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
     KiviLogger.info(msg, ...args)
   }
 
-  info(colors.green(`${this.nickname}(${this.uin}) 上线成功！`))
+  info(colors.green(`${this.nickname}(${this.uin}) is online`))
 
   /** 全局错误处理函数 */
   const handleGlobalError = (e: Error) => {
     if (e instanceof KiviPluginError) {
-      error(`插件发生错误，来源：${e.pluginName}，报错信息: ${e.message}`)
+      error(`plugin on error: ${e.pluginName}, message: ${e.message}`)
     } else {
       error(e?.message || e?.stack || JSON.stringify(e))
     }
@@ -52,17 +52,18 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
 
   // 检索并加载插件
   const { all, cnt, npm, local } = await loadPlugins(this, kiviConf)
-  info(colors.cyan(`检索到 ${all} 个插件 (${npm}/${local})，成功启用 ${cnt} 个`))
+  info(colors.cyan(`${all} plugins found (${npm}/${local}), ${cnt} on`))
 
   // 上线通知，通知机器人主管理
   const mainAdmin = this.pickFriend(kiviConf.admins[0])
 
   if (!mainAdmin) {
-    error(colors.red('主管理员必须添加机器人为好友才能进行控制'))
+    error(colors.red('main admin must add bot to control it'))
   } else {
-    mainAdmin.sendMsg(`Hello KiviBot`)
+    mainAdmin.sendMsg('Hi KiviBot')
   }
 
   // 初始化完成
-  KiviLogger.info(colors.gray('框架初始化完成，开始处理消息...'))
+  KiviLogger.info(colors.gray('initialized successfully!'))
+  KiviLogger.info(colors.gray('start dealing with messages...'))
 }

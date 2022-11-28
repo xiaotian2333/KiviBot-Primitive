@@ -11,14 +11,14 @@ export function qrCodeHandler(this: Client) {
     const { retcode, uin } = await this.queryQrcodeResult()
 
     if (retcode === 53 && !hasShowReadMessage) {
-      KiviLogger.info(`扫码成功，等待确认...`)
+      KiviLogger.info(`successfully scanned, wait for confirmation...`)
       hasShowReadMessage = true
       return
     }
 
     if (retcode === 54) {
-      KiviLogger.warn('扫码授权被手动取消，流程结束')
-      KiviLogger.warn('按 `Enter` 键重新获取二维码，Ctrl + C 退出框架')
+      KiviLogger.warn('qrcode verification cancelled by the user')
+      KiviLogger.warn('press `Enter` to fetch qrcode again')
 
       clearInterval(interval_id)
 
@@ -26,7 +26,7 @@ export function qrCodeHandler(this: Client) {
     }
 
     if (retcode === 17) {
-      KiviLogger.warn('二维码已过期，重新申请二维码')
+      KiviLogger.warn('qrcode expired, fetching again...')
       clearInterval(interval_id)
       this.login()
     }
@@ -36,17 +36,17 @@ export function qrCodeHandler(this: Client) {
       clearInterval(interval_id)
 
       if (uin === this.uin) {
-        KiviLogger.info(`账号 ${uin} 扫码授权成功`)
+        KiviLogger.info(`${uin} verify successfully`)
         this.login()
         return
       }
 
-      KiviLogger.warn('你小子能不能看清账号再扫啊（扫码账号与登录账号不一致）')
-      KiviLogger.warn('确认账号正确后按 `Enter` 键重新获取二维码')
+      KiviLogger.warn('incorrect account (scan account diff from login account)')
+      KiviLogger.warn('press `Enter` again to fetch qrcode when ready to scan')
 
       process.stdin.once('data', () => this.login())
     }
   }, 1000)
 
-  KiviLogger.info(`等待账号 ${this.uin} 扫描二维码`)
+  KiviLogger.info(`waiting ${this.uin} to scan qrcode`)
 }
