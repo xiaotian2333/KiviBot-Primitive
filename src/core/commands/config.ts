@@ -10,7 +10,7 @@ export const ConfigText = `
 /config admin rm <qq>
 /config notice on
 /config notice off
-/config exit
+/config update
 `.trim()
 
 export async function handleConfigCommand(
@@ -64,9 +64,9 @@ invited to group: ${friend.request.action ?? 'null'}
           bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
           return reply('〓 done 〓')
         }
-      } else if (thirdCmd === 'del') {
+      } else if (thirdCmd === 'rm') {
         if (qq === mainAdmin) {
-          return reply('〓 cannot delete mainAdmin 〓')
+          return reply('〓 cannot remove mainAdmin 〓')
         }
 
         if (!set.has(qq)) {
@@ -98,7 +98,7 @@ invited to group: ${friend.request.action ?? 'null'}
     }
   }
 
-  if (secondCmd === 'check') {
+  if (secondCmd === 'update') {
     reply('〓 checking update... 〓')
 
     if (await update()) {
