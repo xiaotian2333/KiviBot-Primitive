@@ -187,6 +187,8 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'add') {
+    reply('〓 install... 〓')
+
     if (await install(`kivibot-plugin-${shortName}`)) {
       return reply('〓 done 〓')
     } else {
@@ -195,6 +197,8 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'update') {
+    reply('〓 update... 〓')
+
     if (await update(`kivibot-plugin-${shortName}`)) {
       return reply('〓 done 〓')
     } else {
