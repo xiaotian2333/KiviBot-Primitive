@@ -26,9 +26,9 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
   try {
     PluginLogger.debug('pluginPath: ' + pluginPath)
-    const plugin = (await require(pluginPath)) as KiviPlugin
+    const { plugin } = (await require(pluginPath)) as { plugin: KiviPlugin | undefined }
 
-    if (plugin?.mountKiviBotClient) {
+    if (plugin && plugin?.mountKiviBotClient) {
       try {
         await plugin.mountKiviBotClient(bot, [...kiviConf.admins])
 
@@ -45,7 +45,7 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
         }
       }
     } else {
-      error(colors.red(`[${pluginName}] dosen't have default export of \`KiviPlugin\` instance`))
+      error(colors.red(`[${pluginName}] dosen't export \`KiviPlugin\` instance as \`plugin\``))
     }
   } catch (e) {
     if (e instanceof KiviPluginError) {
