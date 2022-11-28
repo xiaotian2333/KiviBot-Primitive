@@ -5,8 +5,9 @@ import {
   getPluginPathByName,
   disablePlugin
 } from '@/plugin'
-import { plugins } from '@/start'
 import { kiviConf, saveKiviConf } from '@/config'
+import { plugins } from '@/start'
+import { update, install } from '@src/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 
@@ -16,6 +17,8 @@ export const PluginText = `
 /plugin on <name>
 /plugin reload <name>
 /plugin off <name>
+/plugin add <name>
+/plugin update <name>
 /plugin onall
 /plugin offall
 `.trim()
@@ -174,6 +177,22 @@ ${pluginInfo.length} in total, ${plugins.size} on
     if (isOK) {
       saveKiviConf()
       return reply('〓 done 〓')
+    }
+  }
+
+  if (secondCmd === 'add') {
+    if (await install(pluginName)) {
+      return reply('〓 done 〓')
+    } else {
+      return reply('〓 faild 〓')
+    }
+  }
+
+  if (secondCmd === 'update') {
+    if (await update(pluginName)) {
+      return reply('〓 done 〓')
+    } else {
+      return reply('〓 faild 〓')
     }
   }
 }

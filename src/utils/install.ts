@@ -1,9 +1,9 @@
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 
-export async function update(pkg = '') {
+export async function install(pkg = '') {
   const promiseExec = promisify(exec)
-  const cmd = `npm up ${pkg} --registry=https://registry.npmmirror.com`
+  const cmd = `npm i ${pkg}@latest --registry=https://registry.npmmirror.com`
 
   try {
     const { stderr } = await promiseExec(cmd)
