@@ -5,9 +5,9 @@
 [![node engine](https://img.shields.io/node/v/@kivibot/core/latest.svg?style=flat-square)](https://nodejs.org)
 [![discord](https://img.shields.io/static/v1?label=chat&message=on%20discord&color=7289da&logo=discord&style=flat-square)](https://discord.gg/RegGQD3Fu6)
 
-> `@kivibot/core` is the core libraary of `KiviBot`.
+> `@kivibot/core` is the core library of `KiviBot`.
 
-KiviBot is a lightweight cross-platform Tencent QQ robot frame, powered by `Node.js` & `oicq2`. It is still in the test stage, and there may be many bugs. Documents for it are also being improved, so stay tuned. Head to official documentation for more details: [KiviBot Beta Documentation (WIP)](https://beta.kivibot.com/)
+KiviBot is a lightweight cross-platform Tencent QQ robot frame, powered by `Node.js` & `oicq2`. It is still in the test stage, and there may be many bugs. Documentation for it is also being improved, so stay tuned. Head to official documentation for more details: [KiviBot Beta Documentation (WIP)](https://beta.kivibot.com/)
 
 ## 介绍
 
