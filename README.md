@@ -47,7 +47,7 @@ const plugin = new KiviPlugin('demo', '0.1.0', {
 })
 
 plugin.onMounted((bot, admins) => {
-  plugin.onMessage((event, params) => {
+  plugin.onMessage((event) => {
     if (event.toString() === 'hello') {
       event.reply('world')
     }
