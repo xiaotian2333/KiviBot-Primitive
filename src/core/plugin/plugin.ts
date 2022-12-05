@@ -272,7 +272,7 @@ export class KiviPlugin extends EventEmitter {
   saveConfig(
     data: any,
     filepath: string = path.join(this.dataDir, 'config.json'),
-    options: string | fs.ReadOptions | undefined = {}
+    options: string | fs.WriteOptions | undefined = {}
   ): boolean {
     try {
       fs.writeJsonSync(filepath, data, options)

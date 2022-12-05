@@ -40,43 +40,21 @@ KiviBot is a lightweight cross-platform Tencent QQ robot frame, powered by `Node
 仅需编写少量 JavaScript 代码即可实现丰富功能，只要你有 JavaScript 语言的基础，上手开发一个插件是非常简单的。参考下面给出的比较完善的插件 Demo。
 
 ```js
-const { KiviPlugin } = require('@kivibot/core')
+const { KiviPlugin, segment, http } = require('@kivibot/core')
 
-const plugin = new KiviPlugin('demo', '0.1.0', {
-  enableGroups: [123456]
-})
+const plugin = new KiviPlugin('demo', '0.1.0')
 
-plugin.onMounted((bot, admins) => {
-  plugin.onMessage((event) => {
-    if (event.toString() === 'hello') {
-      event.reply('world')
+plugin.onMounted(() => {
+  plugin.onMessage(event => {
+    const { raw_message } = event
+
+    if (raw_message === 'hello') {
+      const msgs = [segment.face(66), 'world']
+      event.reply(msgs)
     }
-  })
-
-  plugin.onCmd('/cmd', (event, params, options) => {
-    event.reply(JSON.stringify(params) + JSON.stringify(options))
-  })
-
-  plugin.onCmd(['cmd1', /^cmd2/i], (event, params, options) => {
-    event.reply('cmd1 or /cmd2/i trigger!')
-  })
-
-  plugin.onAdminCmd('/adminCmd', (event, params, options) => {
-    event.reply(JSON.stringify(params) + JSON.stringify(options))
-  })
-
-  plugin.onMatch([/morning/i, 'evening'], (event) => {
-    event.reply('you too')
-  })
-
-  plugin.cron('0,10,20,30,40,50 * * * * *', (bot) => {
-    bot.sendPrivateMsg(plugin.mainAdmin, 'cron task trigger!')
-  })
-
-  plugin.on('message.private', (event) => {
-    event.reply('Hi, I am KiviBot.')
   })
 })
 
 module.exports = { plugin }
+
 ```
