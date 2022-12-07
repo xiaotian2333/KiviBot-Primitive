@@ -14,11 +14,11 @@ import type { Client, MessageRet, Sendable } from 'oicq'
 export const PluginText = `
 〓 KiviBot Plugin 〓
 /plugin list
-/plugin on/off <name>
-/plugin reload <name>
 /plugin add <name>
-/plugin update <name>
+/plugin on/off <name>
 /plugin onall/offall
+/plugin reload <name>
+/plugin update <?name>
 `.trim()
 
 export async function handlePluginCommand(
@@ -110,6 +110,22 @@ ${pluginInfo.length} in total, ${plugins.size} on
     return
   }
 
+  if (secondCmd === 'update') {
+    reply('〓 checking update... 〓')
+
+    const upInfo = await update(`kivibot-plugin-${pluginName || '*'}`)
+
+    if (upInfo) {
+      const info = Object.entries(upInfo)
+        .map((k, v) => `${k} => ${v}`)
+        .join('\n')
+
+      return reply(info ? `〓 done 〓\n${info}` : '〓 up to date 〓')
+    } else {
+      return reply('〓 faild 〓')
+    }
+  }
+
   if (!pluginName) {
     return reply('〓 plugin name is required 〓')
   }
@@ -188,16 +204,6 @@ ${pluginInfo.length} in total, ${plugins.size} on
     reply('〓 installing... 〓')
 
     if (await install(`kivibot-plugin-${shortName}`)) {
-      return reply('〓 done 〓')
-    } else {
-      return reply('〓 faild 〓')
-    }
-  }
-
-  if (secondCmd === 'update') {
-    reply('〓 updating... 〓')
-
-    if (await update(`kivibot-plugin-${shortName}`)) {
       return reply('〓 done 〓')
     } else {
       return reply('〓 faild 〓')
