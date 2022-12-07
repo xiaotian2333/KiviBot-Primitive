@@ -36,12 +36,12 @@ export function qrCodeHandler(this: Client) {
       clearInterval(interval_id)
 
       if (uin === this.uin) {
-        KiviLogger.info(`${uin} verify successfully`)
+        KiviLogger.info(`${uin} verified successfully`)
         this.login()
         return
       }
 
-      KiviLogger.warn('incorrect account (scan account diff from login account)')
+      KiviLogger.warn('incorrect account (scan account diff from the configured one)')
       KiviLogger.warn('press `Enter` again to fetch qrcode when ready to scan')
 
       process.stdin.once('data', () => this.login())

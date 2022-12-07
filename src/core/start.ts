@@ -3,7 +3,7 @@ import { createClient } from 'oicq'
 import crypto from 'node:crypto'
 import fs, { ensureDirSync } from 'fs-extra'
 
-import { colors, LOGO, exitWithError } from '@src/utils'
+import { colors, LOGO, exitWithError, notice } from '@src/utils'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from './path'
 import { deviceHandler, errorHandler, qrCodeHandler, sliderHandler } from './login'
 import { Devices, KiviLogger, redirectLog } from './logger'
@@ -24,7 +24,7 @@ export const start = () => {
   process.title = `KiviBot ${pkg?.version ?? 'unknown'} `
 
   // 打印 KiviBot logo
-  console.log(colors.cyan(LOGO))
+  console.log(`\n${colors.cyan(LOGO)}\n`)
 
   if (!fs.existsSync(ConfigPath)) {
     exitWithError('config file `kivi.json` is not exist')
@@ -32,7 +32,7 @@ export const start = () => {
 
   /** 捕获 Ctrl C 中断退出 */
   process.on('SIGINT', () => {
-    process.stdout.write(colors.yellow('\nsuccess to exit KiviBot'))
+    notice.success(colors.yellow('exit KiviBot'), true)
     process.exit(0)
   })
 
@@ -42,6 +42,14 @@ export const start = () => {
 
     // 载入配置到内存
     Object.assign(kiviConf, conf)
+
+    // 终端标题加上账号
+    process.title = `KiviBot ${pkg.version} ${kiviConf.account || 'unknown'}`
+
+    console.log('welcome to KiviBot!\n')
+    console.log('usage docs:\t' + colors.green('https://beta.kivibot.com'))
+    console.log('frame version:\t' + colors.green(`@kivibot/core v${pkg.version}`))
+    console.log('config file:\t' + colors.green(`${ConfigPath}\n`))
 
     const { log_level = 'info', oicq_config = {} } = kiviConf
 
@@ -68,11 +76,6 @@ export const start = () => {
     // 重定向日志，oicq 的日志输出到日志文件，KiviBot 的日志输出到 console
     redirectLog(log_level, oicq_config, kiviConf.account)
 
-    KiviLogger.info(colors.green('Welcome to KiviBot!'))
-    KiviLogger.info(colors.green('docs: https://beta.kivibot.com'))
-    KiviLogger.info(colors.gray(`\`@kivibot/core\` version: ${pkg?.version ?? 'unknown'}`))
-    KiviLogger.info(colors.gray(`config: ${ConfigPath}`))
-
     // 确保 KiviBot 框架相关目录存在
     ensureDirSync(LogDir)
     ensureDirSync(PluginDir)
@@ -80,8 +83,9 @@ export const start = () => {
 
     const protocol = Devices[oicq_config.platform] || 'unknown'
 
-    KiviLogger.info(colors.gray(`start to login ${kiviConf.account} (${protocol})`))
-    KiviLogger.info(colors.gray(`searching available server...`))
+    KiviLogger.info(colors.gray(`using ${protocol} protocol`))
+    KiviLogger.info(colors.gray(`start logging ${kiviConf.account}`))
+    KiviLogger.info(colors.gray(`looking for available server...`))
 
     // 初始化实例
     const bot = createClient(kiviConf.account, oicq_config)
@@ -109,7 +113,7 @@ export const start = () => {
       bot.login(md5Pwd)
     }
   } catch (e) {
-    KiviLogger.debug(e)
+    KiviLogger.error(e)
     exitWithError('invalid config file `kivi.json`')
   }
 }

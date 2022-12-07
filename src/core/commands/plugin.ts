@@ -14,13 +14,11 @@ import type { Client, MessageRet, Sendable } from 'oicq'
 export const PluginText = `
 〓 KiviBot Plugin 〓
 /plugin list
-/plugin on <name>
+/plugin on/off <name>
 /plugin reload <name>
-/plugin off <name>
 /plugin add <name>
 /plugin update <name>
-/plugin onall
-/plugin offall
+/plugin onall/offall
 `.trim()
 
 export async function handlePluginCommand(
@@ -63,7 +61,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
     }
 
     if (ps.length === plugins.size) {
-      return reply('〓 all are already on 〓')
+      return reply('〓 all are on 〓')
     }
 
     ps.forEach(async (path, i) => {
@@ -90,7 +88,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
     const size = plugins.size
 
     if (!size) {
-      return reply('〓 all are already off 〓')
+      return reply('〓 all are off 〓')
     }
 
     Array.from(plugins.entries()).forEach(async ([pluginName, plugin], i) => {
@@ -113,7 +111,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (!pluginName) {
-    return reply('〓 miss plugin name 〓')
+    return reply('〓 plugin name is required 〓')
   }
 
   if (secondCmd === 'on') {
@@ -139,7 +137,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
     const plugin = plugins.get(pluginName)
 
     if (!plugin) {
-      return reply('〓 plugin not found 〓')
+      return reply(`〓 ${pluginName.slice(0, 12)}: not found 〓`)
     }
 
     const targetPluginPath = await getPluginPathByName(pluginName)
@@ -187,7 +185,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'add') {
-    reply('〓 install... 〓')
+    reply('〓 installing... 〓')
 
     if (await install(`kivibot-plugin-${shortName}`)) {
       return reply('〓 done 〓')
@@ -197,7 +195,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'update') {
-    reply('〓 update... 〓')
+    reply('〓 updating... 〓')
 
     if (await update(`kivibot-plugin-${shortName}`)) {
       return reply('〓 done 〓')

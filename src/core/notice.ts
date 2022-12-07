@@ -20,15 +20,18 @@ export function configNotice(bot: Client) {
   bot.on('message.private', (event) => {
     if (!kiviConf.notice.enable || !friend.message) return
 
-    const { sender, message } = event
+    const {
+      sender: { user_id, nickname },
+      message
+    } = event
 
-    if (sender.user_id === admins[0]) return
+    if (user_id === admins[0]) return
 
-    const avatar = segment.image(getQQAvatarLink(sender.user_id, 100))
+    const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${sender.nickname}
-qq: ${sender.user_id}
+nickname: ${nickname || 'unknown'}
+qq: ${user_id || 'unknown'}
 〓 Content 〓\n`.trimStart()
     mainAdmin.sendMsg([...buildNotice('Friend Message', avatar, msg), ...message])
   })
@@ -46,8 +49,8 @@ qq: ${sender.user_id}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${nickname}
-qq: ${user_id}
+nickname: ${nickname || 'unknown'}
+qq: ${user_id || 'unknown'}
 from: ${source}
 comment: ${comment}
 operation: ${[friend.request.action]}
@@ -64,8 +67,8 @@ operation: ${[friend.request.action]}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${nickname}
-qq: ${user_id}
+nickname: ${nickname || 'unknown'}
+qq: ${user_id || 'unknown'}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice('Friend Increase', avatar, msg))
@@ -79,8 +82,8 @@ qq: ${user_id}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${nickname}
-QQ: ${user_id}
+nickname: ${nickname || 'unknown'}
+QQ: ${user_id || 'unknown'}
   `.trim()
 
     mainAdmin.sendMsg(buildNotice('Friend Decrease', avatar, msg))
@@ -99,9 +102,9 @@ QQ: ${user_id}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-target group: ${group_name}
-target group id: ${group_id}
-invitor: ${nickname}(${user_id}, ${role})
+target group: ${group_name || 'unknown'}
+target group id: ${group_id || 'unknown'}
+inviter: ${nickname || 'unknown'}(${user_id || 'unknown'}, ${role})
 operation: ${group.request.action}
 `.trim()
 
@@ -122,8 +125,8 @@ operation: ${group.request.action}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name}
-group id: ${group_id}
+group name: ${name || 'unknown'}
+group id: ${group_id || 'unknown'}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice('Group Increase', avatar, msg))
@@ -145,9 +148,9 @@ group id: ${group_id}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name}
-group id: ${group_id}
-${isKick ? `operator: ${operator_id}` : ''}
+group name: ${name || 'unknown'}
+group id: ${group_id || 'unknown'}
+${isKick ? `operator: ${operator_id || 'unknown'}` : ''}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice(isKick ? 'Bot been Kick' : 'Leave Group', avatar, msg))
@@ -168,9 +171,9 @@ ${isKick ? `operator: ${operator_id}` : ''}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name}
-group id: ${group_id}
-target: ${user_id}
+group name: ${name || 'unknown'}
+group id: ${group_id || 'unknown'}
+target: ${user_id || 'unknown'}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice(set ? 'New Group Admin' : 'Cancel Group Admin', avatar, msg))
@@ -192,9 +195,9 @@ target: ${user_id}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name}
-group id: ${group_id}
-operator: ${operator_id}
+group name: ${name || 'unknown'}
+group id: ${group_id || 'unknown'}
+operator: ${operator_id || 'unknown'}
 duration: ${formatDateDiff(duration * 1000, true, true)}
 `.trim()
 
@@ -214,10 +217,10 @@ duration: ${formatDateDiff(duration * 1000, true, true)}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name}
-group id: ${group_id}
-operator: ${operator_id}
-new owner: ${user_id}
+group name: ${name || 'unknown'}
+group id: ${group_id || 'unknown'}
+operator: ${operator_id || 'unknown'}
+new owner: ${user_id || 'unknown'}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice('Transfer Group', avatar, msg))

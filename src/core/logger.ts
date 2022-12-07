@@ -25,7 +25,7 @@ export const LogTypeMap = {
   off: 'magenta'
 } as const
 
-// 添加自定义 log4js Layout布局：kivi
+// 添加自定义 log4js Layout 布局：kivi
 log4js.addLayout('kivi', (config) => {
   const { qq, platform, target = 'kivi' } = config
 
@@ -40,10 +40,10 @@ log4js.addLayout('kivi', (config) => {
   // KiviBot 框架日志输出到控制台（包括插件，可选关闭）
   return (info) => {
     const level = info.level.levelStr.toLowerCase() as keyof typeof LogTypeMap
-    const now = dayjs(info.startTime).format(`MM-DD HH:mm:ss`)
+    const now = dayjs(info.startTime).format(`HH:mm:ss`)
     const color = LogTypeMap[level] as keyof typeof colors
-    const type = target === 'kivi' ? 'KIVI' : 'PLUGIN'
-    const head = colors[color](`[${now}] [${type}] [${level}]`)
+    const type = target === 'kivi' ? qq : 'Plugin'
+    const head = colors[color](`[${now}-${type}]`)
     return head + colors.gray(' - ') + info.data
   }
 })

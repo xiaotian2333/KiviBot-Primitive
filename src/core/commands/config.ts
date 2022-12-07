@@ -1,16 +1,15 @@
 import { kiviConf, saveKiviConf } from '@/config'
-import { parseUin, update } from '@src/utils'
+import { parseUin } from '@src/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 
 export const ConfigText = `
 〓 KiviBot Config 〓
 /config detail
-/config admin add <qq>
-/config admin rm <qq>
-/config notice on
-/config notice off
-/config update
+/config admin add/rm <qq>
+/config notice on/off
+/config friend <operation>
+/config group <operation>
 `.trim()
 
 export async function handleConfigCommand(
@@ -27,15 +26,17 @@ export async function handleConfigCommand(
   if (secondCmd === 'detail') {
     const { friend } = kiviConf.notice
 
+    const subAdmins = kiviConf.admins.slice(1)
+
     const detail = `
-〓 Config Detail 〓
+〓 KiviBot Config Detail 〓
 login mode: ${kiviConf.login_mode ?? 'null'}
-device mode: ${kiviConf.login_mode ?? 'null'}
+device mode: ${kiviConf.device_mode ?? 'null'}
 main admin: ${kiviConf.admins[0] ?? 'null'}
-sub admins: ${kiviConf.admins.slice(1).join(', ')}
+sub admins: ${subAdmins.length ? subAdmins.join(', ') : 'empty'}
 notice status: ${kiviConf.notice.enable ? 'on' : 'ff'}
-friend request: ${friend.request.action ?? 'null'}
-invited to group: ${friend.request.action ?? 'null'}
+friend operation: ${friend.request.action ?? 'null'}
+group operation: ${friend.request.action ?? 'null'}
 `.trim()
 
     return reply(detail)
@@ -53,7 +54,7 @@ invited to group: ${friend.request.action ?? 'null'}
 
       if (thirdCmd === 'add') {
         if (set.has(qq) || qq === mainAdmin) {
-          return reply('〓 already admin 〓')
+          return reply('〓 is already admin 〓')
         }
 
         set.add(qq)
@@ -70,7 +71,7 @@ invited to group: ${friend.request.action ?? 'null'}
         }
 
         if (!set.has(qq)) {
-          return reply('〓 not admin 〓')
+          return reply('〓 is not admin 〓')
         }
         set.delete(qq)
 
@@ -78,6 +79,7 @@ invited to group: ${friend.request.action ?? 'null'}
 
         if (saveKiviConf()) {
           bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
+
           return reply('〓 done 〓')
         }
       }
@@ -87,24 +89,40 @@ invited to group: ${friend.request.action ?? 'null'}
   if (secondCmd === 'notice') {
     if (thirdCmd === 'on') {
       kiviConf.notice.enable = true
+
       if (saveKiviConf()) {
         reply('〓 notice is now on 〓')
       }
     } else if (thirdCmd === 'off') {
       kiviConf.notice.enable = false
+
       if (saveKiviConf()) {
         reply('〓 notice is now off 〓')
       }
     }
   }
 
-  if (secondCmd === 'update') {
-    reply('〓 checking update... 〓')
+  if (secondCmd === 'group') {
+    if (!['ignore', 'accept', 'refuse'].includes(thirdCmd)) {
+      return reply('〓 invalid operation 〓')
+    }
 
-    if (await update()) {
-      return reply('〓 everything is up to date now 〓')
-    } else {
-      return reply('〓 faild 〓')
+    kiviConf.notice.group.request.action = thirdCmd as 'ignore' | 'accept' | 'refuse'
+
+    if (saveKiviConf()) {
+      reply(`〓 ${thirdCmd} all groups 〓`)
+    }
+  }
+
+  if (secondCmd === 'friend') {
+    if (!['ignore', 'accept', 'refuse'].includes(thirdCmd)) {
+      return reply('〓 invalid operation 〓')
+    }
+
+    kiviConf.notice.friend.request.action = thirdCmd as 'ignore' | 'accept' | 'refuse'
+
+    if (saveKiviConf()) {
+      reply(`〓 ${thirdCmd} all friends 〓`)
     }
   }
 }

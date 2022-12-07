@@ -55,6 +55,12 @@ export interface KiviPluginConf {
   enableFriends?: number[]
 }
 
+export const TypeMap = {
+  private: 'P',
+  group: 'G',
+  discuss: 'D'
+} as const
+
 export class KiviPlugin extends EventEmitter {
   /** 插件名称 */
   public name: string
@@ -143,7 +149,7 @@ export class KiviPlugin extends EventEmitter {
     this._cronTasks.forEach((task) => task.stop())
   }
 
-  /** 目标群或者好友是否被启用 */
+  /** 目标群或者好友是否被启用，讨论组当作群聊处理 */
   private isTargetOn(event: AllMessageEvent) {
     const { enableFriends, enableGroups } = this._conf
 
@@ -192,7 +198,7 @@ export class KiviPlugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e: any) {
-      this.throwPluginError('插件挂载（onMounted）过程中发生错误: ' + e)
+      this.throwPluginError('error occurred (onMounted): ' + e)
     }
 
     // 插件监听 ociq 的所有事件
@@ -202,7 +208,7 @@ export class KiviPlugin extends EventEmitter {
           const event = e as AllMessageEvent
 
           if (this.isTargetOn(event)) {
-            this.emit(evt, { ...event, reply: event.reply.bind(event) })
+            this.emit(evt, event)
           }
         } else {
           this.emit(evt, e)
@@ -237,7 +243,7 @@ export class KiviPlugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e: any) {
-      this.throwPluginError('插件卸载（onUnmounted）过程中发生错误: ' + e)
+      this.throwPluginError('error occurred (onUnmounted): ' + e)
     }
 
     this.removeAllHandler()

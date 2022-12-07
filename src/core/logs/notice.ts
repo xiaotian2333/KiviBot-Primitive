@@ -93,7 +93,7 @@ export function noticeHandler(
       // 被戳方
       const target = isTargetSelf ? `${this.nickname}(${this.uin})` : target_id
 
-      message = `↓ [group poke:${operator}->${target}]`
+      message = `↓ [group poke:${groupInfo}-${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 群聊撤回
       const { operator_id, message_id } = event

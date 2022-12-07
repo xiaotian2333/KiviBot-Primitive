@@ -1,3 +1,4 @@
+import { colors } from '@src/utils'
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
 import { KiviLogger } from '@/logger'
@@ -35,7 +36,7 @@ export async function disablePlugin(
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    info(`[${pluginName}] is now off`)
+    info(`plugin ${colors.green(pluginName)} is now off`)
 
     return true
   } catch (e) {

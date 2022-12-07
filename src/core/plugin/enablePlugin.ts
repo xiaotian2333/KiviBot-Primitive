@@ -1,6 +1,6 @@
 import { colors } from '@src/utils'
 import { getPluginNameByPath } from './getPluginNameByPath'
-import { PluginLogger } from '@/logger'
+import { KiviLogger } from '@/logger'
 import { KiviPluginError } from './pluginError'
 import { plugins } from '@/start'
 
@@ -12,20 +12,20 @@ import type { KiviPlugin } from './plugin'
 export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: string) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
-    PluginLogger.error(msg, ...args)
+    KiviLogger.error(msg, ...args)
   }
 
   const info = (msg: any, ...args: any[]) => {
     bot.logger.info(msg, ...args)
-    PluginLogger.info(msg, ...args)
+    KiviLogger.info(msg, ...args)
   }
 
-  PluginLogger.debug('enablePlugin: ' + pluginPath)
+  KiviLogger.debug('enablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
 
   try {
-    PluginLogger.debug('pluginPath: ' + pluginPath)
+    KiviLogger.debug('pluginPath: ' + pluginPath)
     const { plugin } = (await require(pluginPath)) as { plugin: KiviPlugin | undefined }
 
     if (plugin && plugin?.mountKiviBotClient) {
@@ -34,7 +34,7 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
         plugins.set(pluginName, plugin)
 
-        info(`[${pluginName}] is now on`)
+        info(`plugin ${colors.green(pluginName)} is now on`)
 
         return true
       } catch (e) {
@@ -45,7 +45,11 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
         }
       }
     } else {
-      error(colors.red(`[${pluginName}] dosen't export \`KiviPlugin\` instance as \`plugin\``))
+      error(
+        colors.red(
+          `plugin ${colors.green(pluginName)} dosen't export \`KiviPlugin\` instance as \`plugin\``
+        )
+      )
     }
   } catch (e) {
     if (e instanceof KiviPluginError) {

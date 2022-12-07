@@ -3,7 +3,7 @@ import { promisify } from 'node:util'
 
 export async function install(pkg = '') {
   const promiseExec = promisify(exec)
-  const cmd = `npm i ${pkg}@latest --registry=https://registry.npmmirror.com`
+  const cmd = `npm i ${pkg ? `${pkg}@latest` : ''} --registry=https://registry.npmmirror.com`
 
   try {
     const { stderr } = await promiseExec(cmd)
