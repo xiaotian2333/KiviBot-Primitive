@@ -87,7 +87,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
 
     if (upInfo) {
       const info = Object.entries(upInfo)
-        .map((k, v) => `${k} => ${v}`)
+        .map(([k, v]) => `${k} => ${v}`)
         .join('\n')
 
       return reply(info ? `〓 done 〓\n${info}` : '〓 up to date 〓')

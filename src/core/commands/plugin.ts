@@ -117,7 +117,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
 
     if (upInfo) {
       const info = Object.entries(upInfo)
-        .map((k, v) => `${k} => ${v}`)
+        .map(([k, v]) => `${k.replace('kivibot-plugin-', '')} => ${v}`)
         .join('\n')
 
       return reply(info ? `〓 done 〓\n${info}` : '〓 up to date 〓')
@@ -126,11 +126,11 @@ ${pluginInfo.length} in total, ${plugins.size} on
     }
   }
 
-  if (!pluginName) {
-    return reply('〓 plugin name is required 〓')
-  }
-
   if (secondCmd === 'on') {
+    if (!pluginName) {
+      return reply('〓 plugin name is required 〓')
+    }
+
     const targetPluginPath = await getPluginPathByName(pluginName)
 
     if (!targetPluginPath) {
@@ -150,6 +150,10 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'off') {
+    if (!pluginName) {
+      return reply('〓 plugin name is required 〓')
+    }
+
     const plugin = plugins.get(pluginName)
 
     if (!plugin) {
@@ -172,6 +176,10 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'reload') {
+    if (!pluginName) {
+      return reply('〓 plugin name is required 〓')
+    }
+
     const plugin = plugins.get(pluginName)
     const targetPluginPath = await getPluginPathByName(pluginName)
 
@@ -194,13 +202,17 @@ ${pluginInfo.length} in total, ${plugins.size} on
     }
   }
 
-  let shortName = pluginName
-
-  if (/^kivibot-plugin-/i.test(shortName)) {
-    shortName = shortName.replace(/^kivibot-plugin-/i, '')
-  }
-
   if (secondCmd === 'add') {
+    if (!pluginName) {
+      return reply('〓 plugin name is required 〓')
+    }
+
+    let shortName = pluginName
+
+    if (/^kivibot-plugin-/i.test(shortName)) {
+      shortName = shortName.replace(/^kivibot-plugin-/i, '')
+    }
+
     reply('〓 installing... 〓')
 
     if (await install(`kivibot-plugin-${shortName}`)) {
