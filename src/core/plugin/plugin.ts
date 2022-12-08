@@ -259,7 +259,7 @@ export class KiviPlugin extends EventEmitter {
    */
   loadConfig(
     filepath: string = path.join(this.dataDir, 'config.json'),
-    options: string | fs.ReadOptions | undefined = {}
+    options: fs.ReadOptions | undefined = {}
   ) {
     try {
       return fs.readJsonSync(filepath, options)
@@ -271,17 +271,17 @@ export class KiviPlugin extends EventEmitter {
   /**
    * 将数据保存到插件数据目录（传入普通 JS 对象，储存为 JSON 格式）
    * @param {any} data 待保存的普通 JS 对象插件数据目录下的 `config.json`
-   * @param {string | fs.ReadOptions | undefined}
+   * @param {fs.ReadOptions | undefined}
    * @param {string} filepath 保存文件路径，默认为 options 写入配置的选项
    * @return {boolean} 是否写入成功
    */
   saveConfig(
     data: any,
     filepath: string = path.join(this.dataDir, 'config.json'),
-    options: string | fs.WriteOptions | undefined = {}
+    options: fs.WriteOptions | undefined = {}
   ): boolean {
     try {
-      fs.writeJsonSync(filepath, data, options)
+      fs.writeJsonSync(filepath, data, { spaces: 2, ...options })
       return true
     } catch {
       return false
