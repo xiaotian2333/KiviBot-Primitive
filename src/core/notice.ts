@@ -198,7 +198,7 @@ target: ${user_id || 'unknown'}
 group name: ${name || 'unknown'}
 group id: ${group_id || 'unknown'}
 operator: ${operator_id || 'unknown'}
-duration: ${formatDateDiff(duration * 1000, true, true)}
+duration: ${formatDateDiff(duration * 1000, false)}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice('Bot been Banned', avatar, msg))
