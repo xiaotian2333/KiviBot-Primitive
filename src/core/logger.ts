@@ -62,7 +62,7 @@ export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account:
   const layout = {
     platform,
     type: 'kivi',
-    qq: 536596616
+    qq: account
   }
 
   // 配置 log4js
