@@ -96,7 +96,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
         .map(([k, v]) => `${k} => ${v.replace('^', '')}`)
         .join('\n')
 
-      await reply(info ? `〓 更新完成 〓\n${info}` : '〓 已是最新 〓')
+      await reply(info ? `〓 更新完成 〓\n${info}` : '〓 当前已是最新版本 〓')
     } else {
       await reply('〓 失败 〓')
     }
