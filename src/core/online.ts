@@ -1,7 +1,6 @@
 import { bindSendMessage } from './bindSendMessage'
 import { colors, wait } from '@src/utils'
 import { configNotice } from './notice'
-import { fetchStatus } from './commands/status'
 import { handleKiviCommand } from './commands'
 import { KiviLogger, PluginLogger } from './logger'
 import { KiviPluginError, loadPlugins } from './plugin'
@@ -22,7 +21,7 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
     KiviLogger.info(msg, ...args)
   }
 
-  info(colors.green(`${this.nickname}(${this.uin}) is online`))
+  info(colors.green(`${this.nickname}(${this.uin}) 上线成功！发送 /help 指令查看用法。`))
 
   /** 全局错误处理函数 */
   const handleGlobalError = (e: Error) => {
@@ -58,27 +57,20 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   // 检索并加载插件
   const { all, cnt, npm, local } = await loadPlugins(this, kiviConf)
 
-  info(colors.cyan(`${all} plugins found (${local}/${npm}), ${cnt} on`))
+  info(colors.cyan(`共检索到 ${all} 个插件 (${local} 个本地，${npm} 个 npm), 启用 ${cnt} 个`))
 
   // 初始化完成
-  KiviLogger.info(colors.gray('initialized successfully!'))
-  KiviLogger.info(colors.gray('start dealing with messages...'))
+  KiviLogger.info(colors.gray('框架初始化完成'))
+  KiviLogger.info(colors.gray('开始处理消息...'))
 
   // 上线通知，通知机器人主管理
 
   if (!kiviConf.admins[0]) {
-    error(colors.red('main admin must add bot to control it'))
+    error(colors.red('主管理员必须添加 Bot 为好友，否则无法正常控制 Bot 和发送消息通知'))
   } else {
     const mainAdmin = this.pickFriend(kiviConf.admins[0])
 
     await wait(600)
-
-    try {
-      const status = await fetchStatus(this, true)
-
-      mainAdmin.sendMsg(status)
-    } catch (e) {
-      mainAdmin.sendMsg('failed to fetch device status info, error message: ' + e)
-    }
+    await mainAdmin.sendMsg('上线成功，发送 /help 查看帮助')
   }
 }

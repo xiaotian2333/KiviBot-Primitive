@@ -6,13 +6,13 @@ import {
   disablePlugin
 } from '@/plugin'
 import { kiviConf, saveKiviConf } from '@/config'
-import { plugins } from '@/start'
+import { pkg, plugins } from '@/start'
 import { update, install } from '@src/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 
 export const PluginText = `
-〓 KiviBot Plugin 〓
+〓 KiviBot 插件 〓
 /plugin list
 /plugin add <name>
 /plugin on/off <name>
@@ -42,9 +42,9 @@ export async function handlePluginCommand(
     })
 
     const message = `
-〓 Plugin List 〓
+〓 KiviBot 插件列表 〓
 ${pluginInfo.join('\n')}
-${pluginInfo.length} in total, ${plugins.size} on
+共 ${pluginInfo.length} 个，启用 ${plugins.size} 个
 `.trim()
 
     return reply(message)
@@ -57,11 +57,11 @@ ${pluginInfo.length} in total, ${plugins.size} on
     } = await searchAllPlugins()
 
     if (all === 0) {
-      return reply('〓 no plugin 〓')
+      return reply('〓 插件列表为空 〓')
     }
 
     if (ps.length === plugins.size) {
-      return reply('〓 all are on 〓')
+      return reply('〓 所有插件均已启用 〓')
     }
 
     ps.forEach(async (path, i) => {
@@ -77,7 +77,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
       if (i + 1 === all) {
         saveKiviConf()
 
-        return reply('〓 done 〓')
+        return reply('〓 已启用所有插件 〓')
       }
     })
 
@@ -88,7 +88,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
     const size = plugins.size
 
     if (!size) {
-      return reply('〓 all are off 〓')
+      return reply('〓 所有插件均已禁用 〓')
     }
 
     Array.from(plugins.entries()).forEach(async ([pluginName, plugin], i) => {
@@ -103,7 +103,7 @@ ${pluginInfo.length} in total, ${plugins.size} on
       if (i + 1 === size) {
         saveKiviConf(plugins)
 
-        return reply('〓 done 〓')
+        return reply('〓 已禁用所有插件 〓')
       }
     })
 
@@ -111,59 +111,63 @@ ${pluginInfo.length} in total, ${plugins.size} on
   }
 
   if (secondCmd === 'update') {
-    reply('〓 checking update... 〓')
+    reply('〓 正在检查插件更新... 〓')
 
     const upInfo = await update(`kivibot-plugin-${pluginName || '*'}`)
 
     if (upInfo) {
       const info = Object.entries(upInfo)
-        .map(([k, v]) => `${k.replace('kivibot-plugin-', '')} => ${v}`)
+        .map(([k, v]) => `${k.replace('kivibot-plugin-', '')} => ${v.replace('^', '')}`)
         .join('\n')
 
-      return reply(info ? `〓 done 〓\n${info}` : '〓 up to date 〓')
+      await reply(info ? `〓 插件更新成功 〓\n${info}` : '〓 已是最新 〓')
     } else {
-      return reply('〓 faild 〓')
+      await reply('〓 失败 〓')
     }
+
+    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
+
+    return
   }
 
   if (secondCmd === 'on') {
     if (!pluginName) {
-      return reply('〓 plugin name is required 〓')
+      return reply('〓 插件名不为空 〓')
     }
 
     const targetPluginPath = await getPluginPathByName(pluginName)
 
     if (!targetPluginPath) {
-      return reply(`〓 ${pluginName.slice(0, 12)}: not found 〓`)
+      return reply(`〓 ${pluginName.slice(0, 12)}: 插件不存在 〓`)
     }
 
     if (plugins.has(pluginName)) {
-      return reply(`〓 ${pluginName.slice(0, 12)}: already on 〓`)
+      return reply(`〓 ${pluginName.slice(0, 12)}: 插件已启用 〓`)
     }
 
     const isOK = await enablePlugin(bot, kiviConf, targetPluginPath)
 
     if (isOK) {
       saveKiviConf()
-      return reply('〓 done 〓')
+      return reply('〓 启用成功 〓')
     }
   }
 
   if (secondCmd === 'off') {
     if (!pluginName) {
-      return reply('〓 plugin name is required 〓')
+      return reply('〓 插件名不为空 〓')
     }
 
     const plugin = plugins.get(pluginName)
 
     if (!plugin) {
-      return reply(`〓 ${pluginName.slice(0, 12)}: not found 〓`)
+      return reply(`〓 ${pluginName.slice(0, 12)}: 插件不存在 〓`)
     }
 
     const targetPluginPath = await getPluginPathByName(pluginName)
 
     if (!targetPluginPath) {
-      return reply(`〓 ${pluginName.slice(0, 12)}: not found 〓`)
+      return reply(`〓 ${pluginName.slice(0, 12)}: 插件不存在 〓`)
     }
 
     const isOK = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
@@ -171,20 +175,20 @@ ${pluginInfo.length} in total, ${plugins.size} on
     if (isOK) {
       plugins.delete(pluginName)
       saveKiviConf()
-      return reply('〓 done 〓')
+      return reply('〓 禁用成功 〓')
     }
   }
 
   if (secondCmd === 'reload') {
     if (!pluginName) {
-      return reply('〓 plugin name is required 〓')
+      return reply('〓 插件名不为空 〓')
     }
 
     const plugin = plugins.get(pluginName)
     const targetPluginPath = await getPluginPathByName(pluginName)
 
     if (!targetPluginPath) {
-      return reply(`〓 ${pluginName.slice(0, 12)}: not found 〓`)
+      return reply(`〓 ${pluginName.slice(0, 12)}: 插件不存在 〓`)
     }
 
     let isOK = false
@@ -198,13 +202,13 @@ ${pluginInfo.length} in total, ${plugins.size} on
 
     if (isOK) {
       saveKiviConf()
-      return reply('〓 done 〓')
+      return reply('〓 重载成功 〓')
     }
   }
 
   if (secondCmd === 'add') {
     if (!pluginName) {
-      return reply('〓 plugin name is required 〓')
+      return reply('〓 插件名不为空 〓')
     }
 
     let shortName = pluginName
@@ -213,12 +217,14 @@ ${pluginInfo.length} in total, ${plugins.size} on
       shortName = shortName.replace(/^kivibot-plugin-/i, '')
     }
 
-    reply('〓 installing... 〓')
+    reply('〓 正在安装... 〓')
 
     if (await install(`kivibot-plugin-${shortName}`)) {
-      return reply('〓 done 〓')
+      await reply('〓 插件安装成功 〓')
     } else {
-      return reply('〓 faild 〓')
+      await reply('〓 失败 〓')
     }
+
+    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
   }
 }

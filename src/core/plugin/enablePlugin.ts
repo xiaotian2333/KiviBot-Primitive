@@ -38,10 +38,12 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
         return true
       } catch (e) {
+        KiviLogger.error(JSON.stringify(e, null, 2))
+
         if (e instanceof KiviPluginError) {
           e.log()
         } else {
-          error(`error occurred during mount: ${e}`)
+          error(`error occurred during mount: \n${JSON.stringify(e, null, 2)}`)
         }
       }
     } else {
@@ -52,10 +54,12 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
       )
     }
   } catch (e) {
+    KiviLogger.error(JSON.stringify(e, null, 2))
+
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(`error occurred during require: ${e}`)
+      error(`error occurred during require: \n${JSON.stringify(e, null, 2)}`)
     }
   }
 

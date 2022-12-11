@@ -1,6 +1,8 @@
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 
+import { KiviLogger } from '@src'
+
 export async function install(pkg = '') {
   const promiseExec = promisify(exec)
   const cmd = `npm i ${pkg} --registry=https://registry.npmmirror.com`
@@ -14,7 +16,8 @@ export async function install(pkg = '') {
       }
     }
     return true
-  } catch {
+  } catch (e) {
+    KiviLogger.error(JSON.stringify(e, null, 2))
     return false
   }
 }

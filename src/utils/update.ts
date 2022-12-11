@@ -3,7 +3,7 @@ import { promisify } from 'node:util'
 import ncu from 'npm-check-updates'
 import path from 'node:path'
 
-import { CWD } from '@src/core'
+import { CWD, KiviLogger } from '@src/core'
 
 export async function update(pkg = '') {
   const promiseExec = promisify(exec)
@@ -28,7 +28,9 @@ export async function update(pkg = '') {
     }
 
     return upInfo
-  } catch {
+  } catch (e) {
+    KiviLogger.error(JSON.stringify(e, null, 2))
+
     return false
   }
 }

@@ -58,6 +58,7 @@ export const SyncEvents = [
   'sync.read'
 ] as const
 
+/** oicq v2 标准事件列表 */
 export const OicqEvents = [
   ...SystemEvents,
   ...RequestEvents,
@@ -68,3 +69,6 @@ export const OicqEvents = [
   'internal.input',
   'guild.message'
 ] as (keyof EventMap<Client>)[]
+
+/** KiviBot 标准事件列表 */
+export const KiviEvents = ['kivi.admins'] as const

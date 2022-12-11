@@ -3,24 +3,29 @@ import minimist from 'minimist'
 import { fetchStatus } from './status'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
+import { KiviLogger } from '@src'
 import { notice, update } from '@src/utils'
+import { pkg } from '@/start'
 
 import type { AllMessageEvent } from '@/plugin'
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
 
 const HelpText = `
-〓 KiviBot Help 〓
-/plugin\t/status
-/config\t/update
-/about\t/exit
+〓 KiviBot 帮助 〓
+/plugin\t插件操作
+/status\t查看状态
+/config\t框架配置
+/update\t检查更新
+/about \t关于框架
+/exit  \t退出框架
 `.trim()
 
 const AboutText = `
-〓 About KiviBot 〓
-    KiviBot is a lightweight cross-platform Tencent QQ robot frame, powered by Node.js & oicq2.
-    Head to https://github.com/KiviBotLab/KiviBot for more infomation.
-    Source code: https://github.com/KiviBotLab/KiviBot.
+〓 关于 KiviBot 〓
+    KiviBot 是一个开源、轻量、跨平台的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
+官网: https://beta.kivibot.com/
+开源地址: https://github.com/KiviBotLab/KiviBot
 `.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
@@ -58,7 +63,8 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
       const status = await fetchStatus(bot)
       return reply(status)
     } catch (e) {
-      return reply('failed to fetch device status info, error message: ' + e)
+      KiviLogger.error(JSON.stringify(e, null, 2))
+      return reply('获取设备状态信息失败，错误信息:\n' + JSON.stringify(e, null, 2))
     }
   }
 
@@ -66,9 +72,9 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   if (!isMainAdmin) return
 
   if (cmd === 'exit') {
-    await reply('〓 see you later 〓')
+    await reply('〓 再会 〓')
 
-    notice.success('main process has been exit by admin via message command')
+    notice.success('框架进程已由管理员通过 /exit 消息指令退出')
     process.exit(0)
   }
 
@@ -81,18 +87,20 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   }
 
   if (cmd === 'update') {
-    reply('〓 checking update... 〓')
+    reply('〓 正在检查更新... 〓')
 
     const upInfo = await update()
 
     if (upInfo) {
       const info = Object.entries(upInfo)
-        .map(([k, v]) => `${k} => ${v}`)
+        .map(([k, v]) => `${k} => ${v.replace('^', '')}`)
         .join('\n')
 
-      return reply(info ? `〓 done 〓\n${info}` : '〓 up to date 〓')
+      await reply(info ? `〓 更新完成 〓\n${info}` : '〓 已是最新 〓')
     } else {
-      return reply('〓 faild 〓')
+      await reply('〓 失败 〓')
     }
+
+    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
   }
 }

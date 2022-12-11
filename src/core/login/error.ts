@@ -13,23 +13,23 @@ export function errorHandler(this: Client, { code, message }: { code: number; me
   }
 
   if (code === LoginErrorCode.AccountFrozen) {
-    error(`the account ${this.uin} has been blocked, please try again after lifting`)
+    error(`Bot 账号 ${this.uin} 被冻结，请在解除冻结后再尝试登录`)
     process.exit(0)
   }
 
   if (code === LoginErrorCode.WrongPassword) {
-    error('password is wrong, please generate correct config again via `kivi init --force`')
+    error('账号密码错误，请通过 `kivi init --force` 命令重新生成正确的配置文件')
     process.exit(0)
   }
 
   if (code === LoginErrorCode.TooManySms) {
-    exitWithError('too busy to send sms code again, please wait for a while')
+    exitWithError('验证码发送过于频繁，请先退出框架，稍后再试')
   }
 
   if (code === LoginErrorCode.WrongSmsCode) {
-    error('wrong sms code, please try again')
+    error('短信验证码错误，验证失败，请退出框架后重新启动')
     process.exit(0)
   }
 
-  error(`login error, code: ${code}, message: ${message}`)
+  error(`登录错误: ${code}，错误信息: ${message}`)
 }

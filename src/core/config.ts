@@ -1,6 +1,7 @@
 import { writeJsonSync } from 'fs-extra'
 
 import { ConfigPath } from './path'
+import { KiviLogger } from './logger'
 import { plugins } from './start'
 
 import type { Config } from 'oicq'
@@ -85,6 +86,7 @@ export const saveKiviConf = (_plugins?: Map<string, KiviPlugin>) => {
     writeJsonSync(ConfigPath, kiviConf, { encoding: 'utf-8', spaces: 2 })
     return true
   } catch (e) {
+    KiviLogger.error(JSON.stringify(e, null, 2))
     return false
   }
 }

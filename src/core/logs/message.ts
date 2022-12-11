@@ -5,16 +5,16 @@ import { kiviConf } from '@/config'
 import type { AllMessageEvent } from '@/plugin'
 
 const TypeMap = {
-  private: 'P',
-  group: 'G',
-  discuss: 'D'
+  private: '私',
+  group: '群',
+  discuss: '组'
 } as const
 
 /** 消息监听函数，打印框架日志 */
 export async function messageHandler(e: AllMessageEvent) {
   const { sender, message_type } = e
 
-  const type = TypeMap[e.message_type] || 'unknown'
+  const type = TypeMap[e.message_type]
   const nick = `${sender.nickname}(${sender.user_id})`
 
   let head = ''

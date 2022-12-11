@@ -1,6 +1,8 @@
-import { KiviLogger } from '@/logger'
 import clipboard from 'clipboardy'
 import prompts from 'prompts'
+
+import { colors } from '@src/utils'
+import { KiviLogger } from '@/logger'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
@@ -17,19 +19,21 @@ export async function deviceHandler(
   }
 
   if (device_mode === 'sms') {
-    info(`need to verify device lock, press \`Enter\` to send sms to ${event.phone}`)
+    info(
+      `需要验证设备锁，按 \`Enter\` 键发送短信验证码到手机号 ${colors.cyan(event.phone)} 进行验证`
+    )
 
     process.stdin.once('data', async () => {
       this.sendSmsCode()
 
-      info(`sms code has been sent to ${event.phone}, press \`Enter\` to continue after input`)
+      info(`短信验证码已发送至手机号 ${colors.cyan(event.phone)}，输入后按 \`Enter\` 键继续`)
 
       const { sms } = await prompts({
         type: 'number',
         name: 'sms',
         max: 999999,
-        validate: (sms: number) => (!sms ? 'sms code is required' : true),
-        message: `input sms code (${event.phone})`
+        validate: (sms: number) => (!sms ? '短信验证码不为空' : true),
+        message: `请输入短信验证码（${colors.cyan(event.phone)}）`
       })
 
       this.submitSmsCode(sms)
@@ -37,9 +41,11 @@ export async function deviceHandler(
   } else {
     clipboard.writeSync(event.url)
 
-    info(
-      `need to verify device lock, the verification link has been copied to clipboard, press \`Enter\` after verification, you can also copy it manually when needed: ${event.url}`
-    )
+    info(`需要扫描二维码验证设备锁，二维码链接已自动复制到剪切板，你也可以手动复制：\n`)
+
+    console.log(colors.cyan(event.url) + '\n')
+
+    info(`扫码验证完成后，按 \`Enter\` 键继续...`)
 
     process.stdin.once('data', () => this.login())
   }

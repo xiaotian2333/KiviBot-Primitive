@@ -40,10 +40,12 @@ export async function disablePlugin(
 
     return true
   } catch (e) {
+    KiviLogger.error(JSON.stringify(e, null, 2))
+
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(`error occurred during unmount: ${e}`)
+      error(`error occurred during unmount: \n${JSON.stringify(e, null, 2)}`)
     }
   }
 

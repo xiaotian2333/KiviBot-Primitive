@@ -6,7 +6,7 @@ import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@src/utils'
 import type { Client, ImageElem } from 'oicq'
 
 function buildNotice(title: string, avatar: ImageElem, content: string) {
-  return [`〓 ${title} 〓\n`, avatar, `\n${content}`]
+  return [avatar, `\n〓 ${title} 〓`, `\n${content}`]
 }
 
 /** 处理消息通知 */
@@ -30,10 +30,10 @@ export function configNotice(bot: Client) {
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${nickname || 'unknown'}
-qq: ${user_id || 'unknown'}
-〓 Content 〓\n`.trimStart()
-    mainAdmin.sendMsg([...buildNotice('Friend Message', avatar, msg), ...message])
+昵称: ${nickname || '未知'}
+QQ: ${user_id || '未知'}
+〓 消息内容 〓\n`.trimStart()
+    mainAdmin.sendMsg([...buildNotice('私聊消息', avatar, msg), ...message])
   })
 
   // 好友申请
@@ -49,14 +49,14 @@ qq: ${user_id || 'unknown'}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${nickname || 'unknown'}
-qq: ${user_id || 'unknown'}
-from: ${source}
-comment: ${comment}
-operation: ${[friend.request.action]}
+昵称: ${nickname || '未知'}
+QQ: ${user_id || '未知'}
+来源: ${source}
+附加信息: ${comment}
+操作: ${[friend.request.action]}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Friend Request', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
   })
 
   // 新增好友
@@ -67,11 +67,11 @@ operation: ${[friend.request.action]}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${nickname || 'unknown'}
-qq: ${user_id || 'unknown'}
+昵称: ${nickname || '未知'}
+QQ: ${user_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Friend Increase', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('新增好友', avatar, msg))
   })
 
   // 好友减少
@@ -82,11 +82,11 @@ qq: ${user_id || 'unknown'}
     const avatar = segment.image(getQQAvatarLink(user_id, 100))
 
     const msg = `
-nickname: ${nickname || 'unknown'}
-QQ: ${user_id || 'unknown'}
+昵称: ${nickname || '未知'}
+QQ: ${user_id || '未知'}
   `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Friend Decrease', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
   })
 
   // 邀请机器人进群
@@ -102,13 +102,13 @@ QQ: ${user_id || 'unknown'}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-target group: ${group_name || 'unknown'}
-target group id: ${group_id || 'unknown'}
-inviter: ${nickname || 'unknown'}(${user_id || 'unknown'}, ${role})
-operation: ${group.request.action}
+目标群聊: ${group_name || '未知'}
+目标群号: ${group_id || '未知'}
+邀请人: ${nickname || '未知'}(${user_id || '未知'}, ${role})
+操作: ${group.request.action}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Invit to Group', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('邀请进群', avatar, msg))
   })
 
   // 新增群聊
@@ -125,11 +125,11 @@ operation: ${group.request.action}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name || 'unknown'}
-group id: ${group_id || 'unknown'}
+群名: ${name || '未知'}
+群号: ${group_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Group Increase', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('新增群聊', avatar, msg))
   })
 
   // 群聊减少
@@ -148,12 +148,12 @@ group id: ${group_id || 'unknown'}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name || 'unknown'}
-group id: ${group_id || 'unknown'}
-${isKick ? `operator: ${operator_id || 'unknown'}` : ''}
+群名: ${name || '未知'}
+群号: ${group_id || '未知'}
+${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice(isKick ? 'Bot been Kick' : 'Leave Group', avatar, msg))
+    mainAdmin.sendMsg(buildNotice(isKick ? 'Bot 被踢' : 'Bot 退群', avatar, msg))
   })
 
   // 群管理变动
@@ -171,12 +171,12 @@ ${isKick ? `operator: ${operator_id || 'unknown'}` : ''}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name || 'unknown'}
-group id: ${group_id || 'unknown'}
-target: ${user_id || 'unknown'}
+群名: ${name || '未知'}
+群号: ${group_id || '未知'}
+被操作人: ${user_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice(set ? 'New Group Admin' : 'Cancel Group Admin', avatar, msg))
+    mainAdmin.sendMsg(buildNotice(set ? '设置群管理' : '取消群管理', avatar, msg))
   })
 
   // Bot 被禁言
@@ -195,13 +195,13 @@ target: ${user_id || 'unknown'}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name || 'unknown'}
-group id: ${group_id || 'unknown'}
-operator: ${operator_id || 'unknown'}
-duration: ${formatDateDiff(duration * 1000, false)}
+群名: ${name || '未知'}
+群号: ${group_id || '未知'}
+时长: ${formatDateDiff(duration * 1000)}
+操作人: ${operator_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Bot been Banned', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('Bot 被禁言', avatar, msg))
   })
 
   // 群转让
@@ -217,12 +217,12 @@ duration: ${formatDateDiff(duration * 1000, false)}
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
-group name: ${name || 'unknown'}
-group id: ${group_id || 'unknown'}
-operator: ${operator_id || 'unknown'}
-new owner: ${user_id || 'unknown'}
+群名: ${name || '未知'}
+群号: ${group_id || '未知'}
+原群主: ${operator_id || '未知'}
+新群主: ${user_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Transfer Group', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('群聊转让', avatar, msg))
   })
 }

@@ -21,18 +21,18 @@ export const pkg = require(path.join(__dirname, '../../package.json'))
 /** 启动框架 */
 export const start = () => {
   // 设置终端标题
-  process.title = `KiviBot ${pkg?.version ?? 'unknown'} `
+  process.title = `KiviBot ${pkg?.version ?? '未知'} `
 
   // 打印 KiviBot logo
   console.log(`\n${colors.cyan(LOGO)}\n`)
 
   if (!fs.existsSync(ConfigPath)) {
-    exitWithError('config file `kivi.json` is not exist')
+    exitWithError('配置文件 `kivi.json` 不存在')
   }
 
   /** 捕获 Ctrl C 中断退出 */
   process.on('SIGINT', () => {
-    notice.success(colors.yellow('exit KiviBot'), true)
+    notice.success(colors.yellow('已退出 KiviBot'), true)
     process.exit(0)
   })
 
@@ -44,21 +44,21 @@ export const start = () => {
     Object.assign(kiviConf, conf)
 
     // 终端标题加上账号
-    process.title = `KiviBot ${pkg.version} ${kiviConf.account || 'unknown'}`
+    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
 
-    console.log('welcome to KiviBot!\n')
-    console.log('usage docs:\t' + colors.green('https://beta.kivibot.com'))
-    console.log('frame version:\t' + colors.green(`@kivibot/core v${pkg.version}`))
-    console.log('config file:\t' + colors.green(`${ConfigPath}\n`))
+    console.log(`欢迎使用 KiviBot ${pkg.version}\n`)
+    console.log('使用文档: ' + colors.green('https://beta.kivibot.com'))
+    console.log('框架版本: ' + colors.green(`@kivibot/core ${pkg.version}`))
+    console.log('配置文件: ' + colors.green(`${ConfigPath}\n`))
 
     const { log_level = 'info', oicq_config = {} } = kiviConf
 
     if (!kiviConf?.account) {
-      exitWithError('invalid config file `kivi.json` ')
+      exitWithError('无效的配置文件：`kivi.json`')
     }
 
     if (!kiviConf?.admins || kiviConf?.admins?.length <= 0) {
-      exitWithError('the `admins` field in config file `kivi.json` needs at lease one admin')
+      exitWithError('配置文件 `kivi.json` 中至少配置一个主管理员')
     }
 
     // 缺省 oicq 配置
@@ -81,11 +81,11 @@ export const start = () => {
     ensureDirSync(PluginDir)
     ensureDirSync(PluginDataDir)
 
-    const protocol = Devices[oicq_config.platform] || 'unknown'
+    const protocol = Devices[oicq_config.platform] || '未知'
 
-    KiviLogger.info(colors.gray(`using ${protocol} protocol`))
-    KiviLogger.info(colors.gray(`start logging ${kiviConf.account}`))
-    KiviLogger.info(colors.gray(`looking for available server...`))
+    KiviLogger.info(colors.gray(`使用 ${protocol} 作为 Bot 登录协议`))
+    KiviLogger.info(colors.gray(`开始登录 Bot ${kiviConf.account}`))
+    KiviLogger.info(colors.gray(`正在查找可用服务器...`))
 
     // 初始化实例
     const bot = createClient(kiviConf.account, oicq_config)
@@ -113,7 +113,7 @@ export const start = () => {
       bot.login(md5Pwd)
     }
   } catch (e) {
-    KiviLogger.error(e)
-    exitWithError('invalid config file `kivi.json`')
+    KiviLogger.error(JSON.stringify(e, null, 2))
+    exitWithError('无效的配置文件：`kivi.json`')
   }
 }
