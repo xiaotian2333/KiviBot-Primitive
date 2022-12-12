@@ -1,15 +1,17 @@
 {
   "name": "@kivibot/core",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Core library for KiviBot, based on oicq v2.",
   "repository": "KiviBotLab/KiviBot",
   "homepage": "https://beta.kivibot.com/",
   "main": "lib/index.js",
   "keywords": [
+    "oicq",
+    "oicq2",
     "kivibot"
   ],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "prettier": "@vikiboss/prettier-config",
   "scripts": {
     "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",

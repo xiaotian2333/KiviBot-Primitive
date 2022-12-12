@@ -19,11 +19,12 @@ export function sliderHandler(this: Client, { url, isFirst }: SliderEvent) {
 
   if (isFirst) {
     clipboard.writeSync(url)
-    info(
-      `need to verify slider, the verification link has been copied to clipboard, you can also copy url manually when needed: \n`
-    )
+
+    info(`需要验证滑块并抓取 ticket，链接已自动复制到剪切板，你也可以手动复制：\n\n`)
+
     console.log(colors.cyan(url) + '\n')
-    info(`press \`Enter\` after inputing \`ticket\`:\n`)
+
+    info(`输入 ticket 后，按 \`Enter\` 键继续: \n\n`)
   }
 
   const inputTicket = () => {
