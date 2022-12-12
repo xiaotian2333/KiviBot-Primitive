@@ -23,9 +23,9 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
   KiviLogger.debug('enablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
+  const pn = colors.green(pluginName)
 
   try {
-    KiviLogger.debug('pluginPath: ' + pluginPath)
     const { plugin } = (await require(pluginPath)) as { plugin: KiviPlugin | undefined }
 
     if (plugin && plugin?.mountKiviBotClient) {
@@ -34,7 +34,7 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
         plugins.set(pluginName, plugin)
 
-        info(`plugin ${colors.green(pluginName)} is now on`)
+        info(`插件 ${pn} 启用成功`)
 
         return true
       } catch (e) {
@@ -43,23 +43,17 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
         if (e instanceof KiviPluginError) {
           e.log()
         } else {
-          error(`error occurred during mount: \n${JSON.stringify(e, null, 2)}`)
+          error(`插件 ${pn} 启用过程中发生错误: \n${JSON.stringify(e, null, 2)}`)
         }
       }
     } else {
-      error(
-        colors.red(
-          `plugin ${colors.green(pluginName)} dosen't export \`KiviPlugin\` instance as \`plugin\``
-        )
-      )
+      error(colors.red(`插件 ${pn} 没有导出 \`KiviPlugin\` 类实例的 \`plugin\` 属性`))
     }
   } catch (e) {
-    KiviLogger.error(JSON.stringify(e, null, 2))
-
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(`error occurred during require: \n${JSON.stringify(e, null, 2)}`)
+      error(`插件 ${pn} 导入过程中发生错误: \n${JSON.stringify(e, null, 2)}`)
     }
   }
 

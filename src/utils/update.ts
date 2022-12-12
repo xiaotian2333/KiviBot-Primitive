@@ -5,6 +5,7 @@ import path from 'node:path'
 
 import { CWD, KiviLogger } from '@src/core'
 
+/** 更新依赖 */
 export async function update(pkg = '') {
   const promiseExec = promisify(exec)
 

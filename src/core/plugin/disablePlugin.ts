@@ -28,6 +28,7 @@ export async function disablePlugin(
   KiviLogger.debug('disablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
+  const pn = colors.green(pluginName)
 
   try {
     // 调用插件挂载的禁用函数
@@ -36,16 +37,14 @@ export async function disablePlugin(
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    info(`plugin ${colors.green(pluginName)} is now off`)
+    info(`插件 ${pn} 禁用成功`)
 
     return true
   } catch (e) {
-    KiviLogger.error(JSON.stringify(e, null, 2))
-
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(`error occurred during unmount: \n${JSON.stringify(e, null, 2)}`)
+      error(`插件 ${pn} 禁用过程中发生错误: \n${JSON.stringify(e, null, 2)}`)
     }
   }
 
