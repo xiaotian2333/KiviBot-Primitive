@@ -64,7 +64,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
       return reply(status)
     } catch (e) {
       KiviLogger.error(JSON.stringify(e, null, 2))
-      return reply('获取设备状态信息失败，错误信息:\n' + JSON.stringify(e, null, 2))
+      return reply('设备状态信息获取失败，错误信息:\n' + JSON.stringify(e, null, 2))
     }
   }
 
@@ -72,7 +72,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   if (!isMainAdmin) return
 
   if (cmd === 'exit') {
-    await reply('〓 再会 〓')
+    await reply('〓 KiviBot 进程已停止 〓')
 
     notice.success('框架进程已由管理员通过 /exit 消息指令退出')
     process.exit(0)
