@@ -9,6 +9,7 @@ import { pb } from 'oicq/lib/core'
 import type { Client, Forwardable, XmlElem } from 'oicq'
 import type { Image } from 'oicq/lib/message'
 
+/** 制作合并转发消息，可自定义标题、内容、底部说明文字 */
 export async function makeForwardMsg(
   this: Client,
   msglist: Forwardable[] | Forwardable,

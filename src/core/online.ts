@@ -63,7 +63,7 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   KiviLogger.info(colors.gray('框架初始化完成'))
   KiviLogger.info(colors.gray('开始处理消息...'))
 
-  // 上线通知，通知机器人主管理
+  // 上线通知，通知 Bot 主管理
 
   if (!kiviConf.admins[0]) {
     error(colors.red('主管理员必须添加 Bot 为好友，否则无法正常控制 Bot 和发送消息通知'))

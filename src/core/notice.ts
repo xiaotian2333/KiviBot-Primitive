@@ -89,7 +89,7 @@ QQ: ${user_id || '未知'}
     mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
   })
 
-  // 邀请机器人进群
+  // 邀请 Bot 进群
   bot.on('request.group.invite', async (event) => {
     if (group.request.action !== 'ignore') {
       const action = group.request.action === 'accept'

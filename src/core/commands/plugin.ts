@@ -120,9 +120,9 @@ ${pluginInfo.join('\n')}
         .map(([k, v]) => `${k.replace('kivibot-plugin-', '')} => ${v.replace('^', '')}`)
         .join('\n')
 
-      await reply(info ? `〓 插件更新成功 〓\n${info}` : '〓 当前已是最新版本 〓')
+      await reply(info ? `〓 插件更新成功 〓\n${info}` : '〓 所有插件均为最新版本 〓')
     } else {
-      await reply('〓 失败 〓')
+      await reply('〓 更新失败 〓')
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
@@ -222,7 +222,7 @@ ${pluginInfo.join('\n')}
     if (await install(`kivibot-plugin-${shortName}`)) {
       await reply('〓 插件安装成功 〓')
     } else {
-      await reply('〓 失败 〓')
+      await reply('〓 安装失败 〓')
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`

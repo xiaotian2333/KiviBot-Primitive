@@ -32,7 +32,7 @@ export type GroupMessageHandler = (event: GroupMessageEvent) => any
 /**
  * 处理函数
  *
- * @param {Client} bot 机器人实例
+ * @param {Client} bot Bot 实例
  * @param {AdminArray} admins 管理员列表
  */
 export type BotHandler = (bot: Client, admins: AdminArray) => any
@@ -180,7 +180,7 @@ export class KiviPlugin extends EventEmitter {
 
   /**
    * **插件请勿调用**，KiviBot 框架调用此函数启用插件
-   * @param {Client} bot oicq 机器人实例
+   * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
    * @return {Promise<KiviPlugin>} 插件实例
    */
@@ -236,7 +236,7 @@ export class KiviPlugin extends EventEmitter {
 
   /**
    * **插件请勿调用**，KiviBot 框架调用此函数禁用插件
-   * @param {Client} bot oicq 机器人实例
+   * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
    */
   async unmountKiviBotClient(bot: Client, admins: AdminArray) {

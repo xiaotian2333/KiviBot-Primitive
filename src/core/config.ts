@@ -32,11 +32,11 @@ export interface NoticeConf {
   }
   /** 群聊、讨论组相关（所有群） */
   group: {
-    /** 邀请机器人进群请求 */
+    /** 邀请 Bot 进群请求 */
     request: {
       /** 是否开启通知 */
       enable: boolean
-      /** 如何处理邀请机器人进群请求，可选：ignore 忽略消息，accept 自动接受，refuse 自动拒绝 */
+      /** 如何处理邀请 Bot 进群请求，可选：ignore 忽略消息，accept 自动接受，refuse 自动拒绝 */
       action: 'ignore' | 'accept' | 'refuse'
     }
     /** Bot 的群聊增加 */

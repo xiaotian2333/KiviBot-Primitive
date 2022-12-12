@@ -13,18 +13,18 @@ import type { KiviConf } from '@/config'
 
 const HelpText = `
 〓 KiviBot 帮助 〓
-/plugin\t插件操作
-/status\t查看状态
-/config\t框架配置
-/update\t检查更新
-/about \t关于框架
-/exit  \t退出框架
+/plugin  插件操作
+/status  查看状态
+/config  框架配置
+/update  检查更新
+/about   关于框架
+/exit    退出框架
 `.trim()
 
 const AboutText = `
 〓 关于 KiviBot 〓
-    KiviBot 是一个开源、轻量、跨平台的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
-官网: https://beta.kivibot.com/
+KiviBot 是一个开源、轻量、跨平台的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
+使用文档: https://beta.kivibot.com/
 开源地址: https://github.com/KiviBotLab/KiviBot
 `.trim()
 
@@ -96,9 +96,9 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
         .map(([k, v]) => `${k} => ${v.replace('^', '')}`)
         .join('\n')
 
-      await reply(info ? `〓 更新完成 〓\n${info}` : '〓 当前已是最新版本 〓')
+      await reply(info ? `〓 更新完成 〓\n${info}` : '〓 所有依赖均为最新版本 〓')
     } else {
-      await reply('〓 失败 〓')
+      await reply('〓 更新失败 〓')
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
