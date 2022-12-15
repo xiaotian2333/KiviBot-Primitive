@@ -3,6 +3,7 @@ import { promisify } from 'node:util'
 
 import { KiviLogger } from '@src'
 
+// 安装 node 依赖
 export async function install(pkg = '') {
   const promiseExec = promisify(exec)
   const cmd = `npm i ${pkg} --registry=https://registry.npmmirror.com`

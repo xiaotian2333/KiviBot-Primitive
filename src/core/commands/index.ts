@@ -98,7 +98,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
 
       await reply(info ? `〓 更新完成 〓\n${info}` : '〓 所有依赖均为最新版本 〓')
     } else {
-      await reply('〓 更新失败 〓')
+      await reply('〓 更新失败，详情查看日志 〓')
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`

@@ -88,7 +88,7 @@ export async function handleConfigCommand(
         if (saveKiviConf()) {
           bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
 
-          return reply('〓 删除成功 〓')
+          return reply('〓 管理员删除成功 〓')
         }
       }
     }
@@ -112,7 +112,7 @@ export async function handleConfigCommand(
 
   if (secondCmd === 'group') {
     if (!['ignore', 'accept', 'refuse'].includes(thirdCmd)) {
-      return reply('〓 无效的操作 〓')
+      return reply('〓 操作无效，请检查 〓')
     }
 
     kiviConf.notice.group.request.action = thirdCmd as Operation
@@ -124,7 +124,7 @@ export async function handleConfigCommand(
 
   if (secondCmd === 'friend') {
     if (!['ignore', 'accept', 'refuse'].includes(thirdCmd)) {
-      return reply('〓 无效的操作 〓')
+      return reply('〓 操作无效，请检查 〓')
     }
 
     kiviConf.notice.friend.request.action = thirdCmd as Operation

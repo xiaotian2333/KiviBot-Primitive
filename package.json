@@ -1,6 +1,6 @@
 {
   "name": "@kivibot/core",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Core library for KiviBot, based on oicq v2.",
   "repository": "KiviBotLab/KiviBot",
   "homepage": "https://beta.kivibot.com/",

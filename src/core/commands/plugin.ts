@@ -47,7 +47,7 @@ ${pluginInfo.join('\n')}
 共 ${pluginInfo.length} 个，启用 ${plugins.size} 个
 `.trim()
 
-    return reply(message)
+    return reply(pluginInfo.length ? message : '〓 插件列表为空 〓')
   }
 
   if (secondCmd === 'onall') {
@@ -122,7 +122,7 @@ ${pluginInfo.join('\n')}
 
       await reply(info ? `〓 插件更新成功 〓\n${info}` : '〓 所有插件均为最新版本 〓')
     } else {
-      await reply('〓 更新失败 〓')
+      await reply('〓 更新失败，详情查看日志 〓')
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
@@ -132,7 +132,7 @@ ${pluginInfo.join('\n')}
 
   if (secondCmd === 'on') {
     if (!pluginName) {
-      return reply('〓 插件名不为空 〓')
+      return reply('〓 插件标识名不能为空 〓')
     }
 
     const targetPluginPath = await getPluginPathByName(pluginName)
@@ -149,13 +149,13 @@ ${pluginInfo.join('\n')}
 
     if (isOK) {
       saveKiviConf()
-      return reply('〓 启用成功 〓')
+      return reply('〓 插件启用成功 〓')
     }
   }
 
   if (secondCmd === 'off') {
     if (!pluginName) {
-      return reply('〓 插件名不为空 〓')
+      return reply('〓 插件标识名不能为空 〓')
     }
 
     const plugin = plugins.get(pluginName)
@@ -175,13 +175,13 @@ ${pluginInfo.join('\n')}
     if (isOK) {
       plugins.delete(pluginName)
       saveKiviConf()
-      return reply('〓 禁用成功 〓')
+      return reply('〓 插件禁用成功 〓')
     }
   }
 
   if (secondCmd === 'reload') {
     if (!pluginName) {
-      return reply('〓 插件名不为空 〓')
+      return reply('〓 插件标识名不能为空 〓')
     }
 
     const plugin = plugins.get(pluginName)
@@ -202,13 +202,13 @@ ${pluginInfo.join('\n')}
 
     if (isOK) {
       saveKiviConf()
-      return reply('〓 重载成功 〓')
+      return reply('〓 插件重载成功 〓')
     }
   }
 
   if (secondCmd === 'add') {
     if (!pluginName) {
-      return reply('〓 插件名不为空 〓')
+      return reply('〓 插件标识名不能为空 〓')
     }
 
     let shortName = pluginName
@@ -222,7 +222,7 @@ ${pluginInfo.join('\n')}
     if (await install(`kivibot-plugin-${shortName}`)) {
       await reply('〓 插件安装成功 〓')
     } else {
-      await reply('〓 安装失败 〓')
+      await reply('〓 安装失败，详情查看日志 〓')
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`

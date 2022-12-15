@@ -1,3 +1,5 @@
+// edit from https://github.com/takayama-lily/oicq/blob/main/lib/internal/contactable.ts#L422-L511
+
 import { randomBytes } from 'node:crypto'
 import { Readable } from 'node:stream'
 import { CmdID, highwayUpload } from 'oicq/lib/internal'

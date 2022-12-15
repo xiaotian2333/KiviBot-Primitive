@@ -55,16 +55,5 @@ export async function fetchStatus(bot: Client) {
 内存: ${formatFileSize(used)}/${formatFileSize(total)}-${per(used)}%
 `.trim()
 
-  // const msgs = [
-  //   {
-  //     message,
-  //     user_id: bot.uin,
-  //     nickname: bot.nickname
-  //   }
-  // ]
-
-  // // 防止消息刷屏，采用合并转发
-  // const xml = await makeForwardMsg.bind(bot)(msgs, 'KiviBot 状态', '点击查看 KiviBot 运行状态')
-
   return message
 }
