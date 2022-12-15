@@ -38,10 +38,13 @@ export async function makeForwardMsg(
         this.fl.get(fake.user_id)?.nickname || this.sl.get(fake.user_id)?.nickname || nickname
     if (cnt < 4) {
       cnt++
-      preview += `<title color="#777777" size="26">${
-        desc || `${escapeXml(nickname)}: ${escapeXml(maker.brief.slice(0, 50))}`
-      }</title>`
+      if (!desc) {
+        preview += `<title color="#777777" size="26">${`${escapeXml(nickname)}: ${escapeXml(
+          maker.brief.slice(0, 50)
+        )}`}</title>`
+      }
     }
+    if (desc) preview += `<title color="#777777" size="26">${desc}</title>`
     nodes.push({
       1: {
         1: fake.user_id,
