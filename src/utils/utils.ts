@@ -1,7 +1,7 @@
 import crypto from 'node:crypto'
+import dayjs from 'dayjs'
 
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
-import dayjs from 'dayjs'
 
 /**
  * 异步延时函数
@@ -22,10 +22,7 @@ export async function wait(ms: number): Promise<void> {
  * @param {BinaryToTextEncoding | undefined} encoding 返回数据编码，不传返回 `Buffer`，可传 `hex` 等返回字符串
  * @return {Buffer | string} MD5 加密后的数据
  */
-export async function md5(
-  text: BinaryLike,
-  encoding?: BinaryToTextEncoding
-): Promise<string | Buffer> {
+export function md5(text: BinaryLike, encoding?: BinaryToTextEncoding): string | Buffer {
   const hash = crypto.createHash('md5').update(text)
 
   if (encoding) {
