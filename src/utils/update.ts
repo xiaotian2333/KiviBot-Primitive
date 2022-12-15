@@ -1,14 +1,11 @@
-import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
 import ncu from 'npm-check-updates'
 import path from 'node:path'
 
+import { install } from './install'
 import { CWD, KiviLogger } from '@src/core'
 
 /** 更新依赖 */
 export async function update(pkg = '') {
-  const promiseExec = promisify(exec)
-
   const upInfo = await ncu({
     packageFile: path.join(CWD, 'package.json'),
     filter: pkg || ['@kivibot/*', 'kivibot', 'kivibot-*'],
@@ -17,18 +14,14 @@ export async function update(pkg = '') {
     registry: 'https://registry.npmmirror.com'
   })
 
-  const npmUpCmd = `npm up ${pkg} --registry=https://registry.npmmirror.com`
-
   try {
-    const { stderr } = await promiseExec(npmUpCmd)
+    const res = await install()
 
-    if (stderr) {
-      if (/npm ERR/i.test(String(stderr))) {
-        return false
-      }
+    if (res) {
+      return upInfo
+    } else {
+      return false
     }
-
-    return upInfo
   } catch (e) {
     KiviLogger.error(JSON.stringify(e, null, 2))
 

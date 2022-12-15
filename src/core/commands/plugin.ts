@@ -120,7 +120,9 @@ ${pluginInfo.join('\n')}
         .map(([k, v]) => `${k.replace('kivibot-plugin-', '')} => ${v.replace('^', '')}`)
         .join('\n')
 
-      await reply(info ? `〓 插件更新成功 〓\n${info}` : '〓 所有插件均为最新版本 〓')
+      const updatedInfo = pluginName ? '〓 插件已是最新版本 〓' : '〓 所有插件均为最新版本 〓'
+
+      await reply(info ? `〓 插件更新成功 〓\n${info}` : updatedInfo)
     } else {
       await reply('〓 更新失败，详情查看日志 〓')
     }
