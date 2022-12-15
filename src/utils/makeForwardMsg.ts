@@ -17,7 +17,6 @@ export async function makeForwardMsg(
   msglist: Forwardable[] | Forwardable,
   title = '转发的聊天记录',
   desc = '',
-  footer = '',
   dm = true
 ): Promise<XmlElem> {
   const that = (dm ? this.pickFriend : this.pickGroup)(this.uin)
@@ -44,7 +43,6 @@ export async function makeForwardMsg(
         )}`}</title>`
       }
     }
-    if (desc) preview += `<title color="#777777" size="26">${desc}</title>`
     nodes.push({
       1: {
         1: fake.user_id,
@@ -71,6 +69,7 @@ export async function makeForwardMsg(
       }
     })
   }
+  if (desc) preview = `<title color="#777777" size="26">${desc}</title>`
   for (const maker of makers) imgs = [...imgs, ...maker.imgs]
   if (imgs.length) await that.uploadImages(imgs)
   const compressed = await gzip(
@@ -90,9 +89,7 @@ export async function makeForwardMsg(
     nodes.length
   }" flag="3" m_resid="${resid}" serviceID="35" m_fileSize="${
     compressed.length
-  }"><item layout="1"><title color="#000000" size="34"> ${title} </title>${preview}<hr></hr><summary color="#808080" size="26"> ${
-    footer || `查看 ${nodes.length} 条转发消息`
-  } </summary></item><source name="聊天记录"></source></msg>`
+  }"><item layout="1"><title color="#000000" size="34"> ${title} </title>${preview}<hr></hr><summary color="#808080" size="26"> ${`查看 ${nodes.length} 条转发消息`} </summary></item><source name="聊天记录"></source></msg>`
 
   const res = {
     type: 'xml',
