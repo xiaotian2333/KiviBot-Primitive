@@ -53,7 +53,11 @@ export async function bindSendMessage(bot: Client) {
     }
   })
 
-  bot.on('notice.group.increase', ({ group }) => {
+  bot.on('notice.group.increase', ({ group, user_id }) => {
+    if (user_id !== bot.uin) {
+      return
+    }
+
     const { group_id, name = '未知' } = group
     const sendMsg = group.sendMsg.bind(group)
     const head = `↑ [群:${group_id}(${name})]`
