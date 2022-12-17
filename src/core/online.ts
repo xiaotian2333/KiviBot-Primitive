@@ -2,7 +2,7 @@ import { bindSendMessage } from './bindSendMessage'
 import { colors, wait } from '@src/utils'
 import { configNotice } from './notice'
 import { handleKiviCommand } from './commands'
-import { KiviLogger, PluginLogger } from './logger'
+import { KiviLogger } from './logger'
 import { KiviPluginError, loadPlugins } from './plugin'
 import { messageHandler, noticeHandler, requestHandler } from './logs'
 
@@ -21,14 +21,14 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
     KiviLogger.info(msg, ...args)
   }
 
-  info(colors.green(`${this.nickname}(${this.uin}) 上线成功！发送 /help 指令查看用法。`))
+  info(colors.green(`${this.nickname}(${this.uin}) 上线成功！`))
 
   /** 全局错误处理函数 */
   const handleGlobalError = (e: Error) => {
     if (e instanceof KiviPluginError) {
-      PluginLogger.error(`[${e.pluginName}] ${e.message}`)
+      e.log()
     } else {
-      error(e?.message || e?.stack || JSON.stringify(e))
+      error(e?.message ?? e?.stack ?? JSON.stringify(e, null, 2))
     }
   }
 
@@ -55,9 +55,11 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   configNotice(this)
 
   // 检索并加载插件
-  const { all, cnt, npm, local } = await loadPlugins(this, kiviConf)
+  const { all, cnt, npm, local, plugins } = await loadPlugins(this, kiviConf)
 
-  info(colors.cyan(`共检索到 ${all} 个插件 (${local} 个本地，${npm} 个 npm), 启用 ${cnt} 个`))
+  const plugiInfo = `共检索到 ${all} 个插件 (${local} 个本地，${npm} 个 npm)`
+
+  info(colors.cyan(`${plugiInfo}, 启用 ${cnt} 个：${colors.green(plugins.join(', '))}`))
 
   // 初始化完成
   KiviLogger.info(colors.gray('框架初始化完成'))
@@ -71,6 +73,6 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
     const mainAdmin = this.pickFriend(kiviConf.admins[0])
 
     await wait(600)
-    await mainAdmin.sendMsg('上线成功，发送 /help 查看帮助')
+    await mainAdmin.sendMsg(`上线成功，启用了 ${cnt} 个插件\n发送 /help 查看 KiviBot 帮助`)
   }
 }

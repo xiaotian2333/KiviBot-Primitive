@@ -112,8 +112,6 @@ export class KiviPlugin extends EventEmitter {
    * 检测是否已经挂载 bot 实例，未挂载抛出插件错误
    */
   private checkMountStatus() {
-    this.debug('checkMountStatus')
-
     if (!this.bot) {
       this.throwPluginError('Bot 实例此时还未挂载。请在 onMounted 与 onUnmounted 中进行调用。')
     }
@@ -182,7 +180,7 @@ export class KiviPlugin extends EventEmitter {
    * **插件请勿调用**，KiviBot 框架调用此函数启用插件
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
-   * @return {Promise<KiviPlugin>} 插件实例
+   * @return {Promise<KiviPlugin>} 插件实例 Promise
    */
   async mountKiviBotClient(bot: Client, admins: AdminArray): Promise<KiviPlugin> {
     this.debug('mountKiviBotClient')
@@ -284,9 +282,9 @@ export class KiviPlugin extends EventEmitter {
 
   /**
    * 将数据保存到插件数据目录（传入普通 JS 对象，储存为 JSON 格式）
-   * @param {any} data 待保存的普通 JS 对象插件数据目录下的 `config.json`
-   * @param {fs.ReadOptions | undefined}
-   * @param {string} filepath 保存文件路径，默认为 options 写入配置的选项
+   * @param {any} data 待保存的普通 JS 对象
+   * @param {string} filepath 保存文件路径，默认为，默认为插件数据目录下的 `config.json`
+   * @param {fs.ReadOptions | undefined} options 写入配置的选项
    * @return {boolean} 是否写入成功
    */
   saveConfig(

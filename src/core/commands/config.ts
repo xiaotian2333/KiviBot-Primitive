@@ -14,7 +14,7 @@ export const ConfigText = `
 
 type Operation = 'refuse' | 'ignore' | 'accept'
 
-const OperationMap = {
+export const OperationMap = {
   refuse: '拒绝',
   accept: '同意',
   ignore: '忽略'

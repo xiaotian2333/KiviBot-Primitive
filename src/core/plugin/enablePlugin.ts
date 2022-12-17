@@ -37,23 +37,23 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
         info(`插件 ${pn} 启用成功`)
 
         return true
-      } catch (e) {
-        KiviLogger.error(JSON.stringify(e, null, 2))
-
+      } catch (e: any) {
         if (e instanceof KiviPluginError) {
           e.log()
         } else {
-          error(`插件 ${pn} 启用过程中发生错误: \n${JSON.stringify(e, null, 2)}`)
+          const msg = e?.message ?? e?.stack ?? JSON.stringify(e, null, 2)
+          error(`插件 ${pn} 启用过程中发生错误: \n${msg}`)
         }
       }
     } else {
       error(colors.red(`插件 ${pn} 没有导出 \`KiviPlugin\` 类实例的 \`plugin\` 属性`))
     }
-  } catch (e) {
+  } catch (e: any) {
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(`插件 ${pn} 导入过程中发生错误: \n${JSON.stringify(e, null, 2)}`)
+      const msg = e?.message ?? e?.stack ?? JSON.stringify(e, null, 2)
+      error(`插件 ${pn} 导入过程中发生错误: \n${msg}`)
     }
   }
 

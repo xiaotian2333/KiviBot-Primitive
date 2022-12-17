@@ -10,8 +10,7 @@ export async function update(pkg = '') {
     packageFile: path.join(CWD, 'package.json'),
     filter: pkg || ['@kivibot/*', 'kivibot', 'kivibot-*'],
     upgrade: true,
-    jsonUpgraded: true,
-    registry: 'https://registry.npmmirror.com'
+    jsonUpgraded: true
   })
 
   try {
@@ -22,8 +21,8 @@ export async function update(pkg = '') {
     } else {
       return false
     }
-  } catch (e) {
-    KiviLogger.error(JSON.stringify(e, null, 2))
+  } catch (e: any) {
+    KiviLogger.error(e?.message ?? e?.stack ?? JSON.stringify(e, null, 2))
 
     return false
   }

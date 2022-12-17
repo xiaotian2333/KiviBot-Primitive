@@ -40,11 +40,12 @@ export async function disablePlugin(
     info(`插件 ${pn} 禁用成功`)
 
     return true
-  } catch (e) {
+  } catch (e: any) {
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(`插件 ${pn} 禁用过程中发生错误: \n${JSON.stringify(e, null, 2)}`)
+      const msg = e?.message ?? e?.stack ?? JSON.stringify(e, null, 2)
+      error(`插件 ${pn} 禁用过程中发生错误: \n${msg}`)
     }
   }
 

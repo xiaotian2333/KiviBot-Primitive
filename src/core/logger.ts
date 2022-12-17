@@ -8,7 +8,7 @@ import { colors } from '@src/utils'
 import type { Config } from 'oicq'
 
 /** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
-export const Devices = ['', 'Android', 'aPad', 'aWatch', 'Mac', 'iPad'] as const
+export const Devices = ['', 'aPhone', 'aPad', 'aWatch', 'MacOS', 'iPad'] as const
 
 export const KiviLogger = log4js.getLogger('kivi')
 export const PluginLogger = log4js.getLogger('plugin')

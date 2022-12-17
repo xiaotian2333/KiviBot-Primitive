@@ -1,7 +1,8 @@
 import { segment } from 'oicq'
 
-import { kiviConf } from './config'
 import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@src/utils'
+import { kiviConf } from './config'
+import { OperationMap } from './commands/config'
 
 import type { Client, ImageElem } from 'oicq'
 
@@ -53,7 +54,7 @@ QQ: ${user_id || '未知'}
 QQ: ${user_id || '未知'}
 来源: ${source}
 附加信息: ${comment}
-操作: ${[friend.request.action]}
+操作: ${OperationMap[friend.request.action]}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
@@ -105,7 +106,7 @@ QQ: ${user_id || '未知'}
 目标群聊: ${group_name || '未知'}
 目标群号: ${group_id || '未知'}
 邀请人: ${nickname || '未知'}(${user_id || '未知'}, ${role})
-操作: ${group.request.action}
+操作: ${OperationMap[group.request.action]}
 `.trim()
 
     mainAdmin.sendMsg(buildNotice('邀请进群', avatar, msg))

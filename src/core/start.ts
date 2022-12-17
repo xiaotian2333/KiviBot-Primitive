@@ -46,7 +46,7 @@ export const start = () => {
     // 终端标题加上账号
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
 
-    console.log(`欢迎使用 KiviBot，轻量、高效、跨平台！\n`)
+    console.log(`欢迎使用 KiviBot，轻量、高效、跨平台\n`)
     console.log('使用文档: ' + colors.green('https://beta.kivibot.com'))
     console.log('框架版本: ' + colors.green(`@kivibot/core ${pkg.version}`))
     console.log('配置文件: ' + colors.green(`${ConfigPath}\n`))
@@ -84,8 +84,8 @@ export const start = () => {
     const protocol = Devices[oicq_config.platform] || '未知'
 
     KiviLogger.info(colors.gray(`使用 ${protocol} 作为 Bot 登录协议`))
-    KiviLogger.info(colors.gray(`开始登录 Bot ${kiviConf.account}`))
-    KiviLogger.info(colors.gray(`正在查找可用服务器...`))
+    KiviLogger.info(colors.gray(`开始登录 Bot 账号 ${kiviConf.account}...`))
+    KiviLogger.info(colors.gray(`正在查找可用登录服务器...`))
 
     // 初始化实例
     const bot = createClient(kiviConf.account, oicq_config)
