@@ -17,6 +17,8 @@ export class KiviPluginError extends Error {
 
   log() {
     const logger = log4js.getLogger('plugin')
-    logger.error(`插件 ${colors.cyan(this.pluginName)} 抛出错误: ${this.message}`)
+    const info = `插件 ${colors.cyan(this.pluginName)} 抛出错误: ${this.message}`
+    logger.error(info)
+    return this.message
   }
 }

@@ -64,20 +64,28 @@ ${pluginInfo.join('\n')}
       return reply('〓 所有插件均已启用 〓')
     }
 
+    let count = 0
+
     ps.forEach(async (path, i) => {
       const pluginName = getPluginNameByPath(path)
 
       if (plugins.has(pluginName)) {
         // 过滤已经启用了的插件
-        return
+        return count++
       }
 
-      await enablePlugin(bot, kiviConf, path)
+      const res = await enablePlugin(bot, kiviConf, path)
+
+      if (res === true) {
+        count++
+      } else {
+        reply(`〓 ${pluginName} 启用失败 〓\n${res}`)
+      }
 
       if (i + 1 === all) {
         saveKiviConf()
 
-        return reply('〓 已启用所有插件 〓')
+        return reply(`〓 共启用 ${count} 个插件 〓`)
       }
     })
 
@@ -95,7 +103,11 @@ ${pluginInfo.join('\n')}
       const targetPluginPath = await getPluginPathByName(pluginName)
 
       if (targetPluginPath) {
-        await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
+        const res = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
+
+        if (res !== true) {
+          reply(`〓 ${pluginName} 禁用失败 〓\n${res}`)
+        }
 
         plugins.delete(pluginName)
       }
@@ -147,11 +159,13 @@ ${pluginInfo.join('\n')}
       return reply(`〓 ${pluginName.slice(0, 12)}: 插件已启用 〓`)
     }
 
-    const isOK = await enablePlugin(bot, kiviConf, targetPluginPath)
+    const res = await enablePlugin(bot, kiviConf, targetPluginPath)
 
-    if (isOK) {
+    if (res === true) {
       saveKiviConf()
       return reply('〓 插件启用成功 〓')
+    } else {
+      return reply(`〓 插件启用失败 〓\n${res}`)
     }
   }
 
@@ -172,12 +186,14 @@ ${pluginInfo.join('\n')}
       return reply(`〓 ${pluginName.slice(0, 12)}: 插件不存在 〓`)
     }
 
-    const isOK = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
+    const res = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
 
-    if (isOK) {
+    if (res === true) {
       plugins.delete(pluginName)
       saveKiviConf()
       return reply('〓 插件禁用成功 〓')
+    } else {
+      return reply(`〓 插件禁用失败 〓\n${res}`)
     }
   }
 
@@ -193,18 +209,20 @@ ${pluginInfo.join('\n')}
       return reply(`〓 ${pluginName.slice(0, 12)}: 插件不存在 〓`)
     }
 
-    let isOK = false
+    let res: boolean | string = false
 
     if (!plugin) {
-      isOK = await enablePlugin(bot, kiviConf, targetPluginPath)
+      res = await enablePlugin(bot, kiviConf, targetPluginPath)
     } else {
-      isOK = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
-      isOK = isOK && (await enablePlugin(bot, kiviConf, targetPluginPath))
+      res = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
+      res = res && (await enablePlugin(bot, kiviConf, targetPluginPath))
     }
 
-    if (isOK) {
+    if (res === true) {
       saveKiviConf()
       return reply('〓 插件重载成功 〓')
+    } else {
+      return reply(`〓 插件重载失败 〓\n${res}`)
     }
   }
 

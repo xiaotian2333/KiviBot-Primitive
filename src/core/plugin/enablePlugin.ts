@@ -1,4 +1,4 @@
-import { colors } from '@src/utils'
+import { colors, escapeColor } from '@src/utils'
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { KiviLogger } from '@/logger'
 import { KiviPluginError } from './pluginError'
@@ -38,26 +38,31 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
         return true
       } catch (e: any) {
+        plugins.delete(pluginName)
+
         if (e instanceof KiviPluginError) {
-          e.log()
+          return e.log()
         } else {
           const msg = e?.message ?? e?.stack ?? JSON.stringify(e, null, 2)
           error(`插件 ${pn} 启用过程中发生错误: \n${msg}`)
+          return msg
         }
       }
     } else {
-      error(colors.red(`插件 ${pn} 没有导出 \`KiviPlugin\` 类实例的 \`plugin\` 属性`))
+      plugins.delete(pluginName)
+      const info = colors.red(`插件 ${pn} 没有导出 \`KiviPlugin\` 类实例的 \`plugin\` 属性`)
+      error(info)
+      return escapeColor(info)
     }
   } catch (e: any) {
+    plugins.delete(pluginName)
+
     if (e instanceof KiviPluginError) {
-      e.log()
+      return e.log()
     } else {
       const msg = e?.message ?? e?.stack ?? JSON.stringify(e, null, 2)
       error(`插件 ${pn} 导入过程中发生错误: \n${msg}`)
+      return msg
     }
   }
-
-  plugins.delete(pluginName)
-
-  return false
 }

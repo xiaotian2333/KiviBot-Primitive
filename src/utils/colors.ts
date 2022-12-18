@@ -18,6 +18,11 @@ export const colors = {
   white: colorful(37)
 }
 
+export function escapeColor(colorText: string) {
+  // eslint-disable-next-line no-control-regex
+  return colorText.replace(/\u001b\[\d+m/gu, '')
+}
+
 /**
  * 控制台彩色字体
  *
