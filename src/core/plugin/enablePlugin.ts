@@ -15,11 +15,6 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
     KiviLogger.error(msg, ...args)
   }
 
-  const info = (msg: any, ...args: any[]) => {
-    bot.logger.info(msg, ...args)
-    KiviLogger.info(msg, ...args)
-  }
-
   KiviLogger.debug('enablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
@@ -34,7 +29,7 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
         plugins.set(pluginName, plugin)
 
-        info(`插件 ${pn} 启用成功`)
+        KiviLogger.debug(`插件 ${pn} 启用成功`)
 
         return true
       } catch (e: any) {
