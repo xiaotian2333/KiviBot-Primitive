@@ -12,7 +12,9 @@ export const ConfigText = `
 /config group <operation>
 `.trim()
 
-type Operation = 'refuse' | 'ignore' | 'accept'
+export type Operation = 'refuse' | 'ignore' | 'accept'
+
+export const operations = ['refuse', 'ignore', 'accept'] as const
 
 export const OperationMap = {
   refuse: '拒绝',
@@ -20,11 +22,15 @@ export const OperationMap = {
   ignore: '忽略'
 } as const
 
-export async function handleConfigCommand(
-  bot: Client,
-  params: string[],
-  reply: (content: Sendable, quote?: boolean | undefined) => Promise<MessageRet>
-) {
+export const ModeMap = {
+  sms: '短信',
+  password: '密码',
+  qrcode: '扫码'
+} as const
+
+export type ReplyFunc = (content: Sendable, quote?: boolean | undefined) => Promise<MessageRet>
+
+export async function handleConfigCommand(bot: Client, params: string[], reply: ReplyFunc) {
   if (!params.length) {
     await reply(ConfigText)
   }
@@ -38,8 +44,8 @@ export async function handleConfigCommand(
 
     const detail = `
 〓 KiviBot 详细配置 〓
-登录模式: ${kiviConf.login_mode ?? '未知'}
-设备锁模式: ${kiviConf.device_mode ?? '未知'}
+登录模式: ${ModeMap[kiviConf.login_mode] ?? '未知'}
+设备锁模式: ${ModeMap[kiviConf.device_mode] ?? '未知'}
 主管理员: ${kiviConf.admins[0] ?? '未知'}
 副管理员: ${subAdmins.length ? subAdmins.join(', ') : '空'}
 通知状态: ${kiviConf.notice.enable ? '开启' : '关闭'}
@@ -56,13 +62,13 @@ export async function handleConfigCommand(
     const qq = parseUin(value)
 
     if (!qq) {
-      return reply('〓 目标账号不能为空 〓')
+      return reply('/config admin add/rm <qq>')
     } else {
       const set = new Set(kiviConf.admins.splice(1))
 
       if (thirdCmd === 'add') {
         if (set.has(qq) || qq === mainAdmin) {
-          return reply('〓 目标账号已是 Bot 管理员 〓')
+          return reply('〓 该账号已是 Bot 管理员 〓')
         }
 
         set.add(qq)
@@ -71,7 +77,7 @@ export async function handleConfigCommand(
 
         if (saveKiviConf()) {
           bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
-          return reply('〓 添加成功 〓')
+          return reply('〓 Bot 管理员添加成功 〓')
         }
       } else if (thirdCmd === 'rm') {
         if (qq === mainAdmin) {
@@ -79,7 +85,7 @@ export async function handleConfigCommand(
         }
 
         if (!set.has(qq)) {
-          return reply('〓 目标账号不是 Bot 管理员 〓')
+          return reply('〓 该账号不是 Bot 管理员 〓')
         }
         set.delete(qq)
 
@@ -88,7 +94,7 @@ export async function handleConfigCommand(
         if (saveKiviConf()) {
           bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
 
-          return reply('〓 管理员删除成功 〓')
+          return reply('〓 Bot 管理员删除成功 〓')
         }
       }
     }
@@ -111,26 +117,26 @@ export async function handleConfigCommand(
   }
 
   if (secondCmd === 'group') {
-    if (!['ignore', 'accept', 'refuse'].includes(thirdCmd)) {
-      return reply('〓 操作无效，请检查 〓')
+    if (!operations.includes(<Operation>thirdCmd)) {
+      return reply(`〓 操作无效，请检查 〓\n可选操作：${operations.join(', ')}`)
     }
 
-    kiviConf.notice.group.request.action = thirdCmd as Operation
+    kiviConf.notice.group.request.action = <Operation>thirdCmd
 
     if (saveKiviConf()) {
-      reply(`〓 已设置自动${OperationMap[thirdCmd as Operation]}群聊邀请 〓`)
+      reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}群聊邀请 〓`)
     }
   }
 
   if (secondCmd === 'friend') {
-    if (!['ignore', 'accept', 'refuse'].includes(thirdCmd)) {
-      return reply('〓 操作无效，请检查 〓')
+    if (!operations.includes(<Operation>thirdCmd)) {
+      return reply(`〓 操作无效，请检查 〓\n可选操作：${operations.join(', ')}`)
     }
 
-    kiviConf.notice.friend.request.action = thirdCmd as Operation
+    kiviConf.notice.friend.request.action = <Operation>thirdCmd
 
     if (saveKiviConf()) {
-      reply(`〓 已设置自动${OperationMap[thirdCmd as Operation]}好友申请 〓`)
+      reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}好友申请 〓`)
     }
   }
 }

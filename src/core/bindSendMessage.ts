@@ -8,17 +8,8 @@ export const MessagCounts = {
   value: 0
 }
 
-/** bind flag，防止掉线重新上线触发 online 事件时重复 bind */
-let hasBind = false
-
 /** 重写消息发送函数，记录发送消息数并打印日志 */
 export async function bindSendMessage(bot: Client) {
-  if (hasBind) {
-    return
-  }
-
-  hasBind = true
-
   bot.gl.forEach(({ group_id, group_name = '未知' }) => {
     const group = bot.pickGroup(group_id)
     const sendMsg = group.sendMsg.bind(group)

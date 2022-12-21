@@ -1,7 +1,6 @@
 import { LoginErrorCode } from 'oicq'
 
 import { KiviLogger } from '@/logger'
-import { exitWithError } from '@src/utils'
 
 import type { Client } from 'oicq'
 
@@ -18,18 +17,19 @@ export function errorHandler(this: Client, { code, message }: { code: number; me
   }
 
   if (code === LoginErrorCode.WrongPassword) {
-    error('账号密码错误，请通过 `kivi init --force` 命令重新生成正确的配置文件')
+    error('账号密码错误，请通过 `kivi init --force` 重新生成正确的配置文件')
     process.exit(0)
   }
 
   if (code === LoginErrorCode.TooManySms) {
-    exitWithError('验证码发送过于频繁，请先退出框架，稍后再试')
-  }
-
-  if (code === LoginErrorCode.WrongSmsCode) {
-    error('短信验证码错误，验证失败，请退出框架后重新启动')
+    error('验证码发送过于频繁，请稍后再试')
     process.exit(0)
   }
 
-  error(`登录错误: ${code}，错误信息: ${message}`)
+  if (code === LoginErrorCode.WrongSmsCode) {
+    error('短信验证码错误，验证失败，请重新尝试')
+    process.exit(0)
+  }
+
+  error(`登录错误，错误码: ${code}，错误信息: ${message}`)
 }

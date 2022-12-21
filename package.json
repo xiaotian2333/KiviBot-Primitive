@@ -1,9 +1,9 @@
 {
   "name": "@kivibot/core",
-  "version": "0.6.8",
-  "description": "Core library for KiviBot, based on oicq v2.",
+  "version": "0.7.0",
+  "description": "轻量、优雅、跨平台、开发者友好的 QQ 机器人框架，基于 oicq v2",
   "repository": "KiviBotLab/KiviBot",
-  "homepage": "https://beta.kivibot.com/",
+  "homepage": "https://beta.kivibot.com",
   "main": "lib/index.js",
   "keywords": [
     "oicq",

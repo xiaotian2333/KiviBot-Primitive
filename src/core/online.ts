@@ -1,5 +1,5 @@
 import { bindSendMessage } from './bindSendMessage'
-import { colors, wait } from '@src/utils'
+import { colors, stringifyError, wait } from '@src/utils'
 import { configNotice } from './notice'
 import { handleKiviCommand } from './commands'
 import { KiviLogger } from './logger'
@@ -9,8 +9,17 @@ import { messageHandler, noticeHandler, requestHandler } from './logs'
 import type { Client } from 'oicq'
 import type { KiviConf } from './config'
 
+/** log flag，防止掉线重新上线触发 online 事件时重复 bind */
+let hasOnline = false
+
 /** 监听上线事件，初始化 KiviBot */
 export async function onlineHandler(this: Client, kiviConf: KiviConf) {
+  if (hasOnline) {
+    return
+  }
+
+  hasOnline = true
+
   const error = (msg: any, ...args: any[]) => {
     this.logger.error(msg, ...args)
     KiviLogger.error(msg, ...args)
@@ -28,7 +37,7 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
     if (e instanceof KiviPluginError) {
       e.log()
     } else {
-      error(e?.message ?? e?.stack ?? JSON.stringify(e, null, 2))
+      error(stringifyError(e))
     }
   }
 

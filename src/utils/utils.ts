@@ -1,7 +1,11 @@
-import crypto from 'node:crypto'
 import dayjs from 'dayjs'
+import crypto from 'node:crypto'
 
+import type { AllMessageEvent } from '@src/core'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
+
+// 导出 dayjs
+export { dayjs }
 
 /**
  * 异步延时函数
@@ -68,4 +72,66 @@ export function randomItem<T = any>(array: [T, ...T[]]): T {
  */
 export function time(format?: string, date?: Date): string {
   return dayjs(date ?? new Date()).format(format ?? 'YYYY-MM-DD HH:mm')
+}
+
+/**
+ * 取消息来源的目标 id，私聊取好友QQ，群聊取群号，讨论组取讨论组号
+ * @param {AllMessageEvent} event 消息事件参数
+ * @return {number} 目标 id
+ */
+export function getTargetId(event: AllMessageEvent): number {
+  switch (event.message_type) {
+    case 'private':
+      return event.sender.user_id
+    case 'group':
+      return event.group_id
+    case 'discuss':
+      return event.discuss_id
+  }
+}
+
+/**
+ * 错误 stringify
+ * @param {any} error 待处理错误
+ * @return {string} stringify 结果
+ */
+export function stringifyError(error: any): string {
+  if (typeof error === 'object') {
+    return error?.message ?? JSON.stringify(error, null, 2)
+  } else {
+    return String(error)
+  }
+}
+
+/**
+ * 确保是数组
+ * @param {T | T[]} value 确保是数组的值
+ * @return {T[]} 数组结果
+ */
+export function ensureArray<T = any>(value: T | T[]): T[] {
+  if (Array.isArray(value)) {
+    return value
+  } else {
+    return [value]
+  }
+}
+
+/**
+ * 解析 qq，支持艾特，可以是 `1141284758` 或者是 `{at:1141284758}`
+ *
+ * @param {string} qqLikeStr 待解析的字符串
+ * @return {number} 解析结果
+ */
+export function parseUin(qqLikeStr: string): number {
+  let qq = 0
+
+  try {
+    if (/^\{at:\d+\}$/.test(qqLikeStr)) {
+      qq = Number(/^\{at:(\d+)\}$/.exec(qqLikeStr)![1])
+    } else if (/^\d+$/.test(qqLikeStr)) {
+      qq = Number(/^(\d+)$/.exec(qqLikeStr)![1])
+    }
+  } catch {}
+
+  return qq
 }

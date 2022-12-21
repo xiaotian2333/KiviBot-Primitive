@@ -18,22 +18,22 @@ export async function deviceHandler(
     KiviLogger.warn(msg, ...args)
   }
 
+  const phone = colors.cyan(event.phone)
+
   if (device_mode === 'sms') {
-    info(
-      `需要验证设备锁，按 \`Enter\` 键发送短信验证码到手机号 ${colors.cyan(event.phone)} 进行验证`
-    )
+    info(`需要验证设备锁，按 \`Enter\` 键发送短信验证码到手机号 ${phone} 进行验证`)
 
     process.stdin.once('data', async () => {
       this.sendSmsCode()
 
-      info(`短信验证码已发送至手机号 ${colors.cyan(event.phone)}，输入后按 \`Enter\` 键继续`)
+      info(`短信验证码已发送至手机号 ${phone}，输入后按 \`Enter\` 键继续`)
 
       const { sms } = await prompts({
         type: 'number',
         name: 'sms',
         max: 999999,
         validate: (sms: number) => (!sms ? '短信验证码不为空' : true),
-        message: `请输入短信验证码（${colors.cyan(event.phone)}）`
+        message: `请输入短信验证码（${phone}）`
       })
 
       this.submitSmsCode(sms)

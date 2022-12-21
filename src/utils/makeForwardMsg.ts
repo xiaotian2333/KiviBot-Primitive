@@ -16,7 +16,7 @@ export async function makeForwardMsg(
   this: Client,
   msglist: Forwardable[] | Forwardable,
   title = '转发的聊天记录',
-  desc = '',
+  desc = '轻按查看详情',
   dm = true
 ): Promise<XmlElem> {
   const that = (dm ? this.pickFriend : this.pickGroup)(this.uin)

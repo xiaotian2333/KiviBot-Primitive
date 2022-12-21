@@ -1,4 +1,4 @@
-import { colors } from '@src/utils'
+import { colors, stringifyError } from '@src/utils'
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
 import { KiviLogger } from '@/logger'
@@ -44,7 +44,7 @@ export async function disablePlugin(
     if (e instanceof KiviPluginError) {
       return e.log()
     } else {
-      const msg = e?.message ?? e?.stack ?? JSON.stringify(e, null, 2)
+      const msg = stringifyError(e)
       error(`插件 ${pn} 禁用过程中发生错误: \n${msg}`)
       return msg
     }

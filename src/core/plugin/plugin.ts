@@ -25,9 +25,9 @@ export type AnyFunc = (...args: any[]) => any
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
 export type OicqMessageHandler = (event: AllMessageEvent) => any
-export type MessageHandler = (event: AllMessageEvent) => any
-export type PrivateMessageHandler = (event: PrivateMessageEvent) => any
-export type GroupMessageHandler = (event: GroupMessageEvent) => any
+export type MessageHandler = (event: AllMessageEvent, bot: Client) => any
+export type PrivateMessageHandler = (event: PrivateMessageEvent, bot: Client) => any
+export type GroupMessageHandler = (event: GroupMessageEvent, bot: Client) => any
 
 /**
  * 处理函数
@@ -38,7 +38,7 @@ export type GroupMessageHandler = (event: GroupMessageEvent) => any
 export type BotHandler = (bot: Client, admins: AdminArray) => any
 
 /**
- * 消息处理函数
+ * 命令消息处理函数
  * @param {AllMessageEvent} event ociq 消息事件，包含了群聊、私聊与讨论组消息
  * @param {string[]} params 由 minimist 解析后的 `_` 值（不包含命令），可以看作命令的其余参数
  * @param {{[arg: string]: any}} options 由 minimist 解析后的值（不包含 `_` 和 `--`），可以看作命令选项
@@ -81,26 +81,26 @@ export class KiviPlugin extends EventEmitter {
    * KiviBot 插件类
    *
    * @param {string} name 插件名称，建议英文，插件数据目录以此结尾
-   * @param {string} version 插件版本，如 1.0.0
+   * @param {string} version 插件版本，如 1.0.0，建议 require `package.json` 的版本号统一管理
    */
   constructor(name: string, version: string, conf?: KiviPluginConf) {
     super()
 
     this.name = name ?? 'null'
-    this.version = version ?? '未知'
+    this.version = version ?? 'null'
     this.dataDir = path.join(PluginDataDir, this.name)
     this.config = conf ?? {}
-
-    this.debug('create KiviPlugin instance')
 
     if (!conf?.debug) {
       // 正式环境下确保插件的数据目录存在
       fs.ensureDirSync(this.dataDir)
     }
+
+    this.debug('create KiviPlugin instance')
   }
 
   /**
-   * 抛出一个 KiviBot 插件标准错误，会被框架捕获
+   * 抛出一个 KiviBot 插件标准错误，会被框架捕获并输出到日志
    *
    * @param {string} message 错误信息
    */
@@ -312,7 +312,7 @@ export class KiviPlugin extends EventEmitter {
 
     const oicqHandler = (e: AllMessageEvent) => {
       if (this.isTargetOn(e)) {
-        handler(e)
+        handler(e, this.bot!)
       }
     }
 
@@ -329,7 +329,7 @@ export class KiviPlugin extends EventEmitter {
 
     const oicqHandler = (e: GroupMessageEvent) => {
       if (this.isTargetOn(e)) {
-        handler(e)
+        handler(e, this.bot!)
       }
     }
 
@@ -346,7 +346,7 @@ export class KiviPlugin extends EventEmitter {
 
     const oicqHandler = (e: PrivateMessageEvent) => {
       if (this.isTargetOn(e)) {
-        handler(e)
+        handler(e, this.bot!)
       }
     }
 
@@ -370,7 +370,7 @@ export class KiviPlugin extends EventEmitter {
           const reg = match instanceof RegExp ? match : new RegExp(`^${match as string}$`)
 
           if (reg.test(e.toString())) {
-            handler(e)
+            handler(e, this.bot!)
             break
           }
         }
@@ -398,7 +398,7 @@ export class KiviPlugin extends EventEmitter {
             const reg = match instanceof RegExp ? match : new RegExp(`^${match as string}$`)
 
             if (reg.test(e.toString())) {
-              handler(e)
+              handler(e, this.bot!)
               break
             }
           }
@@ -497,15 +497,19 @@ export class KiviPlugin extends EventEmitter {
   /**
    * 打印消息到控制台
    */
-  log(msg: any, ...args: any[]) {
-    this.logger.info(msg, ...args)
+  log(...args: any[]) {
+    const mapFn = (e: any) => (typeof e === 'object' ? JSON.stringify(e, null, 2) : e)
+    const msg = args.map(mapFn).join(', ')
+    this.logger.log(`${this.name}: ${msg}`)
   }
 
   /**
    * 打印消息到控制台，用于插件调试，仅在 debug 以及更低的 log lever 下可见
    */
-  debug(msg: any, ...args: any[]) {
-    this.logger.debug(`${this.name}: ` + msg, ...args)
+  debug(...args: any[]) {
+    const mapFn = (e: any) => (typeof e === 'object' ? JSON.stringify(e, null, 2) : e)
+    const msg = args.map(mapFn).join(', ')
+    this.logger.debug(`${this.name}: ${msg}`)
   }
 
   /**
@@ -562,16 +566,16 @@ export class KiviPlugin extends EventEmitter {
  * KiviBot 插件类
  */
 export interface KiviPlugin extends EventEmitter {
-  /** 监听 oicq 标准事件以及 KiviBot 标准事件 */
+  /** 监听 oicq 标准事件以及 KiviBot 标准事件，需要自行取消监听 */
   on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
-  /** 监听自定义事件或其他插件触发的事件 */
+  /** 监听自定义事件或其他插件触发的事件，需要自行取消监听 */
   on<S extends string | symbol>(
     event: S & Exclude<S, keyof EventMap>,
     listener: (this: this, ...args: any[]) => void
   ): this
-  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件 */
+  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件，需要自行取消监听 */
   once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
-  /** 单次监听自定义事件或其他插件触发的事件 */
+  /** 单次监听自定义事件或其他插件触发的事件，需要自行取消监听 */
   once<S extends string | symbol>(
     event: S & Exclude<S, keyof EventMap>,
     listener: (this: this, ...args: any[]) => void
