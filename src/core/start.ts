@@ -1,6 +1,5 @@
 import { createClient } from 'oicq'
 import fs from 'fs-extra'
-import path from 'node:path'
 
 import { bindLoginEvent, qrCodeHandler } from './login'
 import { colors, LOGO, exitWithError, notice, stringifyError, md5 } from '@src/utils'
@@ -15,7 +14,7 @@ import type { KiviConf } from './config'
 
 export const plugins: Map<string, KiviPlugin> = new Map()
 
-export const pkg = require(path.join(__dirname, '../../package.json'))
+export const pkg = require('../../package.json')
 
 /** 通过 `kivi.json` 配置文件启动框架 */
 export function start() {
@@ -46,6 +45,7 @@ export function start() {
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
 
     console.log(`欢迎使用 KiviBot，轻量、高效、跨平台\n`)
+
     console.log('使用文档: ' + colors.green('https://beta.kivibot.com'))
     console.log('框架版本: ' + colors.green(`@kivibot/core ${pkg.version}`))
     console.log('配置文件: ' + colors.green(`${ConfigPath}\n`))

@@ -19,4 +19,4 @@
 
 ## 介绍
 
-`KiviBot` 是使用 [TypeScript](https://www.typescriptlang.org/) 编写的**轻量**、**优雅**、**跨平台**、**开发者友好的** QQ 机器人框架。详情参考[使用文档](https://beta.kivibot.com/)。
+`KiviBot` 是使用 [TypeScript](https://www.typescriptlang.org/) 编写的**轻量**、**优雅**、**跨平台**、**开发者友好** 的 QQ 机器人框架。详情参考[使用文档](https://beta.kivibot.com/)。
