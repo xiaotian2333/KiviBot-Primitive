@@ -20,9 +20,9 @@ export async function disablePlugin(
     KiviLogger.error(msg, ...args)
   }
 
-  const info = (msg: any, ...args: any[]) => {
-    bot.logger.info(msg, ...args)
-    KiviLogger.info(msg, ...args)
+  const debug = (msg: any, ...args: any[]) => {
+    bot.logger.debug(msg, ...args)
+    KiviLogger.debug(msg, ...args)
   }
 
   KiviLogger.debug('disablePlugin: ' + pluginPath)
@@ -37,7 +37,7 @@ export async function disablePlugin(
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    info(`插件 ${pn} 禁用成功`)
+    debug(`插件 ${pn} 禁用成功`)
 
     return true
   } catch (e: any) {
