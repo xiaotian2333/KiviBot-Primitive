@@ -5,7 +5,7 @@ import minimist from 'minimist'
 import nodeCron from 'node-cron'
 import path from 'node:path'
 
-import { ensureArray } from '@src/utils'
+import { ensureArray, stringifyError } from '@src/utils'
 import { KiviPluginError } from './pluginError'
 import { MessageEvents, OicqEvents } from '@/events'
 import { PluginDataDir } from '@src'
@@ -62,8 +62,6 @@ export class KiviPlugin extends EventEmitter {
   public name: string
   /** 插件版本 */
   public version: string
-  /** 插件数据存放目录，`框架目录/data/plugins/<name>` 注意这里的 name 是实例化的时候传入的 name */
-  public dataDir: string
   /** 向框架输出日志记录器，是 log4js 的实例 */
   public logger: Logger = log4js.getLogger('plugin')
   /** 挂载的 Bot 实例 */
@@ -76,7 +74,7 @@ export class KiviPlugin extends EventEmitter {
   private _admins: AdminArray | undefined
   private _cronTasks: ScheduledTask[] = []
   private _handlers: Map<string, AnyFunc[]> = new Map()
-
+  private _dataDir = path.join(PluginDataDir, 'null')
   /**
    * KiviBot 插件类
    *
@@ -88,13 +86,8 @@ export class KiviPlugin extends EventEmitter {
 
     this.name = name ?? 'null'
     this.version = version ?? 'null'
-    this.dataDir = path.join(PluginDataDir, this.name)
+    this._dataDir = path.join(PluginDataDir, this.name)
     this.config = conf ?? {}
-
-    if (!conf?.debug) {
-      // 正式环境下确保插件的数据目录存在
-      fs.ensureDirSync(this.dataDir)
-    }
 
     this.debug('create KiviPlugin instance')
   }
@@ -203,7 +196,7 @@ export class KiviPlugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e) {
-      this.throwPluginError('onMounted 发生错误: \n' + JSON.stringify(e, null, 2))
+      this.throwPluginError('onMounted 发生错误: \n' + stringifyError(e))
     }
 
     this.debug('add all oicq events listeners')
@@ -252,7 +245,7 @@ export class KiviPlugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e) {
-      this.throwPluginError('onUnmounted 发生错误: \n' + JSON.stringify(e, null, 2))
+      this.throwPluginError('onUnmounted 发生错误: \n' + stringifyError(e))
     }
 
     this.removeAllHandler()
@@ -262,7 +255,7 @@ export class KiviPlugin extends EventEmitter {
   }
 
   /**
-   * 从插件数据目录加载保存的数据（储存为 JSON 格式，读取为普通 JS 对象）
+   * 从插件数据目录加载保存的数据（储存为 JSON 格式，读取为普通 JS 对象），配置不存在时返回空对象
    * @param {string} filepath 保存文件路径，默认为插件数据目录下的 `config.json`
    * @param {fs.ReadOptions | undefined} options 加载配置的选项
    */
@@ -275,7 +268,7 @@ export class KiviPlugin extends EventEmitter {
     try {
       return fs.readJsonSync(filepath, options)
     } catch (e) {
-      this.logger.error(JSON.stringify(e, null, 2))
+      this.logger.error(stringifyError(e))
       return {}
     }
   }
@@ -296,9 +289,10 @@ export class KiviPlugin extends EventEmitter {
 
     try {
       fs.writeJsonSync(filepath, data, { spaces: 2, ...options })
+
       return true
     } catch (e) {
-      this.logger.error(JSON.stringify(e, null, 2))
+      this.logger.error(stringifyError(e))
       return false
     }
   }
@@ -498,7 +492,7 @@ export class KiviPlugin extends EventEmitter {
    * 打印消息到控制台
    */
   log(...args: any[]) {
-    const mapFn = (e: any) => (typeof e === 'object' ? JSON.stringify(e, null, 2) : e)
+    const mapFn = (e: any) => (typeof e === 'object' ? stringifyError(e) : e)
     const msg = args.map(mapFn).join(', ')
     this.logger.log(`${this.name}: ${msg}`)
   }
@@ -507,7 +501,7 @@ export class KiviPlugin extends EventEmitter {
    * 打印消息到控制台，用于插件调试，仅在 debug 以及更低的 log lever 下可见
    */
   debug(...args: any[]) {
-    const mapFn = (e: any) => (typeof e === 'object' ? JSON.stringify(e, null, 2) : e)
+    const mapFn = (e: any) => (typeof e === 'object' ? stringifyError(e) : e)
     const msg = args.map(mapFn).join(', ')
     this.logger.debug(`${this.name}: ${msg}`)
   }
@@ -515,7 +509,7 @@ export class KiviPlugin extends EventEmitter {
   /**
    * 定时任务( [秒], 分, 时, 日, 月, 星期 ) `[*] * * * * *`
    *
-   * @param {string} cronExpression corntab 表达式
+   * @param {string} cronExpression corntab 表达式, [秒], 分, 时, 日, 月, 星期
    * @param {BotHandler} fn 定时触发的函数
    * @return {ScheduledTask} 定时任务
    */
@@ -559,6 +553,16 @@ export class KiviPlugin extends EventEmitter {
   get subAdmins() {
     this.checkMountStatus()
     return (this._admins || []).slice(1) as number[]
+  }
+
+  /**
+   * 插件数据存放目录，`框架目录/data/plugins/<name>` 注意这里的 name 是实例化的时候传入的 name
+   */
+  get dataDir() {
+    if (!fs.existsSync(this._dataDir)) {
+      fs.ensureDirSync(this._dataDir)
+    }
+    return this._dataDir
   }
 }
 
