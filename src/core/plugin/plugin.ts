@@ -318,7 +318,7 @@ export class KiviPlugin extends EventEmitter {
    * 添加群聊消息监听函数，等价于 plugin.on('message.group', handler) 。
    * @param {GroupMessageHandler} handler 群聊消息处理函数
    */
-  onGroupMessage(handler: MessageHandler) {
+  onGroupMessage(handler: GroupMessageHandler) {
     this.checkMountStatus()
 
     const oicqHandler = (e: GroupMessageEvent) => {
