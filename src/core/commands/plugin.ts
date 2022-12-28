@@ -156,7 +156,7 @@ ${pinfo.join('\n')}
 
   if (secondCmd === 'on') {
     if (!pname) {
-      return reply('/plugin add <name>')
+      return reply('/plugin on <name>')
     }
 
     const targetPluginPath = await getPluginPathByName(pname)
@@ -182,7 +182,7 @@ ${pinfo.join('\n')}
 
   if (secondCmd === 'off') {
     if (!pname) {
-      return reply('/plugin add <name>')
+      return reply('/plugin off <name>')
     }
 
     const plugin = plugins.get(pname)
@@ -212,7 +212,7 @@ ${pinfo.join('\n')}
 
   if (secondCmd === 'reload') {
     if (!pname) {
-      return reply('/plugin add <name>')
+      return reply('/plugin reload <name>')
     }
 
     const plugin = plugins.get(pname)
