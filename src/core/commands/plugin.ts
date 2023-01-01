@@ -16,7 +16,7 @@ import type { ReplyFunc } from './config'
 export const PluginText = `
 〓 KiviBot 插件 〓
 /plugin list
-/plugin add <name>
+/plugin add/rm <name>
 /plugin on/off <name>
 /plugin onall/offall
 /plugin reload <name>
@@ -251,7 +251,7 @@ ${pinfo.join('\n')}
       shortName = shortName.replace(/^kivibot-plugin-/i, '')
     }
 
-    reply(`〓 正在安装 ${pname} 〓`)
+    reply(`〓 正在安装 ${pname}... 〓`)
 
     try {
       if (await install(`kivibot-plugin-${shortName}`)) {
@@ -263,6 +263,34 @@ ${pinfo.join('\n')}
       KiviLogger.error(stringifyError(e))
 
       await reply(`〓 ${pname} 安装失败 〓\n错误信息: ${stringifyError(e)}`)
+    }
+
+    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
+  }
+
+  if (secondCmd === 'rm') {
+    if (!pname) {
+      return reply('/plugin rm <name>')
+    }
+
+    let shortName = pname
+
+    if (/^kivibot-plugin-/i.test(shortName)) {
+      shortName = shortName.replace(/^kivibot-plugin-/i, '')
+    }
+
+    reply(`〓 正在移除 ${pname}... 〓`)
+
+    try {
+      if (await install(`kivibot-plugin-${shortName}`, true)) {
+        await reply(`〓 ${pname} 移除成功 〓`)
+      } else {
+        await reply(`〓 ${pname} 移除失败，详情查看日志 〓`)
+      }
+    } catch (e) {
+      KiviLogger.error(stringifyError(e))
+
+      await reply(`〓 ${pname} 移除失败 〓\n错误信息: ${stringifyError(e)}`)
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
