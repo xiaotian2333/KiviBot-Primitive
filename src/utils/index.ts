@@ -1,3 +1,4 @@
+export * from './canBan'
 export * from './colors'
 export * from './exitWithError'
 export * from './formatFileSize'
