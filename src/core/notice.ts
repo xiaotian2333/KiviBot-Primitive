@@ -191,6 +191,8 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
       group: { group_id, name }
     } = event
 
+    const isBan = duration === 0
+
     if (user_id !== bot.uin) return
 
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
@@ -198,11 +200,11 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
     const msg = `
 群名: ${name || '未知'}
 群号: ${group_id || '未知'}
-时长: ${formatDateDiff(duration * 1000)}
 操作人: ${operator_id || '未知'}
+${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('Bot 被禁言', avatar, msg))
+    mainAdmin.sendMsg(buildNotice(`Bot 被${isBan ? '禁言' : '解除禁言'}`, avatar, msg))
   })
 
   // 群转让
