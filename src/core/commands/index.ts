@@ -13,12 +13,12 @@ import type { KiviConf } from '@/config'
 
 const HelpText = `
 〓 KiviBot 帮助 〓
-/plugin  插件操作
-/status  查看状态
-/config  框架配置
-/update  检查更新
-/about   关于框架
-/exit    退出框架
+/plugin 插件操作
+/status 查看状态
+/config 框架配置
+/update 检查更新
+/about 关于框架
+/exit 退出框架
 `.trim()
 
 const AboutText = `
@@ -80,7 +80,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
     process.exit(0)
   }
 
-  if (cmd === 'plugin') {
+  if (cmd === 'plugin' || cmd === 'p') {
     return handlePluginCommand(bot, params, event.reply.bind(event))
   }
 
@@ -96,11 +96,11 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
 
       if (upInfo) {
         const info = Object.entries(upInfo)
-          .map(([k, v]) => `${k.replace('kivibot-plugin-', '插件: ')} => ${v.replace('^', '')}`)
+          .map(([k, v]) => `${k.replace('kivibot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
 
         const msg = info
-          ? `〓 更新成功，内容如下 〓\n${info}\ntip: 需要重启框架才能生效`
+          ? `〓 更新成功，本次更新内容 〓\n${info}\ntip: 需要重启框架才能生效`
           : '〓 已是最新版本 〓'
 
         await event.reply(msg)

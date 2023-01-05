@@ -86,8 +86,6 @@ ${pinfo.join('\n')}
         return reply(`〓 共启用 ${count} 个插件 〓`)
       }
     })
-
-    return
   }
 
   if (secondCmd === 'offall') {
@@ -120,7 +118,7 @@ ${pinfo.join('\n')}
     return
   }
 
-  if (secondCmd === 'update') {
+  if (secondCmd === 'update' || secondCmd === 'up') {
     reply('〓 正在更新插件... 〓')
 
     const name = pname ? `${pname} ` : ''
@@ -130,13 +128,13 @@ ${pinfo.join('\n')}
 
       if (upInfo) {
         const info = Object.entries(upInfo)
-          .map(([k, v]) => `${k.replace('kivibot-plugin-', '插件: ')} => ${v.replace('^', '')}`)
+          .map(([k, v]) => `${k.replace('kivibot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
 
         const updated = pname ? `〓 ${name}已是最新版本 〓` : '〓 所有插件均为最新版本 〓'
 
         const msg = info
-          ? `〓 插件更新成功，更新内容如下 〓\n${info}\ntip: 需要重载插件才能生效`
+          ? `〓 插件更新成功，本次更新内容 〓\n${info}\ntip: 需要重载插件才能生效`
           : updated
 
         await reply(msg)
@@ -210,7 +208,7 @@ ${pinfo.join('\n')}
     }
   }
 
-  if (secondCmd === 'reload') {
+  if (secondCmd === 'reload' || secondCmd === 'rl') {
     if (!pname) {
       return reply('/plugin reload <name>')
     }
@@ -268,7 +266,7 @@ ${pinfo.join('\n')}
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
   }
 
-  if (secondCmd === 'rm') {
+  if (secondCmd === 'remove' || secondCmd === 'rm') {
     if (!pname) {
       return reply('/plugin rm <name>')
     }
