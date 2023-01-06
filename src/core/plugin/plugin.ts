@@ -507,11 +507,11 @@ export class KiviPlugin extends EventEmitter {
   }
 
   /**
-   * 定时任务( [秒], 分, 时, 日, 月, 星期 ) `[*] * * * * *`
+   * 添加定时任务，插件禁用时会自动清理，无需手动处理
    *
    * @param {string} cronExpression corntab 表达式, [秒], 分, 时, 日, 月, 星期
    * @param {BotHandler} fn 定时触发的函数
-   * @return {ScheduledTask} 定时任务
+   * @return {ScheduledTask} 定时任务 Task 实例
    */
   cron(cronExpression: string, fn: BotHandler): ScheduledTask {
     this.checkMountStatus()
@@ -570,16 +570,16 @@ export class KiviPlugin extends EventEmitter {
  * KiviBot 插件类
  */
 export interface KiviPlugin extends EventEmitter {
-  /** 监听 oicq 标准事件以及 KiviBot 标准事件，需要自行取消监听 */
+  /** 监听 oicq 标准事件以及 KiviBot 标准事件 */
   on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
-  /** 监听自定义事件或其他插件触发的事件，需要自行取消监听 */
+  /** 监听自定义事件或其他插件触发的事件 */
   on<S extends string | symbol>(
     event: S & Exclude<S, keyof EventMap>,
     listener: (this: this, ...args: any[]) => void
   ): this
-  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件，需要自行取消监听 */
+  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件 */
   once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
-  /** 单次监听自定义事件或其他插件触发的事件，需要自行取消监听 */
+  /** 单次监听自定义事件或其他插件触发的事件 */
   once<S extends string | symbol>(
     event: S & Exclude<S, keyof EventMap>,
     listener: (this: this, ...args: any[]) => void

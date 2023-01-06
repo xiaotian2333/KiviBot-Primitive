@@ -58,7 +58,7 @@ export function randomInt(min: number, max: number): number {
 /**
  * 取数组内随机一项
  * @param {Array<T>} array 待操作数组
- * @return {T} 随机范围内的整数
+ * @return {T} 数组内的随机一项
  */
 export function randomItem<T = any>(array: [T, ...T[]]): T {
   return array[randomInt(0, array.length - 1)]
@@ -117,7 +117,7 @@ export function ensureArray<T = any>(value: T | T[]): T[] {
 }
 
 /**
- * 解析 qq，支持艾特，可以是 `1141284758` 或者是 `{at:1141284758}`
+ * 解析 qq，支持艾特，可以是 `1141284758` 或者是 `{at:1141284758}` 格式
  *
  * @param {string} qqLikeStr 待解析的字符串
  * @return {number} 解析结果

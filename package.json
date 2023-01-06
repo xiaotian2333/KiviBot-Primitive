@@ -1,6 +1,6 @@
 {
   "name": "@kivibot/core",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "description": "轻量、优雅、跨平台、开发者友好的 QQ 机器人框架，基于 oicq v2",
   "repository": "KiviBotLab/KiviBot",
   "homepage": "https://beta.kivibot.com",
