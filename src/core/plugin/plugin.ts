@@ -361,7 +361,10 @@ export class KiviPlugin extends EventEmitter {
     const oicqHandler = (e: AllMessageEvent) => {
       if (this.isTargetOn(e)) {
         for (const match of matchList) {
-          const reg = match instanceof RegExp ? match : new RegExp(`^${match as string}$`)
+          const reg =
+            match instanceof RegExp
+              ? match
+              : new RegExp(`^${match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
 
           if (reg.test(e.toString())) {
             handler(e, this.bot!)
@@ -389,7 +392,10 @@ export class KiviPlugin extends EventEmitter {
       if (this.isTargetOn(e)) {
         if (this.admins.includes(e.sender.user_id)) {
           for (const match of matchList) {
-            const reg = match instanceof RegExp ? match : new RegExp(`^${match as string}$`)
+            const reg =
+              match instanceof RegExp
+                ? match
+                : new RegExp(`^${match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
 
             if (reg.test(e.toString())) {
               handler(e, this.bot!)
@@ -421,7 +427,10 @@ export class KiviPlugin extends EventEmitter {
         const cmdList = ensureArray(cmds)
 
         for (const cmd of cmdList) {
-          const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}$`)
+          const reg =
+            cmd instanceof RegExp
+              ? cmd
+              : new RegExp(`^${cmd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
 
           if (reg.test(inputCmd)) {
             handler(e, params, options)
@@ -453,7 +462,10 @@ export class KiviPlugin extends EventEmitter {
           const cmdList = ensureArray(cmds)
 
           for (const cmd of cmdList) {
-            const reg = cmd instanceof RegExp ? cmd : new RegExp(`^${cmd as string}$`)
+            const reg =
+              cmd instanceof RegExp
+                ? cmd
+                : new RegExp(`^${cmd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
 
             if (reg.test(inputCmd)) {
               handler(e, params, options)
