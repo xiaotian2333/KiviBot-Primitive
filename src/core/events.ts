@@ -71,4 +71,14 @@ export const OicqEvents = [
 ] as (keyof EventMap<Client>)[]
 
 /** KiviBot 标准事件列表 */
-export const KiviEvents = ['kivi.admins'] as const
+export const KiviEvents = ['kivi.admin'] as const
+
+export interface KiviEventMap<T = any> {
+  /** KiviBot 管理员变动事件 */
+  'kivi.admin': (
+    this: T,
+    event: {
+      admins: number[]
+    }
+  ) => void
+}

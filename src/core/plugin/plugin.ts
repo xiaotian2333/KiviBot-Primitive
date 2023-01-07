@@ -7,7 +7,7 @@ import path from 'node:path'
 
 import { ensureArray, stringifyError } from '@src/utils'
 import { KiviPluginError } from './pluginError'
-import { MessageEvents, OicqEvents } from '@/events'
+import { KiviEvents, MessageEvents, OicqEvents } from '@/events'
 import { PluginDataDir } from '@src'
 
 import type {
@@ -17,6 +17,7 @@ import type {
   GroupMessageEvent,
   PrivateMessageEvent
 } from 'oicq'
+import type { KiviEventMap } from '@/events'
 import type { AdminArray, MainAdmin } from '@/config'
 import type { Logger } from 'log4js'
 import type { ScheduledTask } from 'node-cron'
@@ -199,6 +200,21 @@ export class KiviPlugin extends EventEmitter {
       this.throwPluginError('onMounted 发生错误: \n' + stringifyError(e))
     }
 
+    this.debug('add all KiviBot events listeners')
+
+    // 插件监听 KiviBot 的所有事件
+    KiviEvents.forEach((evt) => {
+      const handler = (e: FirstParam<KiviEventMap<Client>[typeof evt]>) => {
+        this.emit(evt, e)
+      }
+
+      // 插件收到事件时，将事件及数据 emit 给插件里定义的处理函数
+      bot.on(evt, handler)
+
+      // 收集监听函数
+      this.addHandler(evt, handler)
+    })
+
     this.debug('add all oicq events listeners')
 
     // 插件监听 ociq 的所有事件
@@ -255,21 +271,27 @@ export class KiviPlugin extends EventEmitter {
   }
 
   /**
-   * 从插件数据目录加载保存的数据（储存为 JSON 格式，读取为普通 JS 对象），配置不存在时返回空对象
+   * 从插件数据目录加载保存的数据（储存为 JSON 格式，读取为普通 JS 对象），配置不存在时返回默认值，默认为 {} 空对象
    * @param {string} filepath 保存文件路径，默认为插件数据目录下的 `config.json`
+   * @param {any} defaultValue 不存在时的默认值
    * @param {fs.ReadOptions | undefined} options 加载配置的选项
+   * @return {any} 读取到的数据
    */
   loadConfig(
     filepath: string = path.join(this.dataDir, 'config.json'),
+    defaultValue: any = {},
     options: fs.ReadOptions | undefined = {}
-  ) {
+  ): any {
     this.debug('loadConfig')
 
-    try {
-      return fs.readJsonSync(filepath, options)
-    } catch (e) {
-      this.logger.error(stringifyError(e))
-      return {}
+    if (fs.existsSync(filepath)) {
+      try {
+        return fs.readJsonSync(filepath, options)
+      } catch (e) {
+        this.throwPluginError('读取插件配置出错，路径: ' + filepath)
+      }
+    } else {
+      return defaultValue
     }
   }
 
@@ -292,7 +314,7 @@ export class KiviPlugin extends EventEmitter {
 
       return true
     } catch (e) {
-      this.logger.error(stringifyError(e))
+      this.throwPluginError('写入插件配置出错，路径: ' + filepath)
       return false
     }
   }
@@ -360,13 +382,15 @@ export class KiviPlugin extends EventEmitter {
 
     const oicqHandler = (e: AllMessageEvent) => {
       if (this.isTargetOn(e)) {
-        for (const match of matchList) {
-          const reg =
-            match instanceof RegExp
-              ? match
-              : new RegExp(`^${match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
+        const msg = e.toString()
 
-          if (reg.test(e.toString())) {
+        for (const match of matchList) {
+          const isReg = match instanceof RegExp
+
+          const hitReg = isReg && match.test(msg)
+          const hitString = !isReg && match === msg
+
+          if (hitReg || hitString) {
             handler(e, this.bot!)
             break
           }
@@ -391,13 +415,15 @@ export class KiviPlugin extends EventEmitter {
     const oicqHandler = (e: AllMessageEvent) => {
       if (this.isTargetOn(e)) {
         if (this.admins.includes(e.sender.user_id)) {
-          for (const match of matchList) {
-            const reg =
-              match instanceof RegExp
-                ? match
-                : new RegExp(`^${match.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
+          const msg = e.toString()
 
-            if (reg.test(e.toString())) {
+          for (const match of matchList) {
+            const isReg = match instanceof RegExp
+
+            const hitReg = isReg && match.test(msg)
+            const hitString = !isReg && match === msg
+
+            if (hitReg || hitString) {
               handler(e, this.bot!)
               break
             }
@@ -427,12 +453,12 @@ export class KiviPlugin extends EventEmitter {
         const cmdList = ensureArray(cmds)
 
         for (const cmd of cmdList) {
-          const reg =
-            cmd instanceof RegExp
-              ? cmd
-              : new RegExp(`^${cmd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
+          const isReg = cmd instanceof RegExp
 
-          if (reg.test(inputCmd)) {
+          const hitReg = isReg && cmd.test(inputCmd)
+          const hitString = !isReg && cmd === inputCmd
+
+          if (hitReg || hitString) {
             handler(e, params, options)
             break
           }
@@ -462,12 +488,12 @@ export class KiviPlugin extends EventEmitter {
           const cmdList = ensureArray(cmds)
 
           for (const cmd of cmdList) {
-            const reg =
-              cmd instanceof RegExp
-                ? cmd
-                : new RegExp(`^${cmd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') as string}$`)
+            const isReg = cmd instanceof RegExp
 
-            if (reg.test(inputCmd)) {
+            const hitReg = isReg && cmd.test(inputCmd)
+            const hitString = !isReg && cmd === inputCmd
+
+            if (hitReg || hitString) {
               handler(e, params, options)
               break
             }

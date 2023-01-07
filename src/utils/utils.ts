@@ -91,7 +91,7 @@ export function getTargetId(event: AllMessageEvent): number {
 }
 
 /**
- * 错误 stringify
+ * 错误信息字符串格式化
  * @param {any} error 待处理错误
  * @return {string} stringify 结果
  */
@@ -104,7 +104,7 @@ export function stringifyError(error: any): string {
 }
 
 /**
- * 确保是数组
+ * 确保目标是数组（非数组套一层变成数组，是数组不做处理）
  * @param {T | T[]} value 确保是数组的值
  * @return {T[]} 数组结果
  */
@@ -117,7 +117,7 @@ export function ensureArray<T = any>(value: T | T[]): T[] {
 }
 
 /**
- * 解析 qq，支持艾特，可以是 `1141284758` 或者是 `{at:1141284758}` 格式
+ * 解析 event.toString() 消息里划分的 qq，支持艾特，可以是 `1141284758` 或者是 `{at:1141284758}` 格式
  *
  * @param {string} qqLikeStr 待解析的字符串
  * @return {number} 解析结果
