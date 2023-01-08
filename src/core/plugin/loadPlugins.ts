@@ -12,7 +12,7 @@ export async function loadPlugins(bot: Client, kiviConf: KiviConf) {
   const { all, npm, local } = cnts
 
   let cnt = 0
-  const enablePlugns = []
+  const enablePlugins = []
 
   for (const pluginPath of plugins) {
     const pluginName = getPluginNameByPath(pluginPath)
@@ -27,9 +27,9 @@ export async function loadPlugins(bot: Client, kiviConf: KiviConf) {
     // 启用成功时，启用插件数加一
     if (isOK) {
       cnt++
-      enablePlugns.push(pluginName)
+      enablePlugins.push(pluginName)
     }
   }
 
-  return { plugins: enablePlugns, all, npm, local, cnt }
+  return { plugins: enablePlugins, all, npm, local, cnt }
 }
