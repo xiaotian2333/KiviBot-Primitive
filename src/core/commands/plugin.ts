@@ -127,13 +127,6 @@ ${pinfo.join('\n')}
       const upInfo = await update(`kivibot-plugin-${pname || '*'}`)
 
       if (upInfo) {
-        Object.entries(upInfo).forEach(([k, v]) => {
-          const plugin = plugins.get(k.replace('kivibot-plugin-', ''))
-          if (plugin) {
-            plugin.version = v.replace('^', '')
-          }
-        })
-
         const info = Object.entries(upInfo)
           .map(([k, v]) => `${k.replace('kivibot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
