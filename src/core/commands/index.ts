@@ -5,7 +5,7 @@ import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import { KiviLogger } from '@src'
 import { notice, stringifyError, update } from '@src/utils'
-import {pkg, plugins} from '@/start'
+import { pkg } from '@/start'
 
 import type { AllMessageEvent } from '@/plugin'
 import type { Client } from 'oicq'
@@ -95,15 +95,6 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
       const upInfo = await update()
 
       if (upInfo) {
-        Object.entries(upInfo).forEach(([k, v]) => {
-          if (k.startsWith('kivibot-plugin-')) {
-            const plugin = plugins.get(k.replace('kivibot-plugin-', ''))
-            if (plugin) {
-              plugin.version = v.replace('^', '')
-            }
-          }
-        })
-
         const info = Object.entries(upInfo)
           .map(([k, v]) => `${k.replace('kivibot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
