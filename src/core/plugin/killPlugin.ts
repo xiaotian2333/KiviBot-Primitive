@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 /** 从 require 缓存中删除对应模块路径的插件缓存 */
 export function killPlugin(modulePath: string) {
   // 确保路径和 cache 中的 key 一致
@@ -25,5 +27,5 @@ export function killPlugin(modulePath: string) {
   }
 
   delete require.cache[mainPath]
-  delete require.cache[modulePath + '\\package.json']
+  delete require.cache[path.join(modulePath, 'package.json')]
 }
