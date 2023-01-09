@@ -100,7 +100,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
           .join('\n')
 
         const msg = info
-          ? `〓 更新成功，本次更新内容 〓\n${info}\ntip: 需要重启框架才能生效`
+          ? `〓 更新成功 〓\n${info}\ntip: 需要重启框架才能生效`
           : '〓 已是最新版本 〓'
 
         await event.reply(msg)

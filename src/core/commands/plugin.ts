@@ -133,9 +133,7 @@ ${pinfo.join('\n')}
 
         const updated = pname ? `〓 ${name}已是最新版本 〓` : '〓 所有插件均为最新版本 〓'
 
-        const msg = info
-          ? `〓 插件更新成功，本次更新内容 〓\n${info}\ntip: 需要重载插件才能生效`
-          : updated
+        const msg = info ? `〓 插件更新成功 〓\n${info}\ntip: 需要重载插件才能生效` : updated
 
         await reply(msg)
       } else {
