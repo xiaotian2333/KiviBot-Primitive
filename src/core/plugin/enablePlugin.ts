@@ -1,5 +1,3 @@
-import path from 'node:path'
-
 import { colors, escapeColor, stringifyError } from '@src/utils'
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { KiviLogger } from '@/logger'
@@ -23,24 +21,11 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
   const pn = colors.green(pluginName)
 
   try {
-    /*
-     * ISSUE: require 加载先前已经加载过的模块不会更新，可能导致 reload 后插件信息未更新
-     */
     const { plugin } = (await require(pluginPath)) as { plugin: KiviPlugin | undefined }
 
     if (plugin && plugin?.mountKiviBotClient) {
       try {
         await plugin.mountKiviBotClient(bot, [...kiviConf.admins])
-
-        /*
-         * TODO: plugins 缓存优化
-         * 通过 package.json 中的版本号更新 (本地插件不一定有 package.json)
-         */
-        try {
-          plugin.version = require(path.resolve(path.join(pluginPath, 'package.json'))).version
-        } catch {}
-
-        KiviLogger.debug('plugin: ' + JSON.stringify(plugin))
 
         plugins.set(pluginName, plugin)
 
