@@ -17,8 +17,8 @@
     "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
     "build": "npm run clean && tsc && tsc-alias",
     "release": "npm run build && npm publish --access public",
-    "lint": "eslint --ext .js,.json,.ts, .",
-    "lint:fix": "eslint --fix --ext .js,.json,.ts, .",
+    "lint": "eslint --ext .js,.json,.ts .",
+    "lint:fix": "eslint --fix --ext .js,.json,.ts .",
     "clean": "rimraf lib"
   },
   "files": [
