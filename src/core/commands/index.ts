@@ -5,13 +5,13 @@ import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import { KiviLogger } from '@src'
 import { notice, stringifyError, update } from '@src/utils'
-import {pkg, plugins} from '@/start'
+import { pkg } from '@/start'
 
 import type { AllMessageEvent } from '@/plugin'
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
 
-const HelpText = `
+const HelpMenu = `
 〓 KiviBot 帮助 〓
 /plugin 插件操作
 /status 查看状态
@@ -51,7 +51,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   }
 
   if (cmd === 'help') {
-    return event.reply(HelpText)
+    return event.reply(HelpMenu)
   }
 
   if (cmd === 'about') {
@@ -100,7 +100,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
           .join('\n')
 
         const msg = info
-          ? `〓 更新成功，本次更新内容 〓\n${info}\ntip: 需要重启框架才能生效`
+          ? `〓 更新成功 〓\n${info}\ntip: 需要重启框架才能生效`
           : '〓 已是最新版本 〓'
 
         await event.reply(msg)

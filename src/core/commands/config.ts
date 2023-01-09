@@ -3,7 +3,7 @@ import { parseUin } from '@src/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 
-export const ConfigText = `
+export const ConfigMenu = `
 〓 KiviBot 配置 〓
 /config detail
 /config admin add/rm <qq>
@@ -32,7 +32,7 @@ export type ReplyFunc = (content: Sendable, quote?: boolean | undefined) => Prom
 
 export async function handleConfigCommand(bot: Client, params: string[], reply: ReplyFunc) {
   if (!params.length) {
-    await reply(ConfigText)
+    await reply(ConfigMenu)
   }
 
   const [secondCmd, thirdCmd, value] = params

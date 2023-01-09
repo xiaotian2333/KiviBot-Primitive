@@ -13,19 +13,19 @@ import { update, install, stringifyError } from '@src/utils'
 import type { Client } from 'oicq'
 import type { ReplyFunc } from './config'
 
-export const PluginText = `
+export const PluginMenu = `
 〓 KiviBot 插件 〓
 /plugin list
 /plugin add/rm <name>
 /plugin on/off <name>
 /plugin onall/offall
 /plugin reload <name>
-/plugin update <?name>
+/plugin update <name?>
 `.trim()
 
 export async function handlePluginCommand(bot: Client, params: string[], reply: ReplyFunc) {
   if (!params.length) {
-    return await reply(PluginText)
+    return await reply(PluginMenu)
   }
 
   const [secondCmd, pname] = params
@@ -133,9 +133,7 @@ ${pinfo.join('\n')}
 
         const updated = pname ? `〓 ${name}已是最新版本 〓` : '〓 所有插件均为最新版本 〓'
 
-        const msg = info
-          ? `〓 插件更新成功，本次更新内容 〓\n${info}\ntip: 需要重载插件才能生效`
-          : updated
+        const msg = info ? `〓 插件更新成功 〓\n${info}\ntip: 需要重载插件才能生效` : updated
 
         await reply(msg)
       } else {

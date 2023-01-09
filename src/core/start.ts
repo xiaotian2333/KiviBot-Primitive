@@ -12,8 +12,10 @@ import { onlineHandler } from './online'
 import type { KiviPlugin } from './plugin'
 import type { KiviConf } from './config'
 
+/** 当前缓存中已载入并启用的插件 map */
 export const plugins: Map<string, KiviPlugin> = new Map()
 
+/** 框架的 package.json 描述信息 */
 export const pkg = require('../../package.json')
 
 /** 通过 `kivi.json` 配置文件启动框架 */
