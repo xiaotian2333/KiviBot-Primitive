@@ -34,10 +34,10 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
 
         /*
          * TODO: plugins 缓存优化
-         * 通过 package.json 中的版本号更新 (本地插件不一定有 package.jso)
+         * 通过 package.json 中的版本号更新 (本地插件不一定有 package.json)
          */
         try {
-          plugin.version = require(path.resolve(pluginPath, 'package.json')).version
+          plugin.version = require(path.resolve(path.join(pluginPath, 'package.json'))).version
         } catch {}
 
         KiviLogger.debug('plugin: ' + JSON.stringify(plugin))
