@@ -3,6 +3,7 @@ import { getPluginNameByPath } from './getPluginNameByPath'
 import { KiviLogger } from '@/logger'
 import { KiviPluginError } from './pluginError'
 import { plugins } from '@/start'
+import fs from 'node:fs'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
@@ -21,11 +22,21 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
   const pn = colors.green(pluginName)
 
   try {
+    // ISSUE require加载先前已经加载过的模块不会更新，所以导致reload的插件信息未更新
     const { plugin } = (await require(pluginPath)) as { plugin: KiviPlugin | undefined }
 
     if (plugin && plugin?.mountKiviBotClient) {
       try {
         await plugin.mountKiviBotClient(bot, [...kiviConf.admins])
+
+        // TODO plugins 缓存优化
+        // 通过 package.json 中的版本号更新 plugin.version
+        const packageJson = JSON.parse(
+            fs.readFileSync(pluginPath + '\\package.json').toString()
+        )
+        plugin.version = packageJson.version
+
+        KiviLogger.debug('plugin: ' + JSON.stringify(plugin))
 
         plugins.set(pluginName, plugin)
 
