@@ -191,10 +191,9 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
       group: { group_id, name }
     } = event
 
-    const isBan = duration === 0
-
     if (user_id !== bot.uin) return
 
+    const isBan = duration !== 0
     const avatar = segment.image(getGroupAvatarLink(group_id, 100))
 
     const msg = `
