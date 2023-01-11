@@ -29,10 +29,10 @@ export async function deviceHandler(
       info(`短信验证码已发送至手机号 ${phone}，输入后按 \`Enter\` 键继续`)
 
       const { sms } = await prompts({
-        type: 'number',
+        type: 'text',
         name: 'sms',
-        max: 999999,
-        validate: (sms: number) => (!sms ? '短信验证码不为空' : true),
+        format: (sms: string) => sms.trim(),
+        validate: (sms: string) => (sms.trim() === '' ? '短信验证码不为空' : true),
         message: `请输入短信验证码（${phone}）`
       })
 
