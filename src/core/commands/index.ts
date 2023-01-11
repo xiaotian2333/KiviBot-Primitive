@@ -23,7 +23,7 @@ const HelpMenu = `
 
 const AboutText = `
 〓 关于 KiviBot 〓
-KiviBot 是一个开源、轻量、跨平台、注重体验、开发者友好的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
+KiviBot 是一个开源、轻量、跨平台、注重体验、开发者友好、能跑就行的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
 使用文档: https://beta.kivibot.com/
 开源地址: https://github.com/KiviBotLab/KiviBot
 `.trim()

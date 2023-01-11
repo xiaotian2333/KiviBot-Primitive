@@ -1,7 +1,7 @@
 <div align="center">
     <img src="https://beta.kivibot.com/dimo.png" width="180" alt="dimo" />
     <h3><b>KiviBot</b> <sup>Beta</sup></h3>
-    <p>〓 <b>轻量</b>、<b>优雅</b>、<b>跨平台</b>、<b>开发者友好</b> 的QQ 机器人框架 〓</p>
+    <p>〓 <b>轻量</b>、<b>优雅</b>、<b>跨平台</b>、<b>开发者友好</b>、<b>能跑就行</b>的 QQ 机器人框架 〓</p>
 </div>
 
 ---
@@ -19,4 +19,4 @@
 
 ## 介绍
 
-`KiviBot` 是使用 [TypeScript](https://www.typescriptlang.org/) 编写的**轻量**、**优雅**、**跨平台**、**开发者友好** 的 QQ 机器人框架。详情参考[使用文档](https://beta.kivibot.com/)。
+`KiviBot` 是使用 [TypeScript](https://www.typescriptlang.org/) 编写的**轻量**、**优雅**、**跨平台**、**开发者友好**、**能跑就行**的 QQ 机器人框架。详情参考[使用文档](https://beta.kivibot.com/)。

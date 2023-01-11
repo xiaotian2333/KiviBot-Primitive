@@ -1,7 +1,7 @@
 {
   "name": "@kivibot/core",
   "version": "0.8.1",
-  "description": "轻量、优雅、跨平台、开发者友好的 QQ 机器人框架，基于 oicq v2",
+  "description": "轻量、优雅、跨平台、开发者友好、能跑就行的 QQ 机器人框架，基于 oicq v2",
   "repository": "KiviBotLab/KiviBot",
   "homepage": "https://beta.kivibot.com",
   "main": "lib/index.js",
