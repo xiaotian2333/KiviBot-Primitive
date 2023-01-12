@@ -1,7 +1,7 @@
 import { KiviLogger } from '@/src'
 import { colors } from '@/src/utils'
 
-import type { Anonymous, Client, Quotable, Sendable } from 'oicq'
+import type { Anonymous, Client, MessageElem, Quotable, Sendable } from 'oicq'
 
 /** 记录已发送的消息数 */
 export const MessageCounts = {
@@ -20,7 +20,7 @@ export async function bindSendMessage(bot: Client) {
       source?: Quotable | undefined,
       anony?: boolean | Omit<Anonymous, 'flag'> | undefined
     ) => {
-      KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
+      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++
@@ -35,7 +35,7 @@ export async function bindSendMessage(bot: Client) {
     const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
-      KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
+      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++
@@ -58,7 +58,7 @@ export async function bindSendMessage(bot: Client) {
       source?: Quotable | undefined,
       anony?: boolean | Omit<Anonymous, 'flag'> | undefined
     ) => {
-      KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
+      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++
@@ -73,7 +73,7 @@ export async function bindSendMessage(bot: Client) {
     const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
-      KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
+      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++
@@ -81,4 +81,20 @@ export async function bindSendMessage(bot: Client) {
       return sendMsg(content, source)
     }
   })
+}
+
+function stringifySendable(content: Sendable) {
+  if (Array.isArray(content)) {
+    return content.map(stringifyMessageItem).join('')
+  }
+
+  return stringifyMessageItem(content)
+}
+
+function stringifyMessageItem(content: string | MessageElem) {
+  if (typeof content === 'string') {
+    return content
+  } else {
+    return JSON.stringify(content)
+  }
 }
