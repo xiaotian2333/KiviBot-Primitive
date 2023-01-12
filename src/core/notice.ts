@@ -1,9 +1,11 @@
 import { segment } from 'oicq'
 
-import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@src/utils'
 import { kiviConf } from './config'
 import { OperationMap } from './commands/config'
+
 import type { Client, ImageElem } from 'oicq'
+
+import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/src/utils'
 
 function buildNotice(title: string, avatar: ImageElem, content: string) {
   return [avatar, `\n〓 ${title} 〓`, `\n${content}`]

@@ -1,4 +1,5 @@
 import { LoginErrorCode } from 'oicq'
+
 import type { Client } from 'oicq'
 
 import { KiviLogger } from '@/logger'

@@ -1,4 +1,5 @@
 import type { Client } from 'oicq'
+
 import { KiviLogger } from '@/logger'
 
 /** 处理二维码扫描，自动轮询登录 */

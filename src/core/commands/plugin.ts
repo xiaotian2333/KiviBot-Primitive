@@ -1,6 +1,7 @@
-import { install, stringifyError, update } from '@src/utils'
 import type { Client } from 'oicq'
 import type { ReplyFunc } from './config'
+
+import { install, stringifyError, update } from '@/src/utils'
 import {
   disablePlugin,
   enablePlugin,

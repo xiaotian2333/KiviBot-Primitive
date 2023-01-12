@@ -1,6 +1,6 @@
 import log4js from 'log4js'
 
-import { colors } from '@src/utils'
+import { colors } from '@/src/utils'
 
 /** KiviBot 插件错误类 */
 export class KiviPluginError extends Error {

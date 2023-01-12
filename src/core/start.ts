@@ -1,16 +1,17 @@
 import { createClient } from 'oicq'
 import fs from 'fs-extra'
 
-import { colors, exitWithError, LOGO, md5, notice, stringifyError } from '@src/utils'
 import { bindLoginEvent, qrCodeHandler } from './login'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from './path'
 import { Devices, KiviLogger, redirectLog } from './logger'
 import { kiviConf } from './config'
 import { offlineHandler } from './logs'
 import { onlineHandler } from './online'
-import type { KiviConf } from './config'
 
+import type { KiviConf } from './config'
 import type { KiviPlugin } from './plugin'
+
+import { colors, exitWithError, LOGO, md5, notice, stringifyError } from '@/src/utils'
 
 /** 当前缓存中已载入并启用的插件 map */
 export const plugins: Map<string, KiviPlugin> = new Map()

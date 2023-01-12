@@ -1,4 +1,3 @@
-import { colors, stringifyError, wait } from '@src/utils'
 import { bindSendMessage } from './bindSendMessage'
 import { configNotice } from './notice'
 import { handleKiviCommand } from './commands'
@@ -8,6 +7,8 @@ import { messageHandler, noticeHandler, requestHandler } from './logs'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from './config'
+
+import { colors, stringifyError, wait } from '@/src/utils'
 
 /** log flag，防止掉线重新上线触发 online 事件时重复 bind */
 let hasOnline = false

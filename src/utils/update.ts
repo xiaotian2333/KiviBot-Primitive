@@ -1,8 +1,9 @@
 import ncu from 'npm-check-updates'
 import path from 'node:path'
 
-import { CWD } from '@src/core'
 import { install } from './install'
+
+import { CWD } from '@/src/core'
 
 /** 更新依赖 */
 export async function update(pkg?: string) {

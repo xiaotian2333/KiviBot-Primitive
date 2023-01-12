@@ -1,10 +1,11 @@
-import { colors, escapeColor, stringifyError } from '@src/utils'
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { KiviPluginError } from './pluginError'
 
-import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
 import type { KiviPlugin } from './plugin'
+import type { Client } from 'oicq'
+
+import { colors, escapeColor, stringifyError } from '@/src/utils'
 import { plugins } from '@/start'
 import { KiviLogger } from '@/logger'
 

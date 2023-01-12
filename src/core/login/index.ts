@@ -2,8 +2,8 @@ import { deviceHandler } from './device'
 import { sliderHandler } from './slider'
 import { errorHandler } from './error'
 
-import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
+import type { Client } from 'oicq'
 
 export * from './qrCode'
 

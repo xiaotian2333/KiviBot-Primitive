@@ -5,13 +5,12 @@ import minimist from 'minimist'
 import nodeCron from 'node-cron'
 import path from 'node:path'
 
-import { ensureArray, stringifyError } from '@src/utils'
-import { PluginDataDir } from '@src'
 import { KiviPluginError } from './pluginError'
+
 import type { KiviEventMap } from '@/events'
+import type { AdminArray, MainAdmin } from '@/config'
 import type { ScheduledTask } from 'node-cron'
 import type { Logger } from 'log4js'
-
 import type {
   Client,
   DiscussMessageEvent,
@@ -19,7 +18,9 @@ import type {
   GroupMessageEvent,
   PrivateMessageEvent
 } from 'oicq'
-import type { AdminArray, MainAdmin } from '@/config'
+
+import { PluginDataDir } from '@/src'
+import { ensureArray, stringifyError } from '@/src/utils'
 import { KiviEvents, MessageEvents, OicqEvents } from '@/events'
 
 export type AnyFunc = (...args: any[]) => any

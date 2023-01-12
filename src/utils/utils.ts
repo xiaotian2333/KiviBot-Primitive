@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
 import crypto from 'node:crypto'
-import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
-import type { AllMessageEvent } from '@src/core'
+import type { AllMessageEvent } from '@/src/core'
+import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
 // 导出 dayjs
 export { dayjs }

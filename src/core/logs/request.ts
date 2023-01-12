@@ -1,6 +1,6 @@
-import { colors } from '@src/utils'
-
 import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'oicq'
+
+import { colors } from '@/src/utils'
 import { KiviLogger } from '@/logger'
 
 export type AllRequestEvent = FriendRequestEvent | GroupRequestEvent | GroupInviteEvent

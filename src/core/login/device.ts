@@ -1,10 +1,10 @@
 import clipboard from 'clipboardy'
 import prompts from 'prompts'
 
-import { colors } from '@src/utils'
-
-import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
+import type { Client } from 'oicq'
+
+import { colors } from '@/src/utils'
 import { KiviLogger } from '@/logger'
 
 /** 设备锁验证监听处理函数 */

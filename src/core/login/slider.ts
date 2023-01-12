@@ -1,7 +1,8 @@
 import clipboard from 'clipboardy'
 
-import { colors } from '@src/utils'
 import type { Client } from 'oicq'
+
+import { colors } from '@/src/utils'
 import { KiviLogger } from '@/logger'
 
 interface SliderEvent {

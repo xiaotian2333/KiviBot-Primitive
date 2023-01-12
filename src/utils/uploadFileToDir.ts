@@ -1,9 +1,10 @@
 import os from 'node:os'
 
-import { KiviLogger } from '@src/core'
 import { stringifyError } from './utils'
 
 import type { Client } from 'oicq'
+
+import { KiviLogger } from '@/src/core'
 
 export async function uploadFileToDir(
   this: Client,

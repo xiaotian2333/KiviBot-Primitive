@@ -1,8 +1,9 @@
 import os from 'node:os'
 import { version as OicqVersion } from 'oicq/package.json'
 
-import { formatDateDiff, formatFileSize } from '@src/utils'
 import type { Client } from 'oicq'
+
+import { formatDateDiff, formatFileSize } from '@/src/utils'
 import { Devices } from '@/logger'
 import { MessageCounts } from '@/bindSendMessage'
 import { pkg, plugins } from '@/start'

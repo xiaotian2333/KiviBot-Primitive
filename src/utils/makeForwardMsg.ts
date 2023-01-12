@@ -7,8 +7,8 @@ import { Converter, PrivateMessage, rand2uuid } from 'oicq/lib/message'
 import { drop } from 'oicq/lib/errors'
 import { escapeXml, gzip, md5, timestamp, uuid } from 'oicq/lib/common'
 import { pb } from 'oicq/lib/core'
-import type { Image } from 'oicq/lib/message'
 
+import type { Image } from 'oicq/lib/message'
 import type { Client, Forwardable, XmlElem } from 'oicq'
 
 /** 制作合并转发消息，可自定义标题、内容、底部说明文字 */

@@ -1,6 +1,6 @@
-import { parseUin } from '@src/utils'
-
 import type { Client, MessageRet, Sendable } from 'oicq'
+
+import { parseUin } from '@/src/utils'
 import { kiviConf, saveKiviConf } from '@/config'
 
 export const ConfigMenu = `

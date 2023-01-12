@@ -1,14 +1,15 @@
 import minimist from 'minimist'
 
-import { KiviLogger } from '@src'
-import { notice, stringifyError, update } from '@src/utils'
 import { handlePluginCommand } from './plugin'
 import { handleConfigCommand } from './config'
 import { fetchStatus } from './status'
 
 import type { AllMessageEvent } from '@/plugin'
-import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
+import type { Client } from 'oicq'
+
+import { notice, stringifyError, update } from '@/src/utils'
+import { KiviLogger } from '@/src'
 import { pkg } from '@/start'
 
 const HelpMenu = `

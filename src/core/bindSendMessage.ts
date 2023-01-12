@@ -1,7 +1,7 @@
-import { colors } from '@src/utils'
-import { KiviLogger } from '@src'
-
 import type { Anonymous, Client, Quotable, Sendable } from 'oicq'
+
+import { colors } from '@/src/utils'
+import { KiviLogger } from '@/src'
 
 /** 记录已发送的消息数 */
 export const MessageCounts = {
