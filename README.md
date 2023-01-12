@@ -6,6 +6,8 @@
 
 ---
 
+> LOGO 源自[洛克王国](https://baike.baidu.com/item/%E6%B4%9B%E5%85%8B%E7%8E%8B%E5%9B%BD/67258)早期的光系明星宠物[迪莫](https://baike.baidu.com/item/%E8%BF%AA%E8%8E%AB/10570042)。
+
 [![npm-version](https://img.shields.io/npm/v/@kivibot/core?color=527dec&label=%40kivibot%2Fcore&style=flat-square)](https://npm.im/package/@kivibot/core)
 [![dm](https://shields.io/npm/dm/@kivibot/core?label=downloads&style=flat-square)](https://npm.im/package/@kivibot/core)
 
