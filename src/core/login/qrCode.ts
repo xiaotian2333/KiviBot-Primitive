@@ -1,6 +1,5 @@
-import { KiviLogger } from '@/logger'
-
 import type { Client } from 'oicq'
+import { KiviLogger } from '@/logger'
 
 /** 处理二维码扫描，自动轮询登录 */
 export function qrCodeHandler(this: Client) {

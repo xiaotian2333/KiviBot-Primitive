@@ -1,3 +1,6 @@
+import { install, stringifyError, update } from '@src/utils'
+import type { Client } from 'oicq'
+import type { ReplyFunc } from './config'
 import {
   disablePlugin,
   enablePlugin,
@@ -8,10 +11,6 @@ import {
 import { kiviConf, saveKiviConf } from '@/config'
 import { KiviLogger } from '@/logger'
 import { pkg, plugins } from '@/start'
-import { install, stringifyError, update } from '@src/utils'
-
-import type { Client } from 'oicq'
-import type { ReplyFunc } from './config'
 
 export const PluginMenu = `
 〓 KiviBot 插件 〓

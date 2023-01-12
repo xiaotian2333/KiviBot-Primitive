@@ -1,7 +1,7 @@
-import { KiviLogger } from '@/logger'
 import { colors } from '@src/utils'
 
 import type { Client, EventMap } from 'oicq'
+import { KiviLogger } from '@/logger'
 
 /** 监听处理所有通知，打印框架日志 */
 export function noticeHandler(

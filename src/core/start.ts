@@ -1,14 +1,14 @@
 import { createClient } from 'oicq'
 import fs from 'fs-extra'
 
-import { bindLoginEvent, qrCodeHandler } from './login'
 import { colors, exitWithError, LOGO, md5, notice, stringifyError } from '@src/utils'
+import { bindLoginEvent, qrCodeHandler } from './login'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from './path'
 import { Devices, KiviLogger, redirectLog } from './logger'
-import type { KiviConf } from './config'
 import { kiviConf } from './config'
 import { offlineHandler } from './logs'
 import { onlineHandler } from './online'
+import type { KiviConf } from './config'
 
 import type { KiviPlugin } from './plugin'
 

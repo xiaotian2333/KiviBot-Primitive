@@ -3,11 +3,11 @@
 import { randomBytes } from 'node:crypto'
 import { Readable } from 'node:stream'
 import { CmdID, highwayUpload } from 'oicq/lib/internal'
-import type { Image } from 'oicq/lib/message'
 import { Converter, PrivateMessage, rand2uuid } from 'oicq/lib/message'
 import { drop } from 'oicq/lib/errors'
 import { escapeXml, gzip, md5, timestamp, uuid } from 'oicq/lib/common'
 import { pb } from 'oicq/lib/core'
+import type { Image } from 'oicq/lib/message'
 
 import type { Client, Forwardable, XmlElem } from 'oicq'
 

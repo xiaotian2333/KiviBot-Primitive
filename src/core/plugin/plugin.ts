@@ -1,17 +1,16 @@
 import EventEmitter from 'node:events'
 import fs from 'fs-extra'
-import type { Logger } from 'log4js'
 import log4js from 'log4js'
 import minimist from 'minimist'
-import type { ScheduledTask } from 'node-cron'
 import nodeCron from 'node-cron'
 import path from 'node:path'
 
 import { ensureArray, stringifyError } from '@src/utils'
+import { PluginDataDir } from '@src'
 import { KiviPluginError } from './pluginError'
 import type { KiviEventMap } from '@/events'
-import { KiviEvents, MessageEvents, OicqEvents } from '@/events'
-import { PluginDataDir } from '@src'
+import type { ScheduledTask } from 'node-cron'
+import type { Logger } from 'log4js'
 
 import type {
   Client,
@@ -21,6 +20,7 @@ import type {
   PrivateMessageEvent
 } from 'oicq'
 import type { AdminArray, MainAdmin } from '@/config'
+import { KiviEvents, MessageEvents, OicqEvents } from '@/events'
 
 export type AnyFunc = (...args: any[]) => any
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never

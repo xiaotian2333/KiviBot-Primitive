@@ -2,8 +2,8 @@ import dayjs from 'dayjs'
 import log4js from 'log4js'
 import path from 'node:path'
 
-import { LogDir } from './path'
 import { colors } from '@src/utils'
+import { LogDir } from './path'
 
 import type { Config } from 'oicq'
 

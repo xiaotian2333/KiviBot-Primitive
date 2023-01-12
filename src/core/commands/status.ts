@@ -1,13 +1,12 @@
 import os from 'node:os'
 import { version as OicqVersion } from 'oicq/package.json'
 
-import { Devices } from '@/logger'
 import { formatDateDiff, formatFileSize } from '@src/utils'
+import type { Client } from 'oicq'
+import { Devices } from '@/logger'
 import { MessageCounts } from '@/bindSendMessage'
 import { pkg, plugins } from '@/start'
 import { searchAllPlugins } from '@/plugin'
-
-import type { Client } from 'oicq'
 
 export const SystemMap: Record<string, string> = {
   Linux: 'Linux',

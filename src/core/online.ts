@@ -1,5 +1,5 @@
-import { bindSendMessage } from './bindSendMessage'
 import { colors, stringifyError, wait } from '@src/utils'
+import { bindSendMessage } from './bindSendMessage'
 import { configNotice } from './notice'
 import { handleKiviCommand } from './commands'
 import { KiviLogger } from './logger'

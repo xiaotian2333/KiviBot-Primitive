@@ -1,12 +1,12 @@
 import { colors, stringifyError } from '@src/utils'
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
-import { KiviLogger } from '@/logger'
 import { KiviPluginError } from './pluginError'
 
 import type { Client } from 'oicq'
 import type { KiviConf } from '@/config'
 import type { KiviPlugin } from './plugin'
+import { KiviLogger } from '@/logger'
 
 /** 通过插件路径禁用单个插件  */
 export async function disablePlugin(
