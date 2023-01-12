@@ -70,7 +70,7 @@ ${pinfo.join('\n')}
 
       if (plugins.has(pname)) {
         // 过滤已经启用了的插件
-        count++
+        return count++
       }
 
       const res = await enablePlugin(bot, kiviConf, path)
