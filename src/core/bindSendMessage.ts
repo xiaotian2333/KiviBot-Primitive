@@ -13,7 +13,7 @@ export async function bindSendMessage(bot: Client) {
   bot.gl.forEach(({ group_id, group_name = '未知' }) => {
     const group = bot.pickGroup(group_id)
     const sendMsg = group.sendMsg.bind(group)
-    const head = `↑ [群:${group_id}(${group_name})]`
+    const head = `↑ [群:${group_name}(${group_id})]`
 
     group.sendMsg = async (
       content: Sendable,
@@ -32,7 +32,7 @@ export async function bindSendMessage(bot: Client) {
   bot.fl.forEach(({ user_id, nickname = '未知' }) => {
     const friend = bot.pickFriend(user_id)
     const sendMsg = friend.sendMsg.bind(friend)
-    const head = `↑ [私:${user_id}(${nickname})]`
+    const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
       KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
@@ -51,7 +51,7 @@ export async function bindSendMessage(bot: Client) {
 
     const { group_id, name = '未知' } = group
     const sendMsg = group.sendMsg.bind(group)
-    const head = `↑ [群:${group_id}(${name})]`
+    const head = `↑ [群:${name}(${group_id})]`
 
     group.sendMsg = async (
       content: Sendable,
@@ -70,7 +70,7 @@ export async function bindSendMessage(bot: Client) {
   bot.on('notice.friend.increase', ({ friend }) => {
     const { user_id, nickname = '未知' } = friend
     const sendMsg = friend.sendMsg.bind(friend)
-    const head = `↑ [私:${user_id}(${nickname})]`
+    const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
       KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
