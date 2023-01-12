@@ -66,7 +66,7 @@ export function start() {
 
     // 未指定协议时，默认使用 iPad 协议作为 oicq 登录协议
     oicq_config.platform = oicq_config?.platform ?? 5
-    // ociq 数据及缓存保存在 data/oicq 下
+    // oicq 数据及缓存保存在 data/oicq 下
     oicq_config.data_dir = OicqDataDir
     // oicq 默认日志等级为 info
     oicq_config.log_level = oicq_config?.log_level ?? 'info'

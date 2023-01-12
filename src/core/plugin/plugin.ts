@@ -40,7 +40,7 @@ export type BotHandler = (bot: Client, admins: AdminArray) => any
 
 /**
  * 命令消息处理函数
- * @param {AllMessageEvent} event ociq 消息事件，包含了群聊、私聊与讨论组消息
+ * @param {AllMessageEvent} event oicq 消息事件，包含了群聊、私聊与讨论组消息
  * @param {string[]} params 由 minimist 解析后的 `_` 值（不包含命令），可以看作命令的其余参数
  * @param {{[arg: string]: any}} options 由 minimist 解析后的值（不包含 `_` 和 `--`），可以看作命令选项
  */
@@ -184,7 +184,7 @@ export class KiviPlugin extends EventEmitter {
 
     this.debug('add all oicq events listeners')
 
-    // 插件监听 ociq 的所有事件
+    // 插件监听 oicq 的所有事件
     OicqEvents.forEach((evt) => {
       const handler = (e: FirstParam<EventMap<Client>[typeof evt]>) => {
         if (MessageEvents.includes(evt as any)) {

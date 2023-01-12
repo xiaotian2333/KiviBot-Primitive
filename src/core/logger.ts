@@ -83,7 +83,7 @@ export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account:
         type: 'stdout',
         layout: {
           ...layout,
-          target: 'pluin'
+          target: 'plugin'
         }
       },
       log_file: {
