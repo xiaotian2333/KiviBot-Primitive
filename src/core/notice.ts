@@ -1,10 +1,9 @@
+import type { Client, ImageElem } from 'oicq'
 import { segment } from 'oicq'
 
 import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@src/utils'
 import { kiviConf } from './config'
 import { OperationMap } from './commands/config'
-
-import type { Client, ImageElem } from 'oicq'
 
 function buildNotice(title: string, avatar: ImageElem, content: string) {
   return [avatar, `\n〓 ${title} 〓`, `\n${content}`]
@@ -57,7 +56,7 @@ QQ: ${user_id || '未知'}
 操作: ${OperationMap[friend.request.action]}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
   })
 
   // 新增好友
@@ -72,7 +71,7 @@ QQ: ${user_id || '未知'}
 QQ: ${user_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('新增好友', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice('新增好友', avatar, msg))
   })
 
   // 好友减少
@@ -87,7 +86,7 @@ QQ: ${user_id || '未知'}
 QQ: ${user_id || '未知'}
   `.trim()
 
-    mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
   })
 
   // 邀请 Bot 进群
@@ -109,7 +108,7 @@ QQ: ${user_id || '未知'}
 操作: ${OperationMap[group.request.action]}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('邀请进群', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice('邀请进群', avatar, msg))
   })
 
   // 新增群聊
@@ -130,7 +129,7 @@ QQ: ${user_id || '未知'}
 群号: ${group_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('新增群聊', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice('新增群聊', avatar, msg))
   })
 
   // 群聊减少
@@ -154,7 +153,7 @@ QQ: ${user_id || '未知'}
 ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice(isKick ? 'Bot 被踢' : 'Bot 退群', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice(isKick ? 'Bot 被踢' : 'Bot 退群', avatar, msg))
   })
 
   // 群管理变动
@@ -177,7 +176,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 被操作人: ${user_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice(set ? '设置群管理' : '取消群管理', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice(set ? '设置群管理' : '取消群管理', avatar, msg))
   })
 
   // Bot 被禁言
@@ -203,7 +202,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice(`Bot 被${isBan ? '禁言' : '解除禁言'}`, avatar, msg))
+    await mainAdmin.sendMsg(buildNotice(`Bot 被${isBan ? '禁言' : '解除禁言'}`, avatar, msg))
   })
 
   // 群转让
@@ -225,6 +224,6 @@ ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 新群主: ${user_id || '未知'}
 `.trim()
 
-    mainAdmin.sendMsg(buildNotice('群聊转让', avatar, msg))
+    await mainAdmin.sendMsg(buildNotice('群聊转让', avatar, msg))
   })
 }

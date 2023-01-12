@@ -17,12 +17,12 @@ export function killPlugin(modulePath: string) {
     require.main?.children.splice(idx, 1)
   }
 
-  for (const fullpath in require.cache) {
-    const modId = require.cache[fullpath]?.id
+  for (const fullPath in require.cache) {
+    const modId = require.cache[fullPath]?.id
     const valid = modId?.startsWith(mod.path)
 
     if (valid) {
-      delete require.cache[fullpath]
+      delete require.cache[fullPath]
     }
   }
 

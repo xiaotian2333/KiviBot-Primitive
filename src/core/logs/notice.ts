@@ -44,12 +44,12 @@ export function noticeHandler(
       const { friend, operator_id, message_id } = event
 
       const isOperatorSelf = operator_id === this.uin
-      const friendinfo = `${friend.nickname || '未知'}(${friend.user_id})`
+      const friendInfo = `${friend.nickname || '未知'}(${friend.user_id})`
 
       // 触发方
-      const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : friendinfo
+      const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : friendInfo
 
-      message = `↓ [私聊撤回:${friendinfo}] [${operator}:${message_id}]`
+      message = `↓ [私聊撤回:${friendInfo}] [${operator}:${message_id}]`
     }
   } else if (event.notice_type === 'group') {
     // 群通知

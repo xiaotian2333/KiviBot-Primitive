@@ -17,7 +17,7 @@ export async function messageHandler(e: AllMessageEvent) {
   const type = TypeMap[e.message_type]
   const nick = `${sender.nickname}(${sender.user_id})`
 
-  let head = ''
+  let head: string
 
   if (message_type === 'private') {
     // 私聊消息

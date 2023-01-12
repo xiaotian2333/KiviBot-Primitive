@@ -28,7 +28,7 @@ export function qrCodeHandler(this: Client) {
     if (retcode === 17) {
       KiviLogger.warn('二维码已失效，正在重新获取...')
       clearInterval(interval_id)
-      this.login()
+      await this.login()
     }
 
     // 0: 扫码成功 48: 未过期，等待扫码 53: 已扫码未确认 54: 扫码后被手动取消 17: 二维码过期
@@ -37,7 +37,7 @@ export function qrCodeHandler(this: Client) {
 
       if (uin === this.uin) {
         KiviLogger.info(`Bot 帐号 ${uin} 扫码验证成功`)
-        this.login()
+        await this.login()
         return
       }
 

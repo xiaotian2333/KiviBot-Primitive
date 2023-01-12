@@ -1,12 +1,15 @@
 import EventEmitter from 'node:events'
 import fs from 'fs-extra'
+import type { Logger } from 'log4js'
 import log4js from 'log4js'
 import minimist from 'minimist'
+import type { ScheduledTask } from 'node-cron'
 import nodeCron from 'node-cron'
 import path from 'node:path'
 
 import { ensureArray, stringifyError } from '@src/utils'
 import { KiviPluginError } from './pluginError'
+import type { KiviEventMap } from '@/events'
 import { KiviEvents, MessageEvents, OicqEvents } from '@/events'
 import { PluginDataDir } from '@src'
 
@@ -17,10 +20,7 @@ import type {
   GroupMessageEvent,
   PrivateMessageEvent
 } from 'oicq'
-import type { KiviEventMap } from '@/events'
 import type { AdminArray, MainAdmin } from '@/config'
-import type { Logger } from 'log4js'
-import type { ScheduledTask } from 'node-cron'
 
 export type AnyFunc = (...args: any[]) => any
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
@@ -69,18 +69,15 @@ export class KiviPlugin extends EventEmitter {
   public bot: Client | null = null
   /** 插件配置 */
   public config: KiviPluginConf = {}
-
-  private _mounted: BotHandler = () => {}
-  private _unmounted: BotHandler = () => {}
-  private _admins: AdminArray | undefined
   private _cronTasks: ScheduledTask[] = []
   private _handlers: Map<string, AnyFunc[]> = new Map()
-  private _dataDir = path.join(PluginDataDir, 'null')
+
   /**
    * KiviBot 插件类
    *
    * @param {string} name 插件名称，建议英文，插件数据目录以此结尾
    * @param {string} version 插件版本，如 1.0.0，建议 require `package.json` 的版本号统一管理
+   * @param conf
    */
   constructor(name: string, version: string, conf?: KiviPluginConf) {
     super()
@@ -93,6 +90,44 @@ export class KiviPlugin extends EventEmitter {
     this.debug('create KiviPlugin instance')
   }
 
+  private _admins: AdminArray | undefined
+
+  /**
+   * 框架管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
+   */
+  get admins() {
+    this.checkMountStatus()
+    return [...(this._admins || [])] as AdminArray
+  }
+
+  private readonly _dataDir = path.join(PluginDataDir, 'null')
+
+  /**
+   * 插件数据存放目录，`框架目录/data/plugins/<name>` 注意这里的 name 是实例化的时候传入的 name
+   */
+  get dataDir() {
+    if (!fs.existsSync(this._dataDir)) {
+      fs.ensureDirSync(this._dataDir)
+    }
+    return this._dataDir
+  }
+
+  /**
+   * 框架主管理员 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
+   */
+  get mainAdmin() {
+    this.checkMountStatus()
+    return [...(this._admins || [])][0] as MainAdmin
+  }
+
+  /**
+   * 框架副管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
+   */
+  get subAdmins() {
+    this.checkMountStatus()
+    return (this._admins || []).slice(1) as number[]
+  }
+
   /**
    * 抛出一个 KiviBot 插件标准错误，会被框架捕获并输出到日志
    *
@@ -100,74 +135,6 @@ export class KiviPlugin extends EventEmitter {
    */
   throwPluginError(message: string) {
     throw new KiviPluginError(this.name, message)
-  }
-
-  /**
-   * 检测是否已经挂载 bot 实例，未挂载抛出插件错误
-   */
-  private checkMountStatus() {
-    if (!this.bot) {
-      this.throwPluginError('Bot 实例此时还未挂载。请在 onMounted 与 onUnmounted 中进行调用。')
-    }
-  }
-
-  /**
-   * 框架管理变动事件处理函数
-   */
-  private adminChangeHandler(event: { admins: AdminArray }) {
-    this._admins = event.admins
-  }
-
-  /**
-   * 添加监听函数
-   */
-  private addHandler(eventName: string, handler: AnyFunc) {
-    const handlers = this._handlers.get(eventName)
-    this._handlers.set(eventName, handlers ? [...handlers, handler] : [handler])
-  }
-
-  /**
-   * 取消所有监听
-   */
-  private removeAllHandler() {
-    this.debug('removeAllHandler')
-
-    for (const [eventName, handlers] of this._handlers) {
-      handlers.forEach((handler) => this.bot!.off(eventName, handler))
-    }
-  }
-
-  /**
-   * 清理所有定时任务
-   */
-  private clearCronTasks() {
-    this.debug('clearCronTasks')
-
-    this._cronTasks.forEach((task) => task.stop())
-  }
-
-  /** 目标群或者好友是否被启用，讨论组当作群聊处理 */
-  private isTargetOn(event: AllMessageEvent) {
-    const { enableFriends, enableGroups } = this.config
-
-    const isPrivate = event.message_type === 'private'
-    const isGroup = event.message_type === 'group'
-    const isDiscuss = event.message_type === 'discuss'
-
-    const isUserEnable = isPrivate && enableFriends?.includes(event.sender.user_id)
-    const isGroupEnable =
-      (isGroup && enableGroups?.includes(event.group_id)) ||
-      (isDiscuss && enableGroups?.includes(event.discuss_id))
-
-    if (isPrivate && (!enableFriends || isUserEnable)) {
-      return true
-    }
-
-    if (!isPrivate && (!enableGroups || isGroupEnable)) {
-      return true
-    }
-
-    return false
   }
 
   /**
@@ -449,12 +416,10 @@ export class KiviPlugin extends EventEmitter {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { _: params, '--': __, ...options } = minimist(e.toString().trim().split(/\s+/))
         const inputCmd = params.shift() ?? ''
-
         const cmdList = ensureArray(cmds)
 
         for (const cmd of cmdList) {
           const isReg = cmd instanceof RegExp
-
           const hitReg = isReg && cmd.test(inputCmd)
           const hitString = !isReg && cmd === inputCmd
 
@@ -484,12 +449,10 @@ export class KiviPlugin extends EventEmitter {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { _: params, '--': __, ...options } = minimist(e.toString().trim().split(/\s+/))
           const inputCmd = params.shift() ?? ''
-
           const cmdList = ensureArray(cmds)
 
           for (const cmd of cmdList) {
             const isReg = cmd instanceof RegExp
-
             const hitReg = isReg && cmd.test(inputCmd)
             const hitString = !isReg && cmd === inputCmd
 
@@ -547,7 +510,7 @@ export class KiviPlugin extends EventEmitter {
   /**
    * 添加定时任务，插件禁用时会自动清理，无需手动处理
    *
-   * @param {string} cronExpression corntab 表达式, [秒], 分, 时, 日, 月, 星期
+   * @param {string} cronExpression crontab 表达式, [秒], 分, 时, 日, 月, 星期
    * @param {BotHandler} fn 定时触发的函数
    * @return {ScheduledTask} 定时任务 Task 实例
    */
@@ -555,9 +518,9 @@ export class KiviPlugin extends EventEmitter {
     this.checkMountStatus()
 
     // 检验 cron 表达式有效性
-    const isSytaxOK = nodeCron.validate(cronExpression)
+    const isSyntaxOK = nodeCron.validate(cronExpression)
 
-    if (!isSytaxOK) {
+    if (!isSyntaxOK) {
       this.throwPluginError('无效的 cron 表达式')
     }
 
@@ -569,38 +532,76 @@ export class KiviPlugin extends EventEmitter {
     return task
   }
 
-  /**
-   * 框架管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
-   */
-  get admins() {
-    this.checkMountStatus()
-    return [...(this._admins || [])] as AdminArray
-  }
+  private _mounted: BotHandler = () => {}
+
+  private _unmounted: BotHandler = () => {}
 
   /**
-   * 框架主管理员 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
+   * 检测是否已经挂载 bot 实例，未挂载抛出插件错误
    */
-  get mainAdmin() {
-    this.checkMountStatus()
-    return [...(this._admins || [])][0] as MainAdmin
-  }
-
-  /**
-   * 框架副管理员列表 (getter)，插件会自动监听变动事件，并保证列表是实时最新的
-   */
-  get subAdmins() {
-    this.checkMountStatus()
-    return (this._admins || []).slice(1) as number[]
-  }
-
-  /**
-   * 插件数据存放目录，`框架目录/data/plugins/<name>` 注意这里的 name 是实例化的时候传入的 name
-   */
-  get dataDir() {
-    if (!fs.existsSync(this._dataDir)) {
-      fs.ensureDirSync(this._dataDir)
+  private checkMountStatus() {
+    if (!this.bot) {
+      this.throwPluginError('Bot 实例此时还未挂载。请在 onMounted 与 onUnmounted 中进行调用。')
     }
-    return this._dataDir
+  }
+
+  /**
+   * 框架管理变动事件处理函数
+   */
+  private adminChangeHandler(event: { admins: AdminArray }) {
+    this._admins = event.admins
+  }
+
+  /**
+   * 添加监听函数
+   */
+  private addHandler(eventName: string, handler: AnyFunc) {
+    const handlers = this._handlers.get(eventName)
+    this._handlers.set(eventName, handlers ? [...handlers, handler] : [handler])
+  }
+
+  /**
+   * 取消所有监听
+   */
+  private removeAllHandler() {
+    this.debug('removeAllHandler')
+
+    for (const [eventName, handlers] of this._handlers) {
+      handlers.forEach((handler) => this.bot!.off(eventName, handler))
+    }
+  }
+
+  /**
+   * 清理所有定时任务
+   */
+  private clearCronTasks() {
+    this.debug('clearCronTasks')
+
+    this._cronTasks.forEach((task) => task.stop())
+  }
+
+  /** 目标群或者好友是否被启用，讨论组当作群聊处理 */
+  private isTargetOn(event: AllMessageEvent) {
+    const { enableFriends, enableGroups } = this.config
+
+    const isPrivate = event.message_type === 'private'
+    const isGroup = event.message_type === 'group'
+    const isDiscuss = event.message_type === 'discuss'
+
+    const isUserEnable = isPrivate && enableFriends?.includes(event.sender.user_id)
+    const isGroupEnable =
+      (isGroup && enableGroups?.includes(event.group_id)) ||
+      (isDiscuss && enableGroups?.includes(event.discuss_id))
+    // TODO if语句简化
+    if (isPrivate && (!enableFriends || isUserEnable)) {
+      return true
+    }
+
+    if (!isPrivate && (!enableGroups || isGroupEnable)) {
+      return true
+    }
+
+    return false
   }
 }
 
@@ -608,27 +609,6 @@ export class KiviPlugin extends EventEmitter {
  * KiviBot 插件类
  */
 export interface KiviPlugin extends EventEmitter {
-  /** 监听 oicq 标准事件以及 KiviBot 标准事件 */
-  on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
-  /** 监听自定义事件或其他插件触发的事件 */
-  on<S extends string | symbol>(
-    event: S & Exclude<S, keyof EventMap>,
-    listener: (this: this, ...args: any[]) => void
-  ): this
-  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件 */
-  once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
-  /** 单次监听自定义事件或其他插件触发的事件 */
-  once<S extends string | symbol>(
-    event: S & Exclude<S, keyof EventMap>,
-    listener: (this: this, ...args: any[]) => void
-  ): this
-  /** 取消监听 oicq 标准事件以及 KiviBot 标准事件 */
-  off<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
-  /** 取消监听自定义事件或其他插件触发的事件 */
-  off<S extends string | symbol>(
-    event: S & Exclude<S, keyof EventMap>,
-    listener: (this: this, ...args: any[]) => void
-  ): this
   /** @deprecated 请使用 on 进行事件监听 */
   addListener: never
   /** @deprecated 请使用 off 取消事件监听 */
@@ -646,9 +626,36 @@ export interface KiviPlugin extends EventEmitter {
   /** @deprecated 不推荐使用 */
   listeners: never
   /** @deprecated *不推荐使用 /
-  removeListener: never
-  /** @deprecated 不推荐使用 */
+     removeListener: never
+     /** @deprecated 不推荐使用 */
   prependListener: never
   /** @deprecated 不推荐使用 */
   prependOnceListener: never
+
+  /** 监听 oicq 标准事件以及 KiviBot 标准事件 */
+  on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+
+  /** 监听自定义事件或其他插件触发的事件 */
+  on<S extends string | symbol>(
+    event: S & Exclude<S, keyof EventMap>,
+    listener: (this: this, ...args: any[]) => void
+  ): this
+
+  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件 */
+  once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+
+  /** 单次监听自定义事件或其他插件触发的事件 */
+  once<S extends string | symbol>(
+    event: S & Exclude<S, keyof EventMap>,
+    listener: (this: this, ...args: any[]) => void
+  ): this
+
+  /** 取消监听 oicq 标准事件以及 KiviBot 标准事件 */
+  off<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+
+  /** 取消监听自定义事件或其他插件触发的事件 */
+  off<S extends string | symbol>(
+    event: S & Exclude<S, keyof EventMap>,
+    listener: (this: this, ...args: any[]) => void
+  ): this
 }
