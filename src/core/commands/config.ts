@@ -1,7 +1,7 @@
-import type { Client, MessageRet, Sendable } from 'oicq'
-
-import { parseUin } from '@/src/utils'
 import { kiviConf, saveKiviConf } from '@/config'
+import { parseUin } from '@/src/utils'
+
+import type { Client, MessageRet, Sendable } from 'oicq'
 
 export const ConfigMenu = `
 〓 KiviBot 配置 〓

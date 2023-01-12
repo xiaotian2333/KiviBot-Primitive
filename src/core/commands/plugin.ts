@@ -1,7 +1,5 @@
-import type { Client } from 'oicq'
-import type { ReplyFunc } from './config'
-
-import { install, stringifyError, update } from '@/src/utils'
+import { kiviConf, saveKiviConf } from '@/config'
+import { KiviLogger } from '@/logger'
 import {
   disablePlugin,
   enablePlugin,
@@ -9,9 +7,11 @@ import {
   getPluginPathByName,
   searchAllPlugins
 } from '@/plugin'
-import { kiviConf, saveKiviConf } from '@/config'
-import { KiviLogger } from '@/logger'
+import { install, stringifyError, update } from '@/src/utils'
 import { pkg, plugins } from '@/start'
+
+import type { ReplyFunc } from './config'
+import type { Client } from 'oicq'
 
 export const PluginMenu = `
 〓 KiviBot 插件 〓
@@ -96,7 +96,7 @@ ${pinfo.join('\n')}
       return reply('〓 所有插件均已禁用 〓')
     }
 
-    // TODO 将 forEach 用 for of 重写
+    // TODO: 将 forEach 用 for of 重写
 
     Array.from(plugins.entries()).forEach(async ([pname, plugin], i) => {
       const targetPluginPath = await getPluginPathByName(pname)
@@ -105,7 +105,7 @@ ${pinfo.join('\n')}
         const res = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
 
         if (res !== true) {
-          reply(`〓 ${pname} 禁用失败 〓\n${res}`)
+          await reply(`〓 ${pname} 禁用失败 〓\n${res}`)
         }
 
         plugins.delete(pname)

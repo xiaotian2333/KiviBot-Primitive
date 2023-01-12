@@ -1,14 +1,13 @@
 import { bindSendMessage } from './bindSendMessage'
-import { configNotice } from './notice'
 import { handleKiviCommand } from './commands'
 import { KiviLogger } from './logger'
-import { KiviPluginError, loadPlugins } from './plugin'
 import { messageHandler, noticeHandler, requestHandler } from './logs'
-
-import type { Client } from 'oicq'
-import type { KiviConf } from './config'
-
+import { configNotice } from './notice'
+import { KiviPluginError, loadPlugins } from './plugin'
 import { colors, stringifyError, wait } from '@/src/utils'
+
+import type { KiviConf } from './config'
+import type { Client } from 'oicq'
 
 /** log flag，防止掉线重新上线触发 online 事件时重复 bind */
 let hasOnline = false

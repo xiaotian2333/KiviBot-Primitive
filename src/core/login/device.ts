@@ -1,11 +1,11 @@
 import clipboard from 'clipboardy'
 import prompts from 'prompts'
 
+import { KiviLogger } from '@/logger'
+import { colors } from '@/src/utils'
+
 import type { KiviConf } from '@/config'
 import type { Client } from 'oicq'
-
-import { colors } from '@/src/utils'
-import { KiviLogger } from '@/logger'
 
 /** 设备锁验证监听处理函数 */
 export async function deviceHandler(

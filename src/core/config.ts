@@ -1,11 +1,11 @@
 import { writeJsonSync } from 'fs-extra'
 
-import { ConfigPath } from './path'
 import { KiviLogger } from './logger'
+import { ConfigPath } from './path'
 import { plugins } from './start'
 
-import type { Config } from 'oicq'
 import type { KiviPlugin } from './plugin'
+import type { Config } from 'oicq'
 
 export type MainAdmin = number
 export type AdminArray = [MainAdmin, ...number[]]

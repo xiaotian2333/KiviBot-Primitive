@@ -1,8 +1,8 @@
 import { LoginErrorCode } from 'oicq'
 
-import type { Client } from 'oicq'
-
 import { KiviLogger } from '@/logger'
+
+import type { Client } from 'oicq'
 
 /** 登录错误事件监听处理函数 */
 export function errorHandler(this: Client, { code, message }: { code: number; message: string }) {

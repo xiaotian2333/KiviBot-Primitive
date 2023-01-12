@@ -1,7 +1,7 @@
 const importOrder = [
   ['builtin', 'external'],
   'internal',
-  ['sibling', 'parent', 'object', 'index'],
+  ['unknown', 'sibling', 'parent', 'object', 'index'],
   'type'
 ]
 
@@ -18,7 +18,12 @@ module.exports = {
       1,
       {
         'newlines-between': 'always',
-        groups: importOrder
+        groups: importOrder,
+        warnOnUnassignedImports: true,
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true
+        }
       }
     ]
   }

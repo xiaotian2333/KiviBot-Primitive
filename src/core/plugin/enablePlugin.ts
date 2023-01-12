@@ -1,13 +1,12 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { KiviPluginError } from './pluginError'
-
-import type { KiviConf } from '@/config'
-import type { KiviPlugin } from './plugin'
-import type { Client } from 'oicq'
-
+import { KiviLogger } from '@/logger'
 import { colors, escapeColor, stringifyError } from '@/src/utils'
 import { plugins } from '@/start'
-import { KiviLogger } from '@/logger'
+
+import type { KiviPlugin } from './plugin'
+import type { KiviConf } from '@/config'
+import type { Client } from 'oicq'
 
 /** 通过插件模块路径启用单个插件 */
 export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: string) {

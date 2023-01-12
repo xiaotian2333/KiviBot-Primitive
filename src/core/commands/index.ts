@@ -1,16 +1,15 @@
 import minimist from 'minimist'
 
-import { handlePluginCommand } from './plugin'
 import { handleConfigCommand } from './config'
+import { handlePluginCommand } from './plugin'
 import { fetchStatus } from './status'
-
-import type { AllMessageEvent } from '@/plugin'
-import type { KiviConf } from '@/config'
-import type { Client } from 'oicq'
-
-import { notice, stringifyError, update } from '@/src/utils'
 import { KiviLogger } from '@/src'
+import { notice, stringifyError, update } from '@/src/utils'
 import { pkg } from '@/start'
+
+import type { KiviConf } from '@/config'
+import type { AllMessageEvent } from '@/plugin'
+import type { Client } from 'oicq'
 
 const HelpMenu = `
 〓 KiviBot 帮助 〓
@@ -90,7 +89,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   }
 
   if (cmd === 'update') {
-    event.reply('〓 正在检查更新... 〓')
+    await event.reply('〓 正在检查更新... 〓')
 
     try {
       const upInfo = await update()

@@ -1,8 +1,8 @@
-import type { AllMessageEvent } from '@/plugin'
-
-import { colors } from '@/src/utils'
-import { KiviLogger } from '@/logger'
 import { kiviConf } from '@/config'
+import { KiviLogger } from '@/logger'
+import { colors } from '@/src/utils'
+
+import type { AllMessageEvent } from '@/plugin'
 
 const TypeMap = {
   private: '私',

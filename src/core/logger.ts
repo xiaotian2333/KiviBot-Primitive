@@ -3,10 +3,9 @@ import log4js from 'log4js'
 import path from 'node:path'
 
 import { LogDir } from './path'
+import { colors } from '@/src/utils'
 
 import type { Config } from 'oicq'
-
-import { colors } from '@/src/utils'
 
 /** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
 export const Devices = [

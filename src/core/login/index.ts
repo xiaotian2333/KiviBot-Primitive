@@ -1,6 +1,6 @@
 import { deviceHandler } from './device'
-import { sliderHandler } from './slider'
 import { errorHandler } from './error'
+import { sliderHandler } from './slider'
 
 import type { KiviConf } from '@/config'
 import type { Client } from 'oicq'
