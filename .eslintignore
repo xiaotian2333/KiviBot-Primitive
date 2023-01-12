@@ -1,2 +1,5 @@
 lib
 examples
+package.json
+package-lock.json
+tsconfig.json

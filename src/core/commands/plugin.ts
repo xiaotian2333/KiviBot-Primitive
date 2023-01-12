@@ -1,14 +1,14 @@
 import {
+  disablePlugin,
   enablePlugin,
   getPluginNameByPath,
-  searchAllPlugins,
   getPluginPathByName,
-  disablePlugin
+  searchAllPlugins
 } from '@/plugin'
 import { kiviConf, saveKiviConf } from '@/config'
 import { KiviLogger } from '@/logger'
 import { pkg, plugins } from '@/start'
-import { update, install, stringifyError } from '@src/utils'
+import { install, stringifyError, update } from '@src/utils'
 
 import type { Client } from 'oicq'
 import type { ReplyFunc } from './config'
@@ -25,7 +25,7 @@ export const PluginMenu = `
 
 export async function handlePluginCommand(bot: Client, params: string[], reply: ReplyFunc) {
   if (!params.length) {
-    return await reply(PluginMenu)
+    return reply(PluginMenu)
   }
 
   const [secondCmd, pname] = params
@@ -64,12 +64,13 @@ ${pinfo.join('\n')}
 
     let count = 0
 
-    ps.forEach(async (path, i) => {
+    for (const path of ps) {
+      const i = ps.indexOf(path)
       const pname = getPluginNameByPath(path)
 
       if (plugins.has(pname)) {
         // 过滤已经启用了的插件
-        return count++
+        count++
       }
 
       const res = await enablePlugin(bot, kiviConf, path)
@@ -77,15 +78,15 @@ ${pinfo.join('\n')}
       if (res === true) {
         count++
       } else {
-        reply(`〓 ${pname} 启用失败 〓\n${res}`)
+        await reply(`〓 ${pname} 启用失败 〓\n${res}`)
       }
 
       if (i + 1 === all) {
         saveKiviConf()
 
-        return reply(`〓 共启用 ${count} 个插件 〓`)
+        await reply(`〓 共启用 ${count} 个插件 〓`)
       }
-    })
+    }
   }
 
   if (secondCmd === 'offall') {
@@ -94,6 +95,8 @@ ${pinfo.join('\n')}
     if (!size) {
       return reply('〓 所有插件均已禁用 〓')
     }
+
+    // TODO 将 forEach 用 for of 重写
 
     Array.from(plugins.entries()).forEach(async ([pname, plugin], i) => {
       const targetPluginPath = await getPluginPathByName(pname)
@@ -119,7 +122,7 @@ ${pinfo.join('\n')}
   }
 
   if (secondCmd === 'update' || secondCmd === 'up') {
-    reply('〓 正在更新插件... 〓')
+    await reply('〓 正在更新插件... 〓')
 
     const name = pname ? `${pname} ` : ''
 
@@ -218,7 +221,7 @@ ${pinfo.join('\n')}
       return reply(`〓 ${pname}: 插件不存在 〓`)
     }
 
-    let res: boolean | string = false
+    let res: boolean | string
 
     if (!plugin) {
       res = await enablePlugin(bot, kiviConf, targetPluginPath)
@@ -247,7 +250,7 @@ ${pinfo.join('\n')}
       shortName = shortName.replace(/^kivibot-plugin-/i, '')
     }
 
-    reply(`〓 正在安装 ${pname}... 〓`)
+    await reply(`〓 正在安装 ${pname}... 〓`)
 
     try {
       if (await install(`kivibot-plugin-${shortName}`)) {
@@ -275,7 +278,7 @@ ${pinfo.join('\n')}
       shortName = shortName.replace(/^kivibot-plugin-/i, '')
     }
 
-    reply(`〓 正在移除 ${pname}... 〓`)
+    await reply(`〓 正在移除 ${pname}... 〓`)
 
     try {
       if (await install(`kivibot-plugin-${shortName}`, true)) {

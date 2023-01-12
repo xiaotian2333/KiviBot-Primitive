@@ -12,7 +12,7 @@ export const notice = {
   },
   /** 输出 KiviBot 规范化的成功消息 */
   success: (msg: string, newLine = false) => {
-    console.log(`${newLine ? '\n' : ''}${colors.green('sucess:')} ${msg}`)
+    console.log(`${newLine ? '\n' : ''}${colors.green('success:')} ${msg}`)
   },
   /** 输出 KiviBot 规范化的错误消息 */
   error: (msg: string, newLine = false) => {

@@ -48,7 +48,7 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   process.on('uncaughtException', handleGlobalError)
 
   // 绑定发送消息，打印发送日志
-  bindSendMessage(this)
+  await bindSendMessage(this)
 
   // 监听消息，打印日志，同时处理框架命令
   this.on('message', (event) => {
@@ -66,9 +66,9 @@ export async function onlineHandler(this: Client, kiviConf: KiviConf) {
   // 检索并加载插件
   const { all, cnt, npm, local, plugins } = await loadPlugins(this, kiviConf)
 
-  const plugiInfo = `共检索到 ${all} 个插件 (${local} 个本地，${npm} 个 npm)`
+  const pluginInfo = `共检索到 ${all} 个插件 (${local} 个本地，${npm} 个 npm)`
 
-  info(colors.cyan(`${plugiInfo}, 启用 ${cnt} 个：${colors.green(plugins.join(', '))}`))
+  info(colors.cyan(`${pluginInfo}, 启用 ${cnt} 个：${colors.green(plugins.join(', '))}`))
 
   // 初始化完成
   KiviLogger.info(colors.gray('框架初始化完成'))

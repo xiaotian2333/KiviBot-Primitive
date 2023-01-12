@@ -1,10 +1,10 @@
 import { colors } from '@src/utils'
-import { KiviLogger } from './logger'
+import { KiviLogger } from '@src'
 
 import type { Anonymous, Client, Quotable, Sendable } from 'oicq'
 
 /** 记录已发送的消息数 */
-export const MessagCounts = {
+export const MessageCounts = {
   value: 0
 }
 
@@ -23,7 +23,7 @@ export async function bindSendMessage(bot: Client) {
       KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
 
       // 已发送消息计数
-      MessagCounts.value++
+      MessageCounts.value++
 
       return sendMsg(content, source, anony)
     }
@@ -38,7 +38,7 @@ export async function bindSendMessage(bot: Client) {
       KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
 
       // 已发送消息计数
-      MessagCounts.value++
+      MessageCounts.value++
 
       return sendMsg(content, source)
     }
@@ -61,7 +61,7 @@ export async function bindSendMessage(bot: Client) {
       KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
 
       // 已发送消息计数
-      MessagCounts.value++
+      MessageCounts.value++
 
       return sendMsg(content, source, anony)
     }
@@ -76,7 +76,7 @@ export async function bindSendMessage(bot: Client) {
       KiviLogger.info(colors.gray(`${head} ${content.toString()}`))
 
       // 已发送消息计数
-      MessagCounts.value++
+      MessageCounts.value++
 
       return sendMsg(content, source)
     }
