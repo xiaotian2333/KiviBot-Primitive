@@ -46,7 +46,7 @@ export function start() {
     // 终端标题加上账号
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
 
-    console.log(`欢迎使用 KiviBot，轻量、高效、跨平台\n`)
+    console.log(`欢迎使用 KiviBot，轻量、高效、跨平台、能跑就行！`)
 
     console.log('使用文档: ' + colors.green('https://beta.kivibot.com'))
     console.log('框架版本: ' + colors.green(`@kivibot/core ${pkg.version}`))

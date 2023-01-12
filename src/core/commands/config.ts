@@ -32,7 +32,7 @@ export type ReplyFunc = (content: Sendable, quote?: boolean | undefined) => Prom
 
 export async function handleConfigCommand(bot: Client, params: string[], reply: ReplyFunc) {
   if (!params.length) {
-    await reply(ConfigMenu)
+    return reply(ConfigMenu)
   }
 
   const [secondCmd, thirdCmd, value] = params
@@ -105,13 +105,13 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
       kiviConf.notice.enable = true
 
       if (saveKiviConf()) {
-        reply('〓 事件通知已开启 〓')
+        return reply('〓 事件通知已开启 〓')
       }
     } else if (thirdCmd === 'off') {
       kiviConf.notice.enable = false
 
       if (saveKiviConf()) {
-        reply('〓 事件通知已关闭 〓')
+        return reply('〓 事件通知已关闭 〓')
       }
     }
   }
@@ -124,7 +124,7 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
     kiviConf.notice.group.request.action = <Operation>thirdCmd
 
     if (saveKiviConf()) {
-      reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}群聊邀请 〓`)
+      return reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}群聊邀请 〓`)
     }
   }
 
@@ -136,7 +136,7 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
     kiviConf.notice.friend.request.action = <Operation>thirdCmd
 
     if (saveKiviConf()) {
-      reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}好友申请 〓`)
+      return reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}好友申请 〓`)
     }
   }
 }

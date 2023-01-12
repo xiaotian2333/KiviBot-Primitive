@@ -41,8 +41,8 @@ export function qrCodeHandler(this: Client) {
         return
       }
 
-      KiviLogger.warn('扫码账号错误，扫码账号与配置账号不一致，请使用 Bot 账号扫码')
-      KiviLogger.warn('请在准备好扫码后，按 `Enter` 键重新获取二维码')
+      KiviLogger.warn('扫码账号与配置账号不一致，请确认账号配置准确并使用 Bot 账号重新扫码')
+      KiviLogger.warn('请在准备好后，按 `Enter` 键重新获取二维码')
 
       process.stdin.once('data', () => this.login())
     }
