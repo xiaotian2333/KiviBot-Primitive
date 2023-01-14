@@ -63,8 +63,8 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
       const status = await fetchStatus(bot)
       return event.reply(status)
     } catch (e) {
-      KiviLogger.error(JSON.stringify(e, null, 2))
-      return event.reply('〓 设备状态获取失败 〓\n错误信息:\n' + JSON.stringify(e, null, 2))
+      KiviLogger.error(stringifyError(e))
+      return event.reply('〓 设备状态获取失败 〓\n' + stringifyError(e))
     }
   }
 
@@ -109,7 +109,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
       }
     } catch (e) {
       KiviLogger.error(stringifyError(e))
-      await event.reply(`〓 更新失败 〓\n错误信息: ${stringifyError(e)}`)
+      await event.reply(`〓 更新失败 〓\n${stringifyError(e)}`)
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`

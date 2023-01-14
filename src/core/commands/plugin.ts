@@ -145,7 +145,7 @@ ${pinfo.join('\n')}
     } catch (e) {
       KiviLogger.error(stringifyError(e))
 
-      await reply(`〓 ${name}更新失败 〓\n错误信息: ${stringifyError(e)}`)
+      await reply(`〓 ${name}更新失败 〓\n${stringifyError(e)}`)
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
@@ -261,7 +261,7 @@ ${pinfo.join('\n')}
     } catch (e) {
       KiviLogger.error(stringifyError(e))
 
-      await reply(`〓 ${pname} 安装失败 〓\n错误信息: ${stringifyError(e)}`)
+      await reply(`〓 ${pname} 安装失败 〓\n${stringifyError(e)}`)
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
@@ -289,7 +289,7 @@ ${pinfo.join('\n')}
     } catch (e) {
       KiviLogger.error(stringifyError(e))
 
-      await reply(`〓 ${pname} 移除失败 〓\n错误信息: ${stringifyError(e)}`)
+      await reply(`〓 ${pname} 移除失败 〓\n${stringifyError(e)}`)
     }
 
     process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
