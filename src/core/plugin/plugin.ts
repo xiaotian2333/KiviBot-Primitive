@@ -493,7 +493,7 @@ export class KiviPlugin extends EventEmitter {
    * 打印消息到控制台
    */
   log(...args: any[]) {
-    const mapFn = (e: any) => (typeof e === 'object' ? stringifyError(e) : e)
+    const mapFn = (e: any) => (typeof e === 'object' ? JSON.stringify(e, null, 2) : e)
     const msg = args.map(mapFn).join(', ')
     this.logger.log(`${this.name}: ${msg}`)
   }
@@ -502,7 +502,7 @@ export class KiviPlugin extends EventEmitter {
    * 打印消息到控制台，用于插件调试，仅在 debug 以及更低的 log lever 下可见
    */
   debug(...args: any[]) {
-    const mapFn = (e: any) => (typeof e === 'object' ? stringifyError(e) : e)
+    const mapFn = (e: any) => (typeof e === 'object' ? JSON.stringify(e, null, 2) : e)
     const msg = args.map(mapFn).join(', ')
     this.logger.debug(`${this.name}: ${msg}`)
   }
