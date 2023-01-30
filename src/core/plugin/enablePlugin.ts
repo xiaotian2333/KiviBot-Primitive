@@ -1,4 +1,5 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
+import { killPlugin } from './killPlugin'
 import { KiviPluginError } from './pluginError'
 import { KiviLogger } from '@/logger'
 import { colors, escapeColor, stringifyError } from '@/src/utils'
@@ -39,7 +40,10 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
           return e.log()
         } else {
           const msg = stringifyError(e)
+
           error(`插件 ${pn} 启用过程中发生错误: \n${msg}`)
+          killPlugin(pluginPath)
+
           return msg
         }
       }
@@ -56,7 +60,10 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
       return e.log()
     } else {
       const msg = stringifyError(e)
+
       error(`插件 ${pn} 导入过程中发生错误: \n${msg}`)
+      killPlugin(pluginPath)
+
       return msg
     }
   }

@@ -1,18 +1,10 @@
 {
-  "name": "@kivibot/core",
-  "version": "0.8.2",
-  "description": "轻量、优雅、跨平台、开发者友好、能跑就行的 QQ 机器人框架，基于 oicq v2",
-  "repository": "KiviBotLab/KiviBot",
-  "homepage": "https://beta.kivibot.com",
+  "name": "@miobot/core",
+  "version": "0.0.1",
+  "description": "Just run の Bot, based on oicq v2",
   "main": "lib/index.js",
-  "keywords": [
-    "oicq",
-    "oicq2",
-    "kivibot"
-  ],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MPL-2.0",
-  "prettier": "@vikiboss/prettier-config",
   "scripts": {
     "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
     "build": "npm run clean && tsc && tsc-alias",

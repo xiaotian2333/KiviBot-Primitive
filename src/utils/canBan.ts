@@ -8,7 +8,7 @@ export async function canBan(this: Client, gid: number, qq: number) {
   }
 
   try {
-    // 严格模式，目标群号不在目标群会抛出异常
+    // 严格模式，目标群号不存在会抛出异常
     const group = this.pickGroup(gid, true)
 
     const botIsOwner = group.is_owner

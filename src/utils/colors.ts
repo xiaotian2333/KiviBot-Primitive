@@ -15,7 +15,9 @@ export const colors = {
   /** 青色前景（默认背景） */
   cyan: colorful(36),
   /** 白色前景（默认背景） */
-  white: colorful(37)
+  white: colorful(37),
+  /** 移除颜色 */
+  escape: escapeColor
 }
 
 export function escapeColor(colorText: string) {

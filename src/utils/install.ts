@@ -3,9 +3,10 @@ import { promisify } from 'node:util'
 
 import { KiviLogger } from '@/src/core'
 
+const promiseExec = promisify(exec)
+
 // 安装或卸载 node 依赖
 export async function install(pkg?: string, isUninstall = false) {
-  const promiseExec = promisify(exec)
   const cmd = `npm ${isUninstall ? 'uninstall' : 'install'} ${pkg ?? ''}`
 
   const { stderr } = await promiseExec(cmd)
