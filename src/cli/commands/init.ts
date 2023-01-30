@@ -191,7 +191,7 @@ export async function init(args: ParsedArgs) {
     }
   })
 
-  writeFileSync(AppPath, "require('@miobot/core').start()")
+  writeFileSync(AppPath, "require('miobot').start()")
   writeFileSync(PkgPath, pkg)
 
   const files = ['mio.json', 'app.js', 'package.json'].map(colors.cyan)

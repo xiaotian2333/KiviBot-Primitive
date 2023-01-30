@@ -27,4 +27,9 @@ export function base64decode(str: string): string {
   return Buffer.from(str, 'base64').toString('utf8')
 }
 
-export default { base64encode, base64decode }
+export default {
+  base64encode,
+  base64decode,
+  b64en: base64encode,
+  b64de: base64encode
+}

@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
+import { exec } from 'node:child_process'
 import crypto from 'node:crypto'
+import { promisify } from 'node:util'
 
 import type { AllMessageEvent } from '@/core'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
@@ -135,3 +137,33 @@ export function parseUin(qqLikeStr: string): number {
 
   return qq
 }
+
+/**
+ * 判断依赖是否存在
+ *
+ * @param {string} moduleName 依赖路径
+ * @return {boolean} 依赖是否存在
+ */
+export function moduleExists(moduleName: string) {
+  try {
+    require.resolve(moduleName)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+/** promisify 的 exec 方法 */
+export const promiseExec = promisify(exec)
+
+/** miobot LOGO */
+export const MioLogo = `
+888b     d888 8888888  .d88888b. 
+8888b   d8888   888   d88P" "Y88b
+88888b.d88888   888   888     888
+888Y88888P888   888   888     888
+888 Y888P 888   888   888     888
+888  Y8P  888   888   888     888
+888   "   888   888   Y88b. .d88P
+888       888 8888888  "Y88888P" 
+`.trim()

@@ -21,6 +21,7 @@ specifiers:
   import-local: ^3.1.0
   log4js: ^6.7.1
   minimist: ^1.2.7
+  nanoid: ^3
   node-cron: ^3.0.2
   npm-check-updates: ^16.6.2
   oicq: ^2.3.1
@@ -40,6 +41,7 @@ dependencies:
   import-local: 3.1.0
   log4js: 6.7.1
   minimist: 1.2.7
+  nanoid: 3.3.4
   node-cron: 3.0.2
   npm-check-updates: 16.6.2
   oicq: 2.3.1
@@ -2567,6 +2569,12 @@ packages:
     resolution: {integrity: sha512-+MrqnJRtxdF+xngFfUUkIMQrUUL0KsxbADUkn23Z/4ibGg192Q+z+CQyiYwvWTsYjJygmMR8+w3ZDa98Zh6ESg==}
     engines: {node: '>=12.0.0'}
     dev: true
+
+  /nanoid/3.3.4:
+    resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: false
 
   /natural-compare-lite/1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}

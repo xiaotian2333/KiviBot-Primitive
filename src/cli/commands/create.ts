@@ -7,7 +7,7 @@ import { js_template } from '../templates/javascript'
 import { pkg_js_template, pkg_ts_template } from '../templates/package-json'
 import { ts_config, ts_template } from '../templates/typescript'
 import { PluginDir } from '@/path'
-import { checkModule, notice } from '@/utils'
+import { moduleExists, notice } from '@/utils'
 
 import type { ParsedArgs } from 'minimist'
 
@@ -15,7 +15,7 @@ export const create = async (args: ParsedArgs) => {
   const pluginName = args._[0]
 
   // 当前 node_modules 目录下是否已存在 TS 依赖
-  const isTypeScriptExist = checkModule('typescript')
+  const isTypeScriptExist = moduleExists('typescript')
 
   const { lang, inputPluginName, needInstallTypescript } = await prompts([
     {

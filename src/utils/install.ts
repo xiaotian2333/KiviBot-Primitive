@@ -7,7 +7,7 @@ const promiseExec = promisify(exec)
 
 // 安装或卸载 node 依赖
 export async function install(pkg?: string, isUninstall = false) {
-  const cmd = `npm ${isUninstall ? 'uninstall' : 'install'} ${pkg ?? ''}`
+  const cmd = `npm ${isUninstall ? 'uninstall' : 'install'} ${pkg ?? ''} --force`
 
   const { stderr } = await promiseExec(cmd)
 

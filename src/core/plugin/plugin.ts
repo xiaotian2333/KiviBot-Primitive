@@ -142,8 +142,8 @@ export class MioPlugin extends EventEmitter {
    * @param {AdminArray} admins 框架管理员列表
    * @return {Promise<MioPlugin>} 插件实例 Promise
    */
-  async mountmiobotClient(bot: Client, admins: AdminArray): Promise<MioPlugin> {
-    this.debug('mountmiobotClient')
+  async mountMioClient(bot: Client, admins: AdminArray): Promise<MioPlugin> {
+    this.debug('mountMioClient')
 
     // 挂载 Bot
     this.bot = bot
@@ -212,8 +212,8 @@ export class MioPlugin extends EventEmitter {
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
    */
-  async unmountmiobotClient(bot: Client, admins: AdminArray) {
-    this.debug('unmountmiobotClient')
+  async unmountMioClient(bot: Client, admins: AdminArray) {
+    this.debug('unmountMioClient')
 
     // 取消监听框架管理变动
     bot.off('mio.admins', this.adminChangeHandler)

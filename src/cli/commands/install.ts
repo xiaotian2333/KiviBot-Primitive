@@ -8,7 +8,7 @@ import type { ParsedArgs } from 'minimist'
 
 const loading = ora()
 
-export const mioDeps = ['@miobot/core']
+export const mioDeps = ['miobot']
 
 export async function installDependencies(_deps: string | string[] = []) {
   const promiseExec = promisify(exec)

@@ -1,5 +1,5 @@
 export const js_template = `
-const { MioPlugin, segment } = require('@miobot/core')
+const { MioPlugin, segment } = require('miobot')
 
 const { version } = require('./package.json')
 const plugin = new MioPlugin('xxx', version)

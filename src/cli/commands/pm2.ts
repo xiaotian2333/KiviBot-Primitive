@@ -3,7 +3,7 @@ import os from 'node:os'
 
 import { installDependencies } from './install'
 import { exitHandler } from '@/cli'
-import { checkModule, getCurrentAccount, notice, promiseExec } from '@/utils'
+import { moduleExists, getConfigUin, notice, promiseExec } from '@/utils'
 
 import type { ParsedArgs } from 'minimist'
 
@@ -13,11 +13,11 @@ const isWin = os.platform() === 'win32'
 const npx = isWin ? 'npx.cmd' : 'npx'
 
 async function pm2(operation: Operation, force = false) {
-  if (!checkModule('pm2')) {
+  if (!moduleExists('pm2')) {
     await installDependencies('pm2')
   }
 
-  const account = getCurrentAccount()
+  const account = getConfigUin()
   const pm2Args = [npx, 'pm2', operation, 'app.js', '--name', account]
 
   if (force) {
@@ -34,13 +34,13 @@ async function pm2(operation: Operation, force = false) {
 }
 
 async function pm2Spawn(opt = 'log') {
-  if (!checkModule('pm2')) {
+  if (!moduleExists('pm2')) {
     await installDependencies('pm2')
   }
 
   process.off('SIGINT', exitHandler)
 
-  const account = opt === 'log' ? getCurrentAccount() : ''
+  const account = opt === 'log' ? getConfigUin() : ''
   const pm2 = spawn(npx, ['pm2', opt, account], { stdio: 'inherit' })
 
   pm2.on('error', (err) => console.error(err))

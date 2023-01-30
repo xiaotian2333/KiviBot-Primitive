@@ -13,7 +13,7 @@ export const ts_config = `
 `.trim()
 
 export const ts_template = `
-import { MioPlugin, segment } from '@miobot/core'
+import { MioPlugin, segment } from 'miobot'
 
 const { version } = require('./package.json')
 const plugin = new MioPlugin('xxx', version)

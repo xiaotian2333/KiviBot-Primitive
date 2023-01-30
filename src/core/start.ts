@@ -7,7 +7,7 @@ import { bindLoginEvent, qrCodeHandler } from './login'
 import { offlineHandler } from './logs'
 import { onlineHandler } from './online'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '@/path'
-import { colors, exitWithError, LOGO, md5, notice, stringifyError } from '@/utils'
+import { colors, exitWithError, MioLogo, md5, notice, stringifyError } from '@/utils'
 
 import type { MioConf } from './config'
 import type { MioPlugin } from './plugin'
@@ -24,7 +24,7 @@ export function start() {
   process.title = `miobot ${pkg.version} `
 
   // 打印 miobot logo
-  console.log(`\n${colors.cyan(LOGO)}\n`)
+  console.log(`\n${colors.cyan(MioLogo)}\n`)
 
   if (!fs.existsSync(ConfigPath)) {
     exitWithError('配置文件 mio.json 不存在')
@@ -46,10 +46,9 @@ export function start() {
     // 终端标题加上账号
     process.title = `miobot ${pkg.version} ${mioConf.account}`
 
-    console.log(`欢迎使用 miobot，轻量、高效、跨平台、能跑就行！`)
+    console.log(`欢迎使用 miobot，能跑就行 の Bot`)
 
-    console.log('使用文档: ' + colors.green('https://beta.miobot.com'))
-    console.log('框架版本: ' + colors.green(`@miobot/core ${pkg.version}`))
+    console.log('框架版本: ' + colors.green(`miobot ${pkg.version}`))
     console.log('配置文件: ' + colors.green(`${ConfigPath}\n`))
 
     const { log_level = 'info', oicq_config = {} } = mioConf

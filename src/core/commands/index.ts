@@ -22,7 +22,7 @@ const HelpMenu = `
 
 const AboutText = `
 〓 关于 miobot 〓
-miobot 是一个开源、轻量、跨平台、注重体验、开发者友好、能跑就行的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
+能跑就行 の Bot，基于 Node.js 和 oicq v2 构建。
 `.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */

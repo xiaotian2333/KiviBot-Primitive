@@ -1,14 +1,8 @@
 import { spawn } from 'node:child_process'
 
-import { mioDeps, installDependencies } from './install'
 import { exitHandler } from '..'
-import { checkModule } from '@/utils'
 
 export async function start() {
-  if (!checkModule('@miobot/core')) {
-    await installDependencies(mioDeps)
-  }
-
   process.off('SIGINT', exitHandler)
 
   const node = spawn('node', ['app.js'], { stdio: 'inherit' })
