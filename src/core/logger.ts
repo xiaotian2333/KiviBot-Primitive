@@ -36,7 +36,7 @@ export const LogTypeMap = {
 log4js.addLayout('mio', (config) => {
   const { qq, platform, target = 'mio' } = config
 
-  // oicq 日志输出到日志文件（可选关闭） logs/MioBot_YYYY-MM-DD_HH-mm-ss.log
+  // oicq 日志输出到日志文件（可选关闭） logs/miobot_YYYY-MM-DD_HH-mm-ss.log
   if (target === 'oicq') {
     return (info) => {
       const now = dayjs(info.startTime).format(`YYYY-MM-DD HH:mm:ss:SSS`)
@@ -44,7 +44,7 @@ log4js.addLayout('mio', (config) => {
     }
   }
 
-  // MioBot 框架日志输出到控制台（包括插件，可选关闭）
+  // miobot 框架日志输出到控制台（包括插件，可选关闭）
   return (info) => {
     const level = info.level.levelStr.toLowerCase() as keyof typeof LogTypeMap
     const now = dayjs(info.startTime).format(`HH:mm:ss`)
@@ -61,7 +61,7 @@ export function redirectLog(mioLogLevel = 'info', oicq_config: Config, account: 
 
   // 定义输出文件名和路径
   const now = dayjs().format('YYYY-MM-DD_HH-mm-ss')
-  const filename = `MioBot_${now}_${account}_${Devices[platform]}`
+  const filename = `miobot_${now}_${account}_${Devices[platform]}`
   const logFilePath = path.join(LogDir, `${filename}.log`)
   const errorFilePath = path.join(LogDir, `${filename}_error.log`)
 

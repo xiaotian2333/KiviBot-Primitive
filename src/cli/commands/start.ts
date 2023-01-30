@@ -20,4 +20,4 @@ export async function start() {
 }
 
 start.help = `
-      start\t使用 \`mio.json\` 配置文件启动 MioBot`
+      start\t使用 \`mio.json\` 配置文件启动 miobot`

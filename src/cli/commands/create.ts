@@ -70,7 +70,7 @@ export const create = async (args: ParsedArgs) => {
 
   if (lang === 'TS') {
     try {
-      // 写入 pakcage.json
+      // 写入 package.json
       fs.writeFileSync(path.join(pluginDirPath, 'package.json'), pkg_ts_template)
       fs.writeFileSync(path.join(pluginDirPath, 'index.ts'), ts_template)
       fs.writeFileSync(path.join(pluginDirPath, 'tsconfig.json'), ts_config)
@@ -84,7 +84,7 @@ export const create = async (args: ParsedArgs) => {
     }
   } else if (lang === 'JS') {
     try {
-      // 写入 pakcage.json
+      // 写入 package.json
       fs.writeFileSync(path.join(pluginDirPath, 'package.json'), pkg_js_template)
       fs.writeFileSync(path.join(pluginDirPath, 'index.js'), js_template)
     } catch {

@@ -10,11 +10,11 @@ const pkg = require(path.join(__dirname, '../../package.json'))
 const args = minimist(process.argv.slice(2))
 const cmd: string | undefined = args._[0]
 
-const Head = `MioBot CLI v${pkg.version}\n\n`
+const Head = `miobot CLI v${pkg.version}\n\n`
 const HelpHead = `用法：mio <命令> [选项]\n\n命令列表：`
 
 export const exitHandler = () => {
-  process.stdout.write(colors.yellow('\n已退出 MioBot CLI'))
+  process.stdout.write(colors.yellow('\n已退出 miobot CLI'))
   process.exit(0)
 }
 

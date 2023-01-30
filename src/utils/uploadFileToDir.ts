@@ -1,7 +1,7 @@
 import os from 'node:os'
 
 import { stringifyError } from './utils'
-import { MioLogger } from '@/src/core'
+import { MioLogger } from '@/core'
 
 import type { Client } from 'oicq'
 

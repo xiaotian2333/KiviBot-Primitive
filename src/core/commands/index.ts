@@ -11,7 +11,7 @@ import type { MioConf, AllMessageEvent } from '@/core'
 import type { Client } from 'oicq'
 
 const HelpMenu = `
-〓 MioBot 帮助 〓
+〓 miobot 帮助 〓
 /plugin 插件操作
 /status 查看状态
 /config 框架配置
@@ -21,8 +21,8 @@ const HelpMenu = `
 `.trim()
 
 const AboutText = `
-〓 关于 MioBot 〓
-MioBot 是一个开源、轻量、跨平台、注重体验、开发者友好、能跑就行的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
+〓 关于 miobot 〓
+miobot 是一个开源、轻量、跨平台、注重体验、开发者友好、能跑就行的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
 `.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
@@ -71,7 +71,7 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
   }
 
   if (cmd === 'exit') {
-    await event.reply('〓 MioBot 进程已停止 〓')
+    await event.reply('〓 miobot 进程已停止 〓')
 
     notice.success('框架进程已由管理员通过 /exit 消息指令退出')
     process.exit(0)
@@ -109,6 +109,6 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
       await event.reply(`〓 更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `MioBot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${pkg.version} ${mioConf.account}`
   }
 }

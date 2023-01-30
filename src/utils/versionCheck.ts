@@ -21,5 +21,5 @@ export function versionCheck() {
   const platform = os.platform()
   const env = `node: ${nodeInfo} | arch: ${platform}-${os.arch()}`
 
-  notice.info(colors.gray(`MioBot CLI ${ver} | ${env}`))
+  notice.info(colors.gray(`miobot CLI ${ver} | ${env}`))
 }

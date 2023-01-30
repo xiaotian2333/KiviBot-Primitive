@@ -16,7 +16,7 @@ import type { ReplyFunc } from './config'
 import type { Client } from 'oicq'
 
 export const PluginMenu = `
-〓 MioBot 插件 〓
+〓 miobot 插件 〓
 /plugin list
 /plugin add/rm <name>
 /plugin on/off <name>
@@ -42,7 +42,7 @@ export async function handlePluginCommand(bot: Client, params: string[], reply: 
     })
 
     const message = `
-〓 MioBot 插件列表 〓
+〓 miobot 插件列表 〓
 ${pinfo.join('\n')}
 共 ${pinfo.length} 个，启用 ${plugins.size} 个
 `.trim()
@@ -150,7 +150,7 @@ ${pinfo.join('\n')}
       await reply(`〓 ${name}更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `MioBot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${pkg.version} ${mioConf.account}`
 
     return
   }
@@ -266,7 +266,7 @@ ${pinfo.join('\n')}
       await reply(`〓 ${pname} 安装失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `MioBot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${pkg.version} ${mioConf.account}`
   }
 
   if (secondCmd === 'remove' || secondCmd === 'rm') {
@@ -294,6 +294,6 @@ ${pinfo.join('\n')}
       await reply(`〓 ${pname} 移除失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `MioBot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${pkg.version} ${mioConf.account}`
   }
 }

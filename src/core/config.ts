@@ -52,7 +52,7 @@ export interface NoticeConf {
   }
 }
 
-/** MioBot 配置文件 */
+/** miobot 配置文件 */
 export interface MioConf {
   /** 登录账号 */
   account: number
@@ -70,7 +70,7 @@ export interface MioConf {
   notice: NoticeConf
   /** 启用插件列表 */
   plugins: string[]
-  /** MioBot 日志显示等级 */
+  /** miobot 日志显示等级 */
   log_level: Config['log_level']
   /** oicq 相关配置 */
   oicq_config: Config
@@ -78,7 +78,7 @@ export interface MioConf {
 
 export const mioConf = {} as MioConf
 
-/** 保存 MioBot 框架配置到配置文件`mio.json` */
+/** 保存 miobot 框架配置到配置文件mio.json */
 export const saveMioConf = (_plugins?: Map<string, MioPlugin>) => {
   try {
     mioConf.plugins = [...(_plugins ?? plugins).keys()]

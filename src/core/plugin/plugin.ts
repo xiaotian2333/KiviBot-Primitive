@@ -72,10 +72,10 @@ export class MioPlugin extends EventEmitter {
   private _handlers: Map<string, AnyFunc[]> = new Map()
 
   /**
-   * MioBot 插件类
+   * miobot 插件类
    *
    * @param {string} name 插件名称，建议英文，插件数据目录以此结尾
-   * @param {string} version 插件版本，如 1.0.0，建议 require `package.json` 的版本号统一管理
+   * @param {string} version 插件版本，如 1.0.0，建议 require package.json 的版本号统一管理
    * @param conf
    */
   constructor(name: string, version: string, conf?: MioPluginConf) {
@@ -128,7 +128,7 @@ export class MioPlugin extends EventEmitter {
   }
 
   /**
-   * 抛出一个 MioBot 插件标准错误，会被框架捕获并输出到日志
+   * 抛出一个 miobot 插件标准错误，会被框架捕获并输出到日志
    *
    * @param {string} message 错误信息
    */
@@ -137,13 +137,13 @@ export class MioPlugin extends EventEmitter {
   }
 
   /**
-   * **插件请勿调用**，MioBot 框架调用此函数启用插件
+   * **插件请勿调用**，miobot 框架调用此函数启用插件
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
    * @return {Promise<MioPlugin>} 插件实例 Promise
    */
-  async mountMioBotClient(bot: Client, admins: AdminArray): Promise<MioPlugin> {
-    this.debug('mountMioBotClient')
+  async mountmiobotClient(bot: Client, admins: AdminArray): Promise<MioPlugin> {
+    this.debug('mountmiobotClient')
 
     // 挂载 Bot
     this.bot = bot
@@ -166,9 +166,9 @@ export class MioPlugin extends EventEmitter {
       this.throwPluginError('onMounted 发生错误: \n' + stringifyError(e))
     }
 
-    this.debug('add all MioBot events listeners')
+    this.debug('add all miobot events listeners')
 
-    // 插件监听 MioBot 的所有事件
+    // 插件监听 miobot 的所有事件
     MioEvents.forEach((evt) => {
       const handler = (e: FirstParam<MioEventMap<Client>[typeof evt]>) => {
         this.emit(evt, e)
@@ -208,12 +208,12 @@ export class MioPlugin extends EventEmitter {
   }
 
   /**
-   * **插件请勿调用**，MioBot 框架调用此函数禁用插件
+   * **插件请勿调用**，miobot 框架调用此函数禁用插件
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
    */
-  async unmountMioBotClient(bot: Client, admins: AdminArray) {
-    this.debug('unmountMioBotClient')
+  async unmountmiobotClient(bot: Client, admins: AdminArray) {
+    this.debug('unmountmiobotClient')
 
     // 取消监听框架管理变动
     bot.off('mio.admins', this.adminChangeHandler)
@@ -605,7 +605,7 @@ export class MioPlugin extends EventEmitter {
 }
 
 /**
- * MioBot 插件类
+ * miobot 插件类
  */
 export interface MioPlugin extends EventEmitter {
   /** @deprecated 请使用 on 进行事件监听 */
@@ -631,7 +631,7 @@ export interface MioPlugin extends EventEmitter {
   /** @deprecated 不推荐使用 */
   prependOnceListener: never
 
-  /** 监听 oicq 标准事件以及 MioBot 标准事件 */
+  /** 监听 oicq 标准事件以及 miobot 标准事件 */
   on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 监听自定义事件或其他插件触发的事件 */
@@ -640,7 +640,7 @@ export interface MioPlugin extends EventEmitter {
     listener: (this: this, ...args: any[]) => void
   ): this
 
-  /** 单次监听 oicq 标准事件以及 MioBot 标准事件 */
+  /** 单次监听 oicq 标准事件以及 miobot 标准事件 */
   once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 单次监听自定义事件或其他插件触发的事件 */
@@ -649,7 +649,7 @@ export interface MioPlugin extends EventEmitter {
     listener: (this: this, ...args: any[]) => void
   ): this
 
-  /** 取消监听 oicq 标准事件以及 MioBot 标准事件 */
+  /** 取消监听 oicq 标准事件以及 miobot 标准事件 */
   off<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 取消监听自定义事件或其他插件触发的事件 */

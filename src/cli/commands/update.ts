@@ -19,7 +19,7 @@ async function getLatestVersion(module: string) {
 }
 
 export async function update() {
-  loading.start(`正在检查 MioBot CLI 更新...`)
+  loading.start(`正在检查 miobot CLI 更新...`)
   const lv = await getLatestVersion('miobot')
 
   if (lv !== getCliVersion()) {
@@ -27,7 +27,7 @@ export async function update() {
 
     const updateCmd = 'npm up -g miobot'
 
-    notice.warn(colors.gray(`MioBot CLI ${lv} 已发布，你可以通过以下命令进行更新:`))
+    notice.warn(colors.gray(`miobot CLI ${lv} 已发布，你可以通过以下命令进行更新:`))
     console.log(colors.cyan(updateCmd))
   }
 
@@ -70,4 +70,4 @@ export async function update() {
 }
 
 update.help = `
-      update\t更新 MioBot 框架和插件依赖`
+      update\t更新 miobot 框架和插件依赖`

@@ -18,35 +18,35 @@ export const plugins: Map<string, MioPlugin> = new Map()
 /** 框架的 package.json 描述信息 */
 export const pkg = require('../../package.json')
 
-/** 通过 `mio.json` 配置文件启动框架 */
+/** 通过 mio.json 配置文件启动框架 */
 export function start() {
   // 设置终端标题
-  process.title = `MioBot ${pkg.version} `
+  process.title = `miobot ${pkg.version} `
 
-  // 打印 MioBot logo
+  // 打印 miobot logo
   console.log(`\n${colors.cyan(LOGO)}\n`)
 
   if (!fs.existsSync(ConfigPath)) {
-    exitWithError('配置文件 `mio.json` 不存在')
+    exitWithError('配置文件 mio.json 不存在')
   }
 
   /** 捕获 Ctrl C 中断退出 */
   process.on('SIGINT', () => {
-    notice.success(colors.yellow('已退出 MioBot'), true)
+    notice.success(colors.yellow('已退出 miobot'), true)
     process.exit(0)
   })
 
   try {
-    // 读取框架账号配置文件 `mio.json`
+    // 读取框架账号配置文件 mio.json
     const conf: MioConf = require(ConfigPath)
 
     // 载入配置到内存
     Object.assign(mioConf, conf)
 
     // 终端标题加上账号
-    process.title = `MioBot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${pkg.version} ${mioConf.account}`
 
-    console.log(`欢迎使用 MioBot，轻量、高效、跨平台、能跑就行！`)
+    console.log(`欢迎使用 miobot，轻量、高效、跨平台、能跑就行！`)
 
     console.log('使用文档: ' + colors.green('https://beta.miobot.com'))
     console.log('框架版本: ' + colors.green(`@miobot/core ${pkg.version}`))
@@ -55,11 +55,11 @@ export function start() {
     const { log_level = 'info', oicq_config = {} } = mioConf
 
     if (!mioConf?.account) {
-      exitWithError('无效的配置文件：`mio.json`')
+      exitWithError('无效的配置文件：mio.json')
     }
 
     if (!mioConf?.admins || mioConf?.admins?.length <= 0) {
-      exitWithError('配置文件 `mio.json` 中至少配置一个主管理员')
+      exitWithError('配置文件 mio.json 中至少配置一个主管理员')
     }
 
     // 缺省 oicq 配置
@@ -74,10 +74,10 @@ export function start() {
     oicq_config.ffmpeg_path = oicq_config?.ffmpeg_path || 'ffmpeg'
     oicq_config.ffprobe_path = oicq_config?.ffprobe_path || 'ffprobe'
 
-    // 重定向日志，oicq 的日志输出到日志文件，MioBot 的日志输出到 console
+    // 重定向日志，oicq 的日志输出到日志文件，miobot 的日志输出到 console
     redirectLog(log_level, oicq_config, mioConf.account)
 
-    // 确保 MioBot 框架相关目录存在
+    // 确保 miobot 框架相关目录存在
     fs.ensureDirSync(LogDir)
     fs.ensureDirSync(PluginDir)
     fs.ensureDirSync(PluginDataDir)
@@ -113,6 +113,6 @@ export function start() {
   } catch (e) {
     MioLogger.error(stringifyError(e))
 
-    exitWithError('无效的配置文件：`mio.json`')
+    exitWithError('无效的配置文件：mio.json')
   }
 }

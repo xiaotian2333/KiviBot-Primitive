@@ -32,7 +32,7 @@ export async function disablePlugin(
 
   try {
     // 调用插件挂载的禁用函数
-    await plugin.unmountMioBotClient(bot, [...mioConf.admins])
+    await plugin.unmountmiobotClient(bot, [...mioConf.admins])
 
     // 删除 require 缓存
     killPlugin(pluginPath)

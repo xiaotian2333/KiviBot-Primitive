@@ -12,7 +12,7 @@ import type { Client } from 'oicq'
 /** log flag，防止掉线重新上线触发 online 事件时重复 bind */
 let hasOnline = false
 
-/** 监听上线事件，初始化 MioBot */
+/** 监听上线事件，初始化 miobot */
 export async function onlineHandler(this: Client, mioConf: MioConf) {
   if (hasOnline) {
     return
@@ -82,6 +82,6 @@ export async function onlineHandler(this: Client, mioConf: MioConf) {
     const mainAdmin = this.pickFriend(mioConf.admins[0])
 
     await wait(600)
-    await mainAdmin.sendMsg(`上线成功，启用了 ${cnt} 个插件\n发送 /help 查看 MioBot 帮助`)
+    await mainAdmin.sendMsg(`上线成功，启用了 ${cnt} 个插件\n发送 /help 查看 miobot 帮助`)
   }
 }

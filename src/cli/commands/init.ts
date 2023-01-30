@@ -147,7 +147,7 @@ export async function init(args: ParsedArgs) {
   if (fs.existsSync(ConfigPath)) {
     if (!isForce && !isSwitch) {
       const tips = [
-        '配置文件 `mio.json` 已存在',
+        '配置文件 mio.json 已存在',
         '--switch 切换账号（保留插件和通知配置）',
         '--force 覆盖并重新配置'
       ]
@@ -158,6 +158,7 @@ export async function init(args: ParsedArgs) {
 
     if (isSwitch) {
       Object.assign(config, fs.readJsonSync(ConfigPath))
+      Object.assign(pkg, fs.readJsonSync(PkgPath))
     }
   }
 
@@ -167,7 +168,7 @@ export async function init(args: ParsedArgs) {
   answer.device_mode ??= 'sms'
 
   if (!answer.login_mode || (answer.login_mode === 'password' && !answer.password)) {
-    notice.warn('退出 MioBot CLI')
+    notice.warn('退出 miobot CLI')
     process.exit(0)
   }
 
@@ -193,10 +194,10 @@ export async function init(args: ParsedArgs) {
   writeFileSync(AppPath, "require('@miobot/core').start()")
   writeFileSync(PkgPath, pkg)
 
-  const files = ['mio.json', 'app.js', 'package.json']
+  const files = ['mio.json', 'app.js', 'package.json'].map(colors.cyan)
 
   if (isOK) {
-    notice.success(`创建文件: ${colors.cyan(files.join(', '))}`)
+    notice.success(`创建文件: ${files.join(', ')}`)
 
     if (needStart) {
       await installDependencies(mioDeps)
@@ -216,8 +217,8 @@ const tips = [
   '--start 配置完立即安装依赖并启动',
   '--switch 切换账号（保留插件和通知配置）',
   '--force 覆盖并重新配置',
-  '--dev 开发模式，自动配置 log level 为 `debug` ',
-  '--log_level 手动指定启动的 log level'
+  '--dev 开发模式，自动配置 log_level 为 debug',
+  '--log 手动指定启动的 log_level (info debug off)'
 ]
 
 init.help = `

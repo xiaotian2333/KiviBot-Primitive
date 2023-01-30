@@ -53,47 +53,47 @@ export async function deploy(args: ParsedArgs) {
   const res = await pm2('start', args.f)
 
   if (res) {
-    notice.info(`已尝试使用 pm2 将 MioBot 进程部署在后台`)
+    notice.info(`已尝试使用 pm2 将 miobot 进程部署在后台`)
   } else {
     notice.error(`操作失败，参考上面的错误日志`)
   }
 }
 
 deploy.help = `
-      deploy\t使用 pm2 将 MioBot 进程部署在后台`
+      deploy\t使用 pm2 将 miobot 进程部署在后台`
 
 export async function stop(args: ParsedArgs) {
   const res = await pm2('stop', args.f)
 
   if (res) {
-    notice.info(`已尝试停止 pm2 的 MioBot 后台进程`)
+    notice.info(`已尝试停止 pm2 的 miobot 后台进程`)
   } else {
     notice.error(`操作失败，参考上面的错误日志`)
   }
 }
 
 stop.help = `
-      stop\t停止 pm2 后台的 MioBot 进程`
+      stop\t停止 pm2 后台的 miobot 进程`
 
 export async function log() {
   await pm2Spawn()
 }
 
 log.help = `
-      log\t查看 pm2 后台的 MioBot 日志`
+      log\t查看 pm2 后台的 miobot 日志`
 
 export async function del(args: ParsedArgs) {
   const res = await pm2('delete', args.f)
 
   if (res) {
-    notice.info(`已尝试删除 pm2 的 MioBot 后台进程`)
+    notice.info(`已尝试删除 pm2 的 miobot 后台进程`)
   } else {
     notice.error(`操作失败，参考上面的错误日志`)
   }
 }
 
 del.help = `
-      delete\t删除 pm2 后台的 MioBot 进程，需先停止`
+      delete\t删除 pm2 后台的 miobot 进程，需先停止`
 
 export async function list() {
   await pm2Spawn('list')

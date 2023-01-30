@@ -23,9 +23,9 @@ export async function enablePlugin(bot: Client, mioConf: MioConf, pluginPath: st
   try {
     const { plugin } = (await require(pluginPath)) as { plugin: MioPlugin | undefined }
 
-    if (plugin && plugin?.mountMioBotClient) {
+    if (plugin && plugin?.mountmiobotClient) {
       try {
-        await plugin.mountMioBotClient(bot, [...mioConf.admins])
+        await plugin.mountmiobotClient(bot, [...mioConf.admins])
 
         plugins.set(pluginName, plugin)
 

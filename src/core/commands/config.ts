@@ -4,7 +4,7 @@ import { parseUin } from '@/utils'
 import type { Client, MessageRet, Sendable } from 'oicq'
 
 export const ConfigMenu = `
-〓 MioBot 配置 〓
+〓 miobot 配置 〓
 /config detail
 /config admin add/rm <qq>
 /config notice on/off
@@ -43,7 +43,7 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
     const subAdmins = mioConf.admins.slice(1)
 
     const detail = `
-〓 MioBot 详细配置 〓
+〓 miobot 详细配置 〓
 登录模式: ${ModeMap[mioConf.login_mode] ?? '未知'}
 设备锁模式: ${ModeMap[mioConf.device_mode] ?? '未知'}
 主管理员: ${mioConf.admins[0] ?? '未知'}

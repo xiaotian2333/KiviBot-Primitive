@@ -2,7 +2,7 @@ import path from 'node:path'
 import ncu from 'npm-check-updates'
 
 import { install } from './install'
-import { CWD } from '@/src/core'
+import { CWD } from '@/path'
 
 /** 更新依赖 */
 export async function update(pkg?: string) {

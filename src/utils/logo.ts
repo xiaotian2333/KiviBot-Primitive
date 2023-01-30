@@ -1,4 +1,4 @@
-/** MioBot LOGO */
+/** miobot LOGO */
 export const LOGO = `
 888    d8P  d8b          d8b 888888b.            888
 888   d8P   Y8P          Y8P 888  "88b           888

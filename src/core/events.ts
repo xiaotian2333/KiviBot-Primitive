@@ -70,11 +70,11 @@ export const OicqEvents = [
   'guild.message'
 ] as (keyof EventMap<Client>)[]
 
-/** MioBot 标准事件列表 */
+/** miobot 标准事件列表 */
 export const MioEvents = ['mio.admin'] as const
 
 export interface MioEventMap<T = any> {
-  /** MioBot 管理员变动事件 */
+  /** miobot 管理员变动事件 */
   'mio.admin': (
     this: T,
     event: {

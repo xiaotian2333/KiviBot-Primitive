@@ -38,7 +38,7 @@ export async function fetchStatus(bot: Client) {
   // TODO: 待 oicq2 修复"已发送消息"的统计数据，目前自己实现计数
 
   return `
-〓 MioBot 状态 〓
+〓 miobot 状态 〓
 昵称: ${bot.nickname}
 账号: ${bot.uin}
 列表: ${bot.fl.size} 好友，${bot.gl.size} 群
