@@ -7,7 +7,7 @@ import { MioPluginError, loadPlugins } from './plugin'
 import { colors, stringifyError, wait } from '@/utils'
 
 import type { MioConf } from './config'
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 /** log flag，防止掉线重新上线触发 online 事件时重复 bind */
 let hasOnline = false

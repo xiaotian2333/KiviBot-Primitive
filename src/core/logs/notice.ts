@@ -1,7 +1,7 @@
 import { MioLogger } from '@/core'
 import { colors } from '@/utils'
 
-import type { Client, EventMap } from 'oicq'
+import type { Client, EventMap } from 'movo'
 
 /** 监听处理所有通知，打印框架日志 */
 export function noticeHandler(

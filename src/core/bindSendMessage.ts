@@ -1,7 +1,7 @@
 import { MioLogger } from '@/src'
 import { colors } from '@/utils'
 
-import type { Anonymous, Client, MessageElem, Quotable, Sendable } from 'oicq'
+import type { Anonymous, Client, MessageElem, Quotable, Sendable } from 'movo'
 
 /** 记录已发送的消息数 */
 export const MessageCounts = {

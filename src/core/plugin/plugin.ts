@@ -12,14 +12,14 @@ import { ensureArray, stringifyError } from '@/utils'
 
 import type { AdminArray, MainAdmin, MioEventMap } from '@/core'
 import type { Logger } from 'log4js'
-import type { ScheduledTask } from 'node-cron'
 import type {
   Client,
   DiscussMessageEvent,
   EventMap,
   GroupMessageEvent,
   PrivateMessageEvent
-} from 'oicq'
+} from 'movo'
+import type { ScheduledTask } from 'node-cron'
 
 export type AnyFunc = (...args: any[]) => any
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never

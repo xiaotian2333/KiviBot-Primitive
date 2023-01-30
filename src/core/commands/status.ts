@@ -1,10 +1,10 @@
 import os from 'node:os'
-import { version as OicqVersion } from 'oicq/package.json'
+import { version as OicqVersion } from 'movo/package.json'
 
-import { MessageCounts, Devices, searchAllPlugins, pkg, plugins } from '@/core'
-import { formatDateDiff, formatFileSize } from '@/utils'
+import { MessageCounts, Devices, searchAllPlugins, plugins } from '@/core'
+import { formatDateDiff, formatFileSize, v } from '@/utils'
 
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 export const SystemMap: Record<string, string> = {
   Linux: 'Linux',
@@ -46,7 +46,7 @@ export async function fetchStatus(bot: Client) {
 消息: 收 ${recv_msg_cnt}，发 ${MessageCounts.value}
 当前: ${msg_cnt_per_min} 条/分钟
 启动: ${runTime}
-框架: ${pkg.version}-${formatFileSize(rss)}-${per(rss)}%
+框架: ${v}-${formatFileSize(rss)}-${per(rss)}%
 协议: oicq-v${OicqVersion}-${Devices[bot.config.platform]}
 系统: ${SystemMap[os.type()] || '其他'}-${arch}-node${nodeVersion}
 内存: ${formatFileSize(used)}/${formatFileSize(total)}-${per(used)}%

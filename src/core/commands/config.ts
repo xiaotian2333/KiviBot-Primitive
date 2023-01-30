@@ -1,7 +1,7 @@
 import { mioConf, saveMioConf } from '@/core'
 import { parseUin } from '@/utils'
 
-import type { Client, MessageRet, Sendable } from 'oicq'
+import type { Client, MessageRet, Sendable } from 'movo'
 
 export const ConfigMenu = `
 〓 miobot 配置 〓

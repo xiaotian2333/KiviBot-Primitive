@@ -7,13 +7,12 @@ import {
   getPluginNameByPath,
   getPluginPathByName,
   searchAllPlugins,
-  pkg,
   plugins
 } from '@/core'
-import { install, stringifyError, update } from '@/utils'
+import { install, stringifyError, update, v } from '@/utils'
 
 import type { ReplyFunc } from './config'
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 export const PluginMenu = `
 〓 miobot 插件 〓
@@ -129,11 +128,11 @@ ${pinfo.join('\n')}
     const name = pname ? `${pname} ` : ''
 
     try {
-      const upInfo = await update(`miobot-plugin-${pname || '*'}`)
+      const upInfo = await update(`miobot-${pname || '*'}`)
 
       if (upInfo) {
         const info = Object.entries(upInfo)
-          .map(([k, v]) => `${k.replace('miobot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
+          .map(([k, v]) => `${k.replace('miobot-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
 
         const updated = pname ? `〓 ${name}已是最新版本 〓` : '〓 所有插件均为最新版本 〓'
@@ -150,7 +149,7 @@ ${pinfo.join('\n')}
       await reply(`〓 ${name}更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `miobot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${v} ${mioConf.account}`
 
     return
   }
@@ -248,14 +247,14 @@ ${pinfo.join('\n')}
 
     let shortName = pname
 
-    if (/^miobot-plugin-/i.test(shortName)) {
-      shortName = shortName.replace(/^miobot-plugin-/i, '')
+    if (/^miobot-/i.test(shortName)) {
+      shortName = shortName.replace(/^miobot-/i, '')
     }
 
     await reply(`〓 正在安装 ${pname}... 〓`)
 
     try {
-      if (await install(`miobot-plugin-${shortName}`)) {
+      if (await install(`miobot-${shortName}`)) {
         await reply(`〓 ${pname} 安装成功 〓`)
       } else {
         await reply(`〓 ${pname} 安装失败，详情查看日志 〓`)
@@ -266,7 +265,7 @@ ${pinfo.join('\n')}
       await reply(`〓 ${pname} 安装失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `miobot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${v} ${mioConf.account}`
   }
 
   if (secondCmd === 'remove' || secondCmd === 'rm') {
@@ -276,14 +275,14 @@ ${pinfo.join('\n')}
 
     let shortName = pname
 
-    if (/^miobot-plugin-/i.test(shortName)) {
-      shortName = shortName.replace(/^miobot-plugin-/i, '')
+    if (/^miobot-/i.test(shortName)) {
+      shortName = shortName.replace(/^miobot-/i, '')
     }
 
     await reply(`〓 正在移除 ${pname}... 〓`)
 
     try {
-      if (await install(`miobot-plugin-${shortName}`, true)) {
+      if (await install(`miobot-${shortName}`, true)) {
         await reply(`〓 ${pname} 移除成功 〓`)
       } else {
         await reply(`〓 ${pname} 移除失败，详情查看日志 〓`)
@@ -294,6 +293,6 @@ ${pinfo.join('\n')}
       await reply(`〓 ${pname} 移除失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `miobot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${v} ${mioConf.account}`
   }
 }

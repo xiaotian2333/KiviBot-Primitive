@@ -1,13 +1,13 @@
 import { enablePlugin } from './enablePlugin'
-import { getPluginNameByPath } from './getPluginNameByPath'
 import { searchAllPlugins } from './searchPlugins'
+import { getPluginNameByPath } from './utils'
 
 import type { MioConf } from '@/core'
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 /** 检索并加载 node_modules 和 plugins 目录下的插件 */
 export async function loadPlugins(bot: Client, mioConf: MioConf) {
-  // 检索本地所有插件（node_modules 里 `miobot-plugin-` 开头的插件 和 plugins 下的插件）
+  // 检索本地所有插件（node_modules 里 `miobot-` 开头的插件 和 plugins 下的插件）
   const { plugins, cnts } = await searchAllPlugins()
   const { all, npm, local } = cnts
 

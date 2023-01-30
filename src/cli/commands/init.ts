@@ -168,7 +168,7 @@ export async function init(args: ParsedArgs) {
   answer.device_mode ??= 'sms'
 
   if (!answer.login_mode || (answer.login_mode === 'password' && !answer.password)) {
-    notice.warn('退出 miobot CLI')
+    notice.warn('退出 miobot')
     process.exit(0)
   }
 

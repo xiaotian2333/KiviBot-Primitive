@@ -3,7 +3,7 @@ import clipboard from 'clipboardy'
 import { MioLogger } from '@/core'
 import { colors } from '@/utils'
 
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 interface SliderEvent {
   url: string

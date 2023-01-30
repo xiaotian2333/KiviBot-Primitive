@@ -3,7 +3,7 @@ import { errorHandler } from './error'
 import { sliderHandler } from './slider'
 
 import type { MioConf } from '@/core'
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 export * from './qrCode'
 

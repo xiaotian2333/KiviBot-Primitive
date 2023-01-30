@@ -5,7 +5,7 @@ import { MioLogger } from '@/core'
 import { colors } from '@/utils'
 
 import type { MioConf } from '@/core'
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 /** 设备锁验证监听处理函数 */
 export async function deviceHandler(

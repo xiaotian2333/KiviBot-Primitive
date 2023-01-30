@@ -1,8 +1,8 @@
-import { LoginErrorCode } from 'oicq'
+import { LoginErrorCode } from 'movo'
 
 import { MioLogger } from '@/core'
 
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 /** 登录错误事件监听处理函数 */
 export function errorHandler(this: Client, { code, message }: { code: number; message: string }) {

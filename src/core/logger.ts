@@ -5,7 +5,7 @@ import path from 'node:path'
 import { LogDir } from '@/path'
 import { colors } from '@/utils'
 
-import type { Config } from 'oicq'
+import type { Config } from 'movo'
 
 /** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
 export const Devices = [
@@ -37,7 +37,7 @@ log4js.addLayout('mio', (config) => {
   const { qq, platform, target = 'mio' } = config
 
   // oicq 日志输出到日志文件（可选关闭） logs/miobot_YYYY-MM-DD_HH-mm-ss.log
-  if (target === 'oicq') {
+  if (target === 'movo') {
     return (info) => {
       const now = dayjs(info.startTime).format(`YYYY-MM-DD HH:mm:ss:SSS`)
       return `[${now}] [${info.level.levelStr}] [${qq}-${Devices[platform]}] ${info.data}`
@@ -91,7 +91,7 @@ export function redirectLog(mioLogLevel = 'info', oicq_config: Config, account: 
         filename: logFilePath,
         layout: {
           ...layout,
-          target: 'oicq'
+          target: 'movo'
         }
       },
       _error_file: {
@@ -99,7 +99,7 @@ export function redirectLog(mioLogLevel = 'info', oicq_config: Config, account: 
         filename: errorFilePath,
         layout: {
           ...layout,
-          target: 'oicq'
+          target: 'movo'
         }
       },
       error_file: {

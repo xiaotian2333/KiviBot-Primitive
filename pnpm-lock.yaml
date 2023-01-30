@@ -21,10 +21,10 @@ specifiers:
   import-local: ^3.1.0
   log4js: ^6.7.1
   minimist: ^1.2.7
+  movo: ^0.0.3
   nanoid: ^3
   node-cron: ^3.0.2
   npm-check-updates: ^16.6.2
-  oicq: ^2.3.1
   ora: ^5
   prettier: ^2.8.2
   prompts: ^2.4.2
@@ -41,10 +41,10 @@ dependencies:
   import-local: 3.1.0
   log4js: 6.7.1
   minimist: 1.2.7
+  movo: 0.0.3
   nanoid: 3.3.4
   node-cron: 3.0.2
   npm-check-updates: 16.6.2
-  oicq: 2.3.1
   ora: 5.4.1
   prompts: 2.4.2
 
@@ -572,17 +572,18 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /axios/0.27.2:
-    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+  /axios/1.2.2:
+    resolution: {integrity: sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
+      proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
     dev: false
 
-  /axios/1.2.2:
-    resolution: {integrity: sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q==}
+  /axios/1.2.6:
+    resolution: {integrity: sha512-rC/7F08XxZwjMV4iuWv+JpD3E0Ksqg9nac4IIg6RwNuF0JTeWoCo/mBNG54+tNhhI11G3/VDRbdDQTs9hGp4pQ==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
@@ -602,6 +603,12 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     dev: true
+
+  /bindings/1.5.0:
+    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    dependencies:
+      file-uri-to-path: 1.0.0
+    dev: false
 
   /bl/4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -658,6 +665,11 @@ packages:
     resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
     dependencies:
       semver: 7.3.8
+
+  /cac/6.7.14:
+    resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
+    engines: {node: '>=8'}
+    dev: false
 
   /cacache/16.1.3:
     resolution: {integrity: sha512-/+Emcj9DAXxX4cwlLmRI9c166RuL3w30zp4R7Joiv2cQTtTtA+jeuCAjH3ZlGnYS3tKENSrKhAzVVP9GVyzeYQ==}
@@ -1533,6 +1545,10 @@ packages:
     dependencies:
       flat-cache: 3.0.4
     dev: true
+
+  /file-uri-to-path/1.0.0:
+    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    dev: false
 
   /fill-range/7.0.1:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
@@ -2555,6 +2571,21 @@ packages:
     hasBin: true
     dev: false
 
+  /movo/0.0.3:
+    resolution: {integrity: sha512-XbhSiwmUPZAc90R8QJIhASpRzVg9+FuHloHpMtPPjZe0+fALsMZ2mUizCtcUTynXPsukT2rQ8TPyPzIttaIbMA==}
+    engines: {node: '>= v14'}
+    dependencies:
+      axios: 1.2.6
+      log4js: 6.7.1
+      long: 4.0.0
+      pngjs: 6.0.0
+      probe-image-size: 7.2.3
+      silk-sdk: 0.2.2
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+    dev: false
+
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
     dev: false
@@ -2805,20 +2836,6 @@ packages:
       define-properties: 1.1.4
       es-abstract: 1.21.1
     dev: true
-
-  /oicq/2.3.1:
-    resolution: {integrity: sha512-mRw/GgdRKFMylnrlnnywzCIwvad6fF5E4WZfIlval070wEc3w9yMV49i9epFltWkU/JGNMDS4t5wWdZEYzW0EQ==}
-    engines: {node: '>= v14'}
-    dependencies:
-      axios: 0.27.2
-      log4js: 6.7.1
-      long: 4.0.0
-      pngjs: 6.0.0
-      probe-image-size: 7.2.3
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-    dev: false
 
   /once/1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
@@ -3370,6 +3387,15 @@ packages:
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
+    dev: false
+
+  /silk-sdk/0.2.2:
+    resolution: {integrity: sha512-DnhFzCFUpb2FnkulKaerv6qryQJ70CVs+19OsskVOHYkB0MwiyoWwcoB8TwuL2wJd+kskqBRBHml0UKo8UPcPA==}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      bindings: 1.5.0
+      cac: 6.7.14
     dev: false
 
   /sisteransi/1.0.5:

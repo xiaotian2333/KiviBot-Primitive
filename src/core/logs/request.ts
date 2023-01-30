@@ -1,7 +1,7 @@
 import { MioLogger } from '@/core'
 import { colors } from '@/utils'
 
-import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'oicq'
+import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'movo'
 
 export type AllRequestEvent = FriendRequestEvent | GroupRequestEvent | GroupInviteEvent
 

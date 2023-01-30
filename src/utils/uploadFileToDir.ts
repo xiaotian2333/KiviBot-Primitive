@@ -3,7 +3,7 @@ import os from 'node:os'
 import { stringifyError } from './utils'
 import { MioLogger } from '@/core'
 
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 export async function uploadFileToDir(
   this: Client,

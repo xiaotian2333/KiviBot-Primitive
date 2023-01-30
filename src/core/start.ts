@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import { createClient } from 'oicq'
+import { createClient } from 'movo'
 
 import { mioConf } from './config'
 import { Devices, MioLogger, redirectLog } from './logger'
@@ -7,7 +7,7 @@ import { bindLoginEvent, qrCodeHandler } from './login'
 import { offlineHandler } from './logs'
 import { onlineHandler } from './online'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '@/path'
-import { colors, exitWithError, MioLogo, md5, notice, stringifyError } from '@/utils'
+import { colors, exitWithError, MioLogo, md5, notice, stringifyError, v } from '@/utils'
 
 import type { MioConf } from './config'
 import type { MioPlugin } from './plugin'
@@ -15,13 +15,10 @@ import type { MioPlugin } from './plugin'
 /** 当前缓存中已载入并启用的插件 map */
 export const plugins: Map<string, MioPlugin> = new Map()
 
-/** 框架的 package.json 描述信息 */
-export const pkg = require('../../package.json')
-
 /** 通过 mio.json 配置文件启动框架 */
 export function start() {
   // 设置终端标题
-  process.title = `miobot ${pkg.version} `
+  process.title = `miobot ${v} `
 
   // 打印 miobot logo
   console.log(`\n${colors.cyan(MioLogo)}\n`)
@@ -44,11 +41,11 @@ export function start() {
     Object.assign(mioConf, conf)
 
     // 终端标题加上账号
-    process.title = `miobot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${v} ${mioConf.account}`
 
     console.log(`欢迎使用 miobot，能跑就行 の Bot`)
 
-    console.log('框架版本: ' + colors.green(`miobot ${pkg.version}`))
+    console.log('框架版本: ' + colors.green(`miobot ${v}`))
     console.log('配置文件: ' + colors.green(`${ConfigPath}\n`))
 
     const { log_level = 'info', oicq_config = {} } = mioConf

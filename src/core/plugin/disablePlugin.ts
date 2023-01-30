@@ -1,12 +1,12 @@
-import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
 import { MioPluginError } from './pluginError'
+import { getPluginNameByPath } from './utils'
 import { MioLogger } from '@/core'
 import { colors, stringifyError } from '@/utils'
 
 import type { MioPlugin } from './plugin'
 import type { MioConf } from '@/core'
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 /** 通过插件路径禁用单个插件  */
 export async function disablePlugin(
@@ -41,6 +41,9 @@ export async function disablePlugin(
 
     return true
   } catch (e: any) {
+    // 删除 require 缓存
+    killPlugin(pluginPath)
+
     if (e instanceof MioPluginError) {
       return e.log()
     } else {

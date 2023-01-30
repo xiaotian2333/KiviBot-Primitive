@@ -1,4 +1,4 @@
-export * from 'oicq'
+export * from 'movo'
 
 export * from './bindSendMessage'
 export * from './config'

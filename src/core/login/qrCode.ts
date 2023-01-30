@@ -1,6 +1,6 @@
 import { MioLogger } from '@/core'
 
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 /** 处理二维码扫描，自动轮询登录 */
 export function qrCodeHandler(this: Client) {

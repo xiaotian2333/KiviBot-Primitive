@@ -3,12 +3,11 @@ import minimist from 'minimist'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import { fetchStatus } from './status'
-import { pkg } from '@/core'
 import { MioLogger } from '@/src'
-import { notice, stringifyError, update } from '@/utils'
+import { notice, stringifyError, update, v } from '@/utils'
 
 import type { MioConf, AllMessageEvent } from '@/core'
-import type { Client } from 'oicq'
+import type { Client } from 'movo'
 
 const HelpMenu = `
 〓 miobot 帮助 〓
@@ -93,7 +92,7 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
 
       if (upInfo) {
         const info = Object.entries(upInfo)
-          .map(([k, v]) => `${k.replace('miobot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
+          .map(([k, v]) => `${k.replace('miobot-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
 
         const msg = info
@@ -109,6 +108,6 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
       await event.reply(`〓 更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `miobot ${pkg.version} ${mioConf.account}`
+    process.title = `miobot ${v} ${mioConf.account}`
   }
 }

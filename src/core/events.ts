@@ -1,4 +1,4 @@
-import type { Client, EventMap } from 'oicq'
+import type { Client, EventMap } from 'movo'
 
 export const SystemEvents = [
   'system.login.qrcode',

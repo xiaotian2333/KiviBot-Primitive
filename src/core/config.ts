@@ -5,7 +5,7 @@ import { plugins } from './start'
 import { ConfigPath } from '@/path'
 
 import type { MioPlugin } from './plugin'
-import type { Config } from 'oicq'
+import type { Config } from 'movo'
 
 export type MainAdmin = number
 export type AdminArray = [MainAdmin, ...number[]]

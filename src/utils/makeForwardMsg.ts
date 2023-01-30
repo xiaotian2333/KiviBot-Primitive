@@ -1,15 +1,15 @@
 // edit from https://github.com/takayama-lily/oicq/blob/main/lib/internal/contactable.ts#L422-L511
 
+import { escapeXml, gzip, md5, timestamp, uuid } from 'movo/lib/common'
+import { pb } from 'movo/lib/core'
+import { drop } from 'movo/lib/errors'
+import { CmdID, highwayUpload } from 'movo/lib/internal'
+import { Converter, PrivateMessage, rand2uuid } from 'movo/lib/message'
 import { randomBytes } from 'node:crypto'
 import { Readable } from 'node:stream'
-import { escapeXml, gzip, md5, timestamp, uuid } from 'oicq/lib/common'
-import { pb } from 'oicq/lib/core'
-import { drop } from 'oicq/lib/errors'
-import { CmdID, highwayUpload } from 'oicq/lib/internal'
-import { Converter, PrivateMessage, rand2uuid } from 'oicq/lib/message'
 
-import type { Client, Forwardable, XmlElem } from 'oicq'
-import type { Image } from 'oicq/lib/message'
+import type { Client, Forwardable, XmlElem } from 'movo'
+import type { Image } from 'movo/lib/message'
 
 /** 制作合并转发消息，可自定义标题、内容、底部说明文字 */
 export async function makeForwardMsg(
