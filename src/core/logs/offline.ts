@@ -1,7 +1,7 @@
-import { KiviLogger } from '@/logger'
-import { colors } from '@/src/utils'
+import { MioLogger } from '@/core'
+import { colors } from '@/utils'
 
 /** 下线监听函数，打印框架日志 */
 export function offlineHandler({ message }: { message: string }) {
-  KiviLogger.fatal(colors.magenta(message))
+  MioLogger.fatal(colors.magenta(message))
 }

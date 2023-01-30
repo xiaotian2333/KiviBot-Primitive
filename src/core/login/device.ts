@@ -1,21 +1,21 @@
 import clipboard from 'clipboardy'
 import prompts from 'prompts'
 
-import { KiviLogger } from '@/logger'
-import { colors } from '@/src/utils'
+import { MioLogger } from '@/core'
+import { colors } from '@/utils'
 
-import type { KiviConf } from '@/config'
+import type { MioConf } from '@/core'
 import type { Client } from 'oicq'
 
 /** 设备锁验证监听处理函数 */
 export async function deviceHandler(
   this: Client,
-  device_mode: KiviConf['device_mode'],
+  device_mode: MioConf['device_mode'],
   event: { url: string; phone: string }
 ) {
   const info = (msg: any, ...args: any[]) => {
     this.logger.warn(msg, ...args)
-    KiviLogger.warn(msg, ...args)
+    MioLogger.warn(msg, ...args)
   }
 
   const phone = colors.cyan(event.phone)

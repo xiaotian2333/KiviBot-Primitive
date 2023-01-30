@@ -1,20 +1,22 @@
-import { kiviConf, saveKiviConf } from '@/config'
-import { KiviLogger } from '@/logger'
 import {
+  mioConf,
+  saveMioConf,
+  MioLogger,
   disablePlugin,
   enablePlugin,
   getPluginNameByPath,
   getPluginPathByName,
-  searchAllPlugins
-} from '@/plugin'
-import { install, stringifyError, update } from '@/src/utils'
-import { pkg, plugins } from '@/start'
+  searchAllPlugins,
+  pkg,
+  plugins
+} from '@/core'
+import { install, stringifyError, update } from '@/utils'
 
 import type { ReplyFunc } from './config'
 import type { Client } from 'oicq'
 
 export const PluginMenu = `
-〓 KiviBot 插件 〓
+〓 MioBot 插件 〓
 /plugin list
 /plugin add/rm <name>
 /plugin on/off <name>
@@ -40,7 +42,7 @@ export async function handlePluginCommand(bot: Client, params: string[], reply: 
     })
 
     const message = `
-〓 KiviBot 插件列表 〓
+〓 MioBot 插件列表 〓
 ${pinfo.join('\n')}
 共 ${pinfo.length} 个，启用 ${plugins.size} 个
 `.trim()
@@ -73,7 +75,7 @@ ${pinfo.join('\n')}
         return count++
       }
 
-      const res = await enablePlugin(bot, kiviConf, path)
+      const res = await enablePlugin(bot, mioConf, path)
 
       if (res === true) {
         count++
@@ -82,7 +84,7 @@ ${pinfo.join('\n')}
       }
 
       if (i + 1 === all) {
-        saveKiviConf()
+        saveMioConf()
 
         await reply(`〓 共启用 ${count} 个插件 〓`)
       }
@@ -102,7 +104,7 @@ ${pinfo.join('\n')}
       const targetPluginPath = await getPluginPathByName(pname)
 
       if (targetPluginPath) {
-        const res = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
+        const res = await disablePlugin(bot, mioConf, plugin, targetPluginPath)
 
         if (res !== true) {
           await reply(`〓 ${pname} 禁用失败 〓\n${res}`)
@@ -112,7 +114,7 @@ ${pinfo.join('\n')}
       }
 
       if (i + 1 === size) {
-        saveKiviConf(plugins)
+        saveMioConf(plugins)
 
         return reply('〓 已禁用所有插件 〓')
       }
@@ -127,11 +129,11 @@ ${pinfo.join('\n')}
     const name = pname ? `${pname} ` : ''
 
     try {
-      const upInfo = await update(`kivibot-plugin-${pname || '*'}`)
+      const upInfo = await update(`miobot-plugin-${pname || '*'}`)
 
       if (upInfo) {
         const info = Object.entries(upInfo)
-          .map(([k, v]) => `${k.replace('kivibot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
+          .map(([k, v]) => `${k.replace('miobot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
 
         const updated = pname ? `〓 ${name}已是最新版本 〓` : '〓 所有插件均为最新版本 〓'
@@ -143,12 +145,12 @@ ${pinfo.join('\n')}
         await reply(`〓 ${name}更新失败，详情查看日志 〓`)
       }
     } catch (e) {
-      KiviLogger.error(stringifyError(e))
+      MioLogger.error(stringifyError(e))
 
       await reply(`〓 ${name}更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
+    process.title = `MioBot ${pkg.version} ${mioConf.account}`
 
     return
   }
@@ -168,10 +170,10 @@ ${pinfo.join('\n')}
       return reply(`〓 ${pname}: 插件已启用 〓`)
     }
 
-    const res = await enablePlugin(bot, kiviConf, targetPluginPath)
+    const res = await enablePlugin(bot, mioConf, targetPluginPath)
 
     if (res === true) {
-      if (saveKiviConf()) {
+      if (saveMioConf()) {
         return reply(`〓 ${pname} 启用成功 〓`)
       }
     } else {
@@ -196,12 +198,12 @@ ${pinfo.join('\n')}
       return reply(`〓 ${pname}: 插件不存在 〓`)
     }
 
-    const res = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
+    const res = await disablePlugin(bot, mioConf, plugin, targetPluginPath)
 
     if (res === true) {
       plugins.delete(pname)
 
-      if (saveKiviConf()) {
+      if (saveMioConf()) {
         return reply(`〓 ${pname} 禁用成功 〓`)
       }
     } else {
@@ -224,14 +226,14 @@ ${pinfo.join('\n')}
     let res: boolean | string
 
     if (!plugin) {
-      res = await enablePlugin(bot, kiviConf, targetPluginPath)
+      res = await enablePlugin(bot, mioConf, targetPluginPath)
     } else {
-      res = await disablePlugin(bot, kiviConf, plugin, targetPluginPath)
-      res = res && (await enablePlugin(bot, kiviConf, targetPluginPath))
+      res = await disablePlugin(bot, mioConf, plugin, targetPluginPath)
+      res = res && (await enablePlugin(bot, mioConf, targetPluginPath))
     }
 
     if (res === true) {
-      if (saveKiviConf()) {
+      if (saveMioConf()) {
         return reply(`〓 ${pname} 重载成功 〓`)
       }
     } else {
@@ -246,25 +248,25 @@ ${pinfo.join('\n')}
 
     let shortName = pname
 
-    if (/^kivibot-plugin-/i.test(shortName)) {
-      shortName = shortName.replace(/^kivibot-plugin-/i, '')
+    if (/^miobot-plugin-/i.test(shortName)) {
+      shortName = shortName.replace(/^miobot-plugin-/i, '')
     }
 
     await reply(`〓 正在安装 ${pname}... 〓`)
 
     try {
-      if (await install(`kivibot-plugin-${shortName}`)) {
+      if (await install(`miobot-plugin-${shortName}`)) {
         await reply(`〓 ${pname} 安装成功 〓`)
       } else {
         await reply(`〓 ${pname} 安装失败，详情查看日志 〓`)
       }
     } catch (e) {
-      KiviLogger.error(stringifyError(e))
+      MioLogger.error(stringifyError(e))
 
       await reply(`〓 ${pname} 安装失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
+    process.title = `MioBot ${pkg.version} ${mioConf.account}`
   }
 
   if (secondCmd === 'remove' || secondCmd === 'rm') {
@@ -274,24 +276,24 @@ ${pinfo.join('\n')}
 
     let shortName = pname
 
-    if (/^kivibot-plugin-/i.test(shortName)) {
-      shortName = shortName.replace(/^kivibot-plugin-/i, '')
+    if (/^miobot-plugin-/i.test(shortName)) {
+      shortName = shortName.replace(/^miobot-plugin-/i, '')
     }
 
     await reply(`〓 正在移除 ${pname}... 〓`)
 
     try {
-      if (await install(`kivibot-plugin-${shortName}`, true)) {
+      if (await install(`miobot-plugin-${shortName}`, true)) {
         await reply(`〓 ${pname} 移除成功 〓`)
       } else {
         await reply(`〓 ${pname} 移除失败，详情查看日志 〓`)
       }
     } catch (e) {
-      KiviLogger.error(stringifyError(e))
+      MioLogger.error(stringifyError(e))
 
       await reply(`〓 ${pname} 移除失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
+    process.title = `MioBot ${pkg.version} ${mioConf.account}`
   }
 }

@@ -70,12 +70,12 @@ export const OicqEvents = [
   'guild.message'
 ] as (keyof EventMap<Client>)[]
 
-/** KiviBot 标准事件列表 */
-export const KiviEvents = ['kivi.admin'] as const
+/** MioBot 标准事件列表 */
+export const MioEvents = ['mio.admin'] as const
 
-export interface KiviEventMap<T = any> {
-  /** KiviBot 管理员变动事件 */
-  'kivi.admin': (
+export interface MioEventMap<T = any> {
+  /** MioBot 管理员变动事件 */
+  'mio.admin': (
     this: T,
     event: {
       admins: number[]

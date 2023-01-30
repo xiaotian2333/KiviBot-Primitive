@@ -1,11 +1,8 @@
 import os from 'node:os'
 import { version as OicqVersion } from 'oicq/package.json'
 
-import { MessageCounts } from '@/bindSendMessage'
-import { Devices } from '@/logger'
-import { searchAllPlugins } from '@/plugin'
-import { formatDateDiff, formatFileSize } from '@/src/utils'
-import { pkg, plugins } from '@/start'
+import { MessageCounts, Devices, searchAllPlugins, pkg, plugins } from '@/core'
+import { formatDateDiff, formatFileSize } from '@/utils'
 
 import type { Client } from 'oicq'
 
@@ -41,7 +38,7 @@ export async function fetchStatus(bot: Client) {
   // TODO: 待 oicq2 修复"已发送消息"的统计数据，目前自己实现计数
 
   return `
-〓 KiviBot 状态 〓
+〓 MioBot 状态 〓
 昵称: ${bot.nickname}
 账号: ${bot.uin}
 列表: ${bot.fl.size} 好友，${bot.gl.size} 群

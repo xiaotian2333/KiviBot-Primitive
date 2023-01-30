@@ -1,6 +1,6 @@
 import { LoginErrorCode } from 'oicq'
 
-import { KiviLogger } from '@/logger'
+import { MioLogger } from '@/core'
 
 import type { Client } from 'oicq'
 
@@ -8,7 +8,7 @@ import type { Client } from 'oicq'
 export function errorHandler(this: Client, { code, message }: { code: number; message: string }) {
   const error = (msg: any, ...args: any[]) => {
     this.logger.error(msg, ...args)
-    KiviLogger.error(msg, ...args)
+    MioLogger.error(msg, ...args)
   }
 
   if (code === LoginErrorCode.AccountFrozen) {
@@ -17,7 +17,7 @@ export function errorHandler(this: Client, { code, message }: { code: number; me
   }
 
   if (code === LoginErrorCode.WrongPassword) {
-    error('账号密码错误，请通过 `kivi init --force` 重新生成正确的配置文件')
+    error('账号密码错误，请通过 `mio init --force` 重新生成正确的配置文件')
     process.exit(0)
   }
 

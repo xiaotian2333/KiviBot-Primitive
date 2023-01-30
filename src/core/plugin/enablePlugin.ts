@@ -1,42 +1,41 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
-import { KiviPluginError } from './pluginError'
-import { KiviLogger } from '@/logger'
-import { colors, escapeColor, stringifyError } from '@/src/utils'
-import { plugins } from '@/start'
+import { MioPluginError } from './pluginError'
+import { MioLogger, plugins } from '@/core'
+import { colors, escapeColor, stringifyError } from '@/utils'
 
-import type { KiviPlugin } from './plugin'
-import type { KiviConf } from '@/config'
+import type { MioPlugin } from './plugin'
+import type { MioConf } from '@/core'
 import type { Client } from 'oicq'
 
 /** 通过插件模块路径启用单个插件 */
-export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: string) {
+export async function enablePlugin(bot: Client, mioConf: MioConf, pluginPath: string) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
-    KiviLogger.error(msg, ...args)
+    MioLogger.error(msg, ...args)
   }
 
-  KiviLogger.debug('enablePlugin: ' + pluginPath)
+  MioLogger.debug('enablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
   const pn = colors.green(pluginName)
 
   try {
-    const { plugin } = (await require(pluginPath)) as { plugin: KiviPlugin | undefined }
+    const { plugin } = (await require(pluginPath)) as { plugin: MioPlugin | undefined }
 
-    if (plugin && plugin?.mountKiviBotClient) {
+    if (plugin && plugin?.mountMioBotClient) {
       try {
-        await plugin.mountKiviBotClient(bot, [...kiviConf.admins])
+        await plugin.mountMioBotClient(bot, [...mioConf.admins])
 
         plugins.set(pluginName, plugin)
 
-        KiviLogger.debug(`插件 ${pn} 启用成功`)
+        MioLogger.debug(`插件 ${pn} 启用成功`)
 
         return true
       } catch (e: any) {
         plugins.delete(pluginName)
 
-        if (e instanceof KiviPluginError) {
+        if (e instanceof MioPluginError) {
           return e.log()
         } else {
           const msg = stringifyError(e)
@@ -49,14 +48,14 @@ export async function enablePlugin(bot: Client, kiviConf: KiviConf, pluginPath: 
       }
     } else {
       plugins.delete(pluginName)
-      const info = colors.red(`插件 ${pn} 没有导出 \`KiviPlugin\` 类实例的 \`plugin\` 属性`)
+      const info = colors.red(`插件 ${pn} 没有导出 \`MioPlugin\` 类实例的 \`plugin\` 属性`)
       error(info)
       return escapeColor(info)
     }
   } catch (e: any) {
     plugins.delete(pluginName)
 
-    if (e instanceof KiviPluginError) {
+    if (e instanceof MioPluginError) {
       return e.log()
     } else {
       const msg = stringifyError(e)

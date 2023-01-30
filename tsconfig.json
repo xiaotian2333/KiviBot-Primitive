@@ -7,9 +7,10 @@
     "baseUrl": ".",
     "paths": {
       "@/src": ["src/index"],
-      "@/src/*": ["src/*"],
-      "@": ["src/core/index"],
-      "@/*": ["src/core/*"]
+      "@/cli": ["src/cli/index"],
+      "@/core": ["src/core/index"],
+      "@/utils": ["src/utils/index"],
+      "@/path": ["src/path"]
     },
     "resolveJsonModule": true,
     "allowJs": false,

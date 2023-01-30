@@ -1,10 +1,10 @@
-import { kiviConf, saveKiviConf } from '@/config'
-import { parseUin } from '@/src/utils'
+import { mioConf, saveMioConf } from '@/core'
+import { parseUin } from '@/utils'
 
 import type { Client, MessageRet, Sendable } from 'oicq'
 
 export const ConfigMenu = `
-〓 KiviBot 配置 〓
+〓 MioBot 配置 〓
 /config detail
 /config admin add/rm <qq>
 /config notice on/off
@@ -38,17 +38,17 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
   const [secondCmd, thirdCmd, value] = params
 
   if (secondCmd === 'detail') {
-    const { friend } = kiviConf.notice
+    const { friend } = mioConf.notice
 
-    const subAdmins = kiviConf.admins.slice(1)
+    const subAdmins = mioConf.admins.slice(1)
 
     const detail = `
-〓 KiviBot 详细配置 〓
-登录模式: ${ModeMap[kiviConf.login_mode] ?? '未知'}
-设备锁模式: ${ModeMap[kiviConf.device_mode] ?? '未知'}
-主管理员: ${kiviConf.admins[0] ?? '未知'}
+〓 MioBot 详细配置 〓
+登录模式: ${ModeMap[mioConf.login_mode] ?? '未知'}
+设备锁模式: ${ModeMap[mioConf.device_mode] ?? '未知'}
+主管理员: ${mioConf.admins[0] ?? '未知'}
 副管理员: ${subAdmins.length ? subAdmins.join(', ') : '空'}
-通知状态: ${kiviConf.notice.enable ? '开启' : '关闭'}
+通知状态: ${mioConf.notice.enable ? '开启' : '关闭'}
 好友申请操作: ${OperationMap[friend.request.action] ?? '未知'}
 群聊邀请操作: ${OperationMap[friend.request.action] ?? '未知'}
 `.trim()
@@ -56,7 +56,7 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
     return reply(detail)
   }
 
-  const mainAdmin = kiviConf.admins[0]
+  const mainAdmin = mioConf.admins[0]
 
   if (secondCmd === 'admin') {
     const qq = parseUin(value)
@@ -64,7 +64,7 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
     if (!qq) {
       return reply('/config admin add/rm <qq>')
     } else {
-      const set = new Set(kiviConf.admins.splice(1))
+      const set = new Set(mioConf.admins.splice(1))
 
       if (thirdCmd === 'add') {
         if (set.has(qq) || qq === mainAdmin) {
@@ -73,10 +73,10 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
 
         set.add(qq)
 
-        kiviConf.admins = [mainAdmin, ...set]
+        mioConf.admins = [mainAdmin, ...set]
 
-        if (saveKiviConf()) {
-          bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
+        if (saveMioConf()) {
+          bot.emit('mio.admin', { admins: [...mioConf.admins] })
           return reply('〓 Bot 管理员添加成功 〓')
         }
       } else if (thirdCmd === 'rm') {
@@ -89,10 +89,10 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
         }
         set.delete(qq)
 
-        kiviConf.admins = [mainAdmin, ...set]
+        mioConf.admins = [mainAdmin, ...set]
 
-        if (saveKiviConf()) {
-          bot.emit('kivi.admin', { admins: [...kiviConf.admins] })
+        if (saveMioConf()) {
+          bot.emit('mio.admin', { admins: [...mioConf.admins] })
 
           return reply('〓 Bot 管理员删除成功 〓')
         }
@@ -102,15 +102,15 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
 
   if (secondCmd === 'notice') {
     if (thirdCmd === 'on') {
-      kiviConf.notice.enable = true
+      mioConf.notice.enable = true
 
-      if (saveKiviConf()) {
+      if (saveMioConf()) {
         return reply('〓 事件通知已开启 〓')
       }
     } else if (thirdCmd === 'off') {
-      kiviConf.notice.enable = false
+      mioConf.notice.enable = false
 
-      if (saveKiviConf()) {
+      if (saveMioConf()) {
         return reply('〓 事件通知已关闭 〓')
       }
     }
@@ -121,9 +121,9 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
       return reply(`〓 操作无效，请检查 〓\n可选操作：${operations.join(', ')}`)
     }
 
-    kiviConf.notice.group.request.action = <Operation>thirdCmd
+    mioConf.notice.group.request.action = <Operation>thirdCmd
 
-    if (saveKiviConf()) {
+    if (saveMioConf()) {
       return reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}群聊邀请 〓`)
     }
   }
@@ -133,9 +133,9 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
       return reply(`〓 操作无效，请检查 〓\n可选操作：${operations.join(', ')}`)
     }
 
-    kiviConf.notice.friend.request.action = <Operation>thirdCmd
+    mioConf.notice.friend.request.action = <Operation>thirdCmd
 
-    if (saveKiviConf()) {
+    if (saveMioConf()) {
       return reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}好友申请 〓`)
     }
   }

@@ -1,5 +1,5 @@
-import { KiviLogger } from '@/logger'
-import { colors } from '@/src/utils'
+import { MioLogger } from '@/core'
+import { colors } from '@/utils'
 
 import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'oicq'
 
@@ -33,5 +33,5 @@ export function requestHandler(event: AllRequestEvent) {
     }
   }
 
-  KiviLogger.info(colors.gray(message))
+  MioLogger.info(colors.gray(message))
 }

@@ -1,5 +1,5 @@
-import { KiviLogger } from '@/logger'
-import { colors } from '@/src/utils'
+import { MioLogger } from '@/core'
+import { colors } from '@/utils'
 
 import type { Client, EventMap } from 'oicq'
 
@@ -117,5 +117,5 @@ export function noticeHandler(
     }
   }
 
-  KiviLogger.info(colors.gray(message))
+  MioLogger.info(colors.gray(message))
 }

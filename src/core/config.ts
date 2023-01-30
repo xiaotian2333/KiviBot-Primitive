@@ -1,10 +1,10 @@
 import { writeJsonSync } from 'fs-extra'
 
-import { KiviLogger } from './logger'
-import { ConfigPath } from './path'
+import { MioLogger } from './logger'
 import { plugins } from './start'
+import { ConfigPath } from '@/path'
 
-import type { KiviPlugin } from './plugin'
+import type { MioPlugin } from './plugin'
 import type { Config } from 'oicq'
 
 export type MainAdmin = number
@@ -52,8 +52,8 @@ export interface NoticeConf {
   }
 }
 
-/** KiviBot 配置文件 */
-export interface KiviConf {
+/** MioBot 配置文件 */
+export interface MioConf {
   /** 登录账号 */
   account: number
   /** 登录模式，可选 password，qrcode */
@@ -70,23 +70,23 @@ export interface KiviConf {
   notice: NoticeConf
   /** 启用插件列表 */
   plugins: string[]
-  /** KiviBot 日志显示等级 */
+  /** MioBot 日志显示等级 */
   log_level: Config['log_level']
   /** oicq 相关配置 */
   oicq_config: Config
 }
 
-export const kiviConf = {} as KiviConf
+export const mioConf = {} as MioConf
 
-/** 保存 KiviBot 框架配置到配置文件`kivi.json` */
-export const saveKiviConf = (_plugins?: Map<string, KiviPlugin>) => {
+/** 保存 MioBot 框架配置到配置文件`mio.json` */
+export const saveMioConf = (_plugins?: Map<string, MioPlugin>) => {
   try {
-    kiviConf.plugins = [...(_plugins ?? plugins).keys()]
+    mioConf.plugins = [...(_plugins ?? plugins).keys()]
 
-    writeJsonSync(ConfigPath, kiviConf, { encoding: 'utf-8', spaces: 2 })
+    writeJsonSync(ConfigPath, mioConf, { encoding: 'utf-8', spaces: 2 })
     return true
   } catch (e) {
-    KiviLogger.error(JSON.stringify(e, null, 2))
+    MioLogger.error(JSON.stringify(e, null, 2))
     return false
   }
 }

@@ -1,7 +1,7 @@
 import clipboard from 'clipboardy'
 
-import { KiviLogger } from '@/logger'
-import { colors } from '@/src/utils'
+import { MioLogger } from '@/core'
+import { colors } from '@/utils'
 
 import type { Client } from 'oicq'
 
@@ -14,7 +14,7 @@ interface SliderEvent {
 export function sliderHandler(this: Client, { url, isFirst }: SliderEvent) {
   const info = (msg: any, ...args: any[]) => {
     this.logger.warn(msg, ...args)
-    KiviLogger.warn(msg, ...args)
+    MioLogger.warn(msg, ...args)
   }
 
   if (isFirst) {

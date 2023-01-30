@@ -1,10 +1,10 @@
 import log4js from 'log4js'
 
-import { colors } from '@/src/utils'
+import { colors } from '@/utils'
 
-/** KiviBot 插件错误类 */
-export class KiviPluginError extends Error {
-  public name = 'KiviPluginError'
+/** MioBot 插件错误类 */
+export class MioPluginError extends Error {
+  public name = 'MioPluginError'
   public pluginName: string
   public message: string
 

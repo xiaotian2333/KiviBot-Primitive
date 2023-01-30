@@ -1,7 +1,7 @@
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 
-import { KiviLogger } from '@/src/core'
+import { MioLogger } from '@/core'
 
 const promiseExec = promisify(exec)
 
@@ -13,7 +13,7 @@ export async function install(pkg?: string, isUninstall = false) {
 
   if (stderr) {
     if (/npm ERR/i.test(stderr)) {
-      KiviLogger.error(stderr)
+      MioLogger.error(stderr)
 
       return false
     }

@@ -1,8 +1,7 @@
-import { kiviConf } from '@/config'
-import { KiviLogger } from '@/logger'
-import { colors } from '@/src/utils'
+import { mioConf, MioLogger } from '@/core'
+import { colors } from '@/utils'
 
-import type { AllMessageEvent } from '@/plugin'
+import type { AllMessageEvent } from '@/core'
 
 const TypeMap = {
   private: '私',
@@ -32,7 +31,7 @@ export async function messageHandler(e: AllMessageEvent) {
     head = `↓ [${type}:${group}-${nick}]`
   }
 
-  const message = kiviConf.message_mode === 'detail' ? e.toString() : e.raw_message
+  const message = mioConf.message_mode === 'detail' ? e.toString() : e.raw_message
 
-  KiviLogger.info(`${colors.gray(head)} ${message}`)
+  MioLogger.info(`${colors.gray(head)} ${message}`)
 }

@@ -1,8 +1,6 @@
-import { segment } from 'oicq'
-
 import { OperationMap } from './commands/config'
-import { kiviConf } from './config'
-import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/src/utils'
+import { mioConf } from './config'
+import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/utils'
 
 import type { Client, ImageElem } from 'oicq'
 
@@ -12,14 +10,14 @@ function buildNotice(title: string, avatar: ImageElem, content: string) {
 
 /** 处理消息通知 */
 export function configNotice(bot: Client) {
-  const { notice, admins } = kiviConf
+  const { notice, admins } = mioConf
   const { friend, group } = notice
 
   const mainAdmin = bot.pickUser(admins[0])
 
   // 好友私聊
   bot.on('message.private', (event) => {
-    if (!kiviConf.notice.enable || !friend.message) return
+    if (!mioConf.notice.enable || !friend.message) return
 
     const {
       sender: { user_id, nickname },
@@ -28,7 +26,7 @@ export function configNotice(bot: Client) {
 
     if (user_id === admins[0]) return
 
-    const avatar = segment.image(getQQAvatarLink(user_id, 100))
+    const avatar = getQQAvatarLink(user_id, 100, true)
 
     const msg = `
 昵称: ${nickname || '未知'}
@@ -44,10 +42,10 @@ QQ: ${user_id || '未知'}
       await event.approve(action)
     }
 
-    if (!kiviConf.notice.enable || !friend.request.enable) return
+    if (!mioConf.notice.enable || !friend.request.enable) return
 
     const { user_id, nickname, comment, source } = event
-    const avatar = segment.image(getQQAvatarLink(user_id, 100))
+    const avatar = getQQAvatarLink(user_id, 100, true)
 
     const msg = `
 昵称: ${nickname || '未知'}
@@ -62,10 +60,10 @@ QQ: ${user_id || '未知'}
 
   // 新增好友
   bot.on('notice.friend.increase', async (event) => {
-    if (!kiviConf.notice.enable || !friend.increase) return
+    if (!mioConf.notice.enable || !friend.increase) return
 
     const { nickname, user_id } = event
-    const avatar = segment.image(getQQAvatarLink(user_id, 100))
+    const avatar = getQQAvatarLink(user_id, 100, true)
 
     const msg = `
 昵称: ${nickname || '未知'}
@@ -77,10 +75,10 @@ QQ: ${user_id || '未知'}
 
   // 好友减少
   bot.on('notice.friend.decrease', async (event) => {
-    if (!kiviConf.notice.enable || !friend.decrease) return
+    if (!mioConf.notice.enable || !friend.decrease) return
 
     const { nickname, user_id } = event
-    const avatar = segment.image(getQQAvatarLink(user_id, 100))
+    const avatar = getQQAvatarLink(user_id, 100, true)
 
     const msg = `
 昵称: ${nickname || '未知'}
@@ -97,10 +95,10 @@ QQ: ${user_id || '未知'}
       await event.approve(action)
     }
 
-    if (!kiviConf.notice.enable || !friend.request.enable) return
+    if (!mioConf.notice.enable || !friend.request.enable) return
 
     const { user_id, nickname, group_id, group_name, role } = event
-    const avatar = segment.image(getGroupAvatarLink(group_id, 100))
+    const avatar = getGroupAvatarLink(group_id, 100, true)
 
     const msg = `
 目标群聊: ${group_name || '未知'}
@@ -114,7 +112,7 @@ QQ: ${user_id || '未知'}
 
   // 新增群聊
   bot.on('notice.group.increase', async (event) => {
-    if (!kiviConf.notice.enable || !group.increase) return
+    if (!mioConf.notice.enable || !group.increase) return
 
     const {
       user_id,
@@ -123,7 +121,7 @@ QQ: ${user_id || '未知'}
 
     if (user_id !== bot.uin) return
 
-    const avatar = segment.image(getGroupAvatarLink(group_id, 100))
+    const avatar = getGroupAvatarLink(group_id, 100, true)
 
     const msg = `
 群名: ${name || '未知'}
@@ -135,7 +133,7 @@ QQ: ${user_id || '未知'}
 
   // 群聊减少
   bot.on('notice.group.decrease', async (event) => {
-    if (!kiviConf.notice.enable || !group.decrease) return
+    if (!mioConf.notice.enable || !group.decrease) return
 
     const {
       user_id,
@@ -146,7 +144,7 @@ QQ: ${user_id || '未知'}
     if (user_id !== bot.uin) return
 
     const isKick = operator_id !== bot.uin
-    const avatar = segment.image(getGroupAvatarLink(group_id, 100))
+    const avatar = getGroupAvatarLink(group_id, 100, true)
 
     const msg = `
 群名: ${name || '未知'}
@@ -159,7 +157,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 
   // 群管理变动
   bot.on('notice.group.admin', async (event) => {
-    if (!kiviConf.notice.enable || !group.admin) return
+    if (!mioConf.notice.enable || !group.admin) return
 
     const {
       user_id,
@@ -169,7 +167,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 
     if (user_id !== bot.uin) return
 
-    const avatar = segment.image(getGroupAvatarLink(group_id, 100))
+    const avatar = getGroupAvatarLink(group_id, 100, true)
 
     const msg = `
 群名: ${name || '未知'}
@@ -182,7 +180,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 
   // Bot 被禁言
   bot.on('notice.group.ban', async (event) => {
-    if (!kiviConf.notice.enable || !group.admin) return
+    if (!mioConf.notice.enable || !group.admin) return
 
     const {
       user_id,
@@ -194,7 +192,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
     if (user_id !== bot.uin) return
 
     const isBan = duration !== 0
-    const avatar = segment.image(getGroupAvatarLink(group_id, 100))
+    const avatar = getGroupAvatarLink(group_id, 100, true)
 
     const msg = `
 群名: ${name || '未知'}
@@ -208,7 +206,7 @@ ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 
   // 群转让
   bot.on('notice.group.transfer', async (event) => {
-    if (!kiviConf.notice.enable || !group.admin) return
+    if (!mioConf.notice.enable || !group.admin) return
 
     const {
       user_id,
@@ -216,7 +214,7 @@ ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
       group: { group_id, name }
     } = event
 
-    const avatar = segment.image(getGroupAvatarLink(group_id, 100))
+    const avatar = getGroupAvatarLink(group_id, 100, true)
 
     const msg = `
 群名: ${name || '未知'}

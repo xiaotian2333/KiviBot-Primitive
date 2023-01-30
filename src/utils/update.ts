@@ -8,7 +8,7 @@ import { CWD } from '@/src/core'
 export async function update(pkg?: string) {
   const upInfo = await ncu({
     packageFile: path.join(CWD, 'package.json'),
-    filter: pkg ?? ['@kivibot/*', 'kivibot', 'kivibot-*'],
+    filter: pkg ?? ['@miobot/*', 'miobot', 'miobot-*'],
     upgrade: true,
     jsonUpgraded: true
   })

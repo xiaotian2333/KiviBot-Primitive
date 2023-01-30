@@ -1,5 +1,5 @@
-import { KiviLogger } from '@/src'
-import { colors } from '@/src/utils'
+import { MioLogger } from '@/src'
+import { colors } from '@/utils'
 
 import type { Anonymous, Client, MessageElem, Quotable, Sendable } from 'oicq'
 
@@ -20,7 +20,7 @@ export async function bindSendMessage(bot: Client) {
       source?: Quotable | undefined,
       anony?: boolean | Omit<Anonymous, 'flag'> | undefined
     ) => {
-      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++
@@ -35,7 +35,7 @@ export async function bindSendMessage(bot: Client) {
     const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
-      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++
@@ -58,7 +58,7 @@ export async function bindSendMessage(bot: Client) {
       source?: Quotable | undefined,
       anony?: boolean | Omit<Anonymous, 'flag'> | undefined
     ) => {
-      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++
@@ -73,7 +73,7 @@ export async function bindSendMessage(bot: Client) {
     const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
-      KiviLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       // 已发送消息计数
       MessageCounts.value++

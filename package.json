@@ -1,10 +1,13 @@
 {
-  "name": "@miobot/core",
+  "name": "miobot",
   "version": "0.0.1",
   "description": "Just run の Bot, based on oicq v2",
   "main": "lib/index.js",
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MPL-2.0",
+  "bin": {
+    "mio": "./bin/mio.js"
+  },
   "scripts": {
     "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
     "build": "npm run clean && tsc && tsc-alias",
@@ -25,11 +28,13 @@
     "dayjs": "^1.11.7",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.1.0",
+    "import-local": "^3.1.0",
     "log4js": "^6.7.1",
     "minimist": "^1.2.7",
     "node-cron": "^3.0.2",
     "npm-check-updates": "^16.6.2",
     "oicq": "^2.3.1",
+    "ora": "^5",
     "prompts": "^2.4.2"
   },
   "devDependencies": {

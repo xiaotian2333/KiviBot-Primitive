@@ -1,7 +1,7 @@
 import os from 'node:os'
 
 import { stringifyError } from './utils'
-import { KiviLogger } from '@/src/core'
+import { MioLogger } from '@/src/core'
 
 import type { Client } from 'oicq'
 
@@ -40,7 +40,7 @@ export async function uploadFileToDir(
 
     return true
   } catch (e) {
-    KiviLogger.error(stringifyError(e))
+    MioLogger.error(stringifyError(e))
 
     return true
   }

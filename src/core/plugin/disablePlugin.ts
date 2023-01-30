@@ -1,38 +1,38 @@
 import { getPluginNameByPath } from './getPluginNameByPath'
 import { killPlugin } from './killPlugin'
-import { KiviPluginError } from './pluginError'
-import { KiviLogger } from '@/logger'
-import { colors, stringifyError } from '@/src/utils'
+import { MioPluginError } from './pluginError'
+import { MioLogger } from '@/core'
+import { colors, stringifyError } from '@/utils'
 
-import type { KiviPlugin } from './plugin'
-import type { KiviConf } from '@/config'
+import type { MioPlugin } from './plugin'
+import type { MioConf } from '@/core'
 import type { Client } from 'oicq'
 
 /** 通过插件路径禁用单个插件  */
 export async function disablePlugin(
   bot: Client,
-  kiviConf: KiviConf,
-  plugin: KiviPlugin,
+  mioConf: MioConf,
+  plugin: MioPlugin,
   pluginPath: string
 ) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
-    KiviLogger.error(msg, ...args)
+    MioLogger.error(msg, ...args)
   }
 
   const debug = (msg: any, ...args: any[]) => {
     bot.logger.debug(msg, ...args)
-    KiviLogger.debug(msg, ...args)
+    MioLogger.debug(msg, ...args)
   }
 
-  KiviLogger.debug('disablePlugin: ' + pluginPath)
+  MioLogger.debug('disablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
   const pn = colors.green(pluginName)
 
   try {
     // 调用插件挂载的禁用函数
-    await plugin.unmountKiviBotClient(bot, [...kiviConf.admins])
+    await plugin.unmountMioBotClient(bot, [...mioConf.admins])
 
     // 删除 require 缓存
     killPlugin(pluginPath)
@@ -41,7 +41,7 @@ export async function disablePlugin(
 
     return true
   } catch (e: any) {
-    if (e instanceof KiviPluginError) {
+    if (e instanceof MioPluginError) {
       return e.log()
     } else {
       const msg = stringifyError(e)

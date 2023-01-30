@@ -2,8 +2,8 @@ import dayjs from 'dayjs'
 import log4js from 'log4js'
 import path from 'node:path'
 
-import { LogDir } from './path'
-import { colors } from '@/src/utils'
+import { LogDir } from '@/path'
+import { colors } from '@/utils'
 
 import type { Config } from 'oicq'
 
@@ -17,7 +17,7 @@ export const Devices = [
   'iPad'
 ] as const
 
-export const KiviLogger = log4js.getLogger('kivi')
+export const MioLogger = log4js.getLogger('mio')
 export const PluginLogger = log4js.getLogger('plugin')
 
 export const LogTypeMap = {
@@ -32,11 +32,11 @@ export const LogTypeMap = {
   off: 'magenta'
 } as const
 
-// 添加自定义 log4js Layout 布局：kivi
-log4js.addLayout('kivi', (config) => {
-  const { qq, platform, target = 'kivi' } = config
+// 添加自定义 log4js Layout 布局：mio
+log4js.addLayout('mio', (config) => {
+  const { qq, platform, target = 'mio' } = config
 
-  // oicq 日志输出到日志文件（可选关闭） logs/KiviBot_YYYY-MM-DD_HH-mm-ss.log
+  // oicq 日志输出到日志文件（可选关闭） logs/MioBot_YYYY-MM-DD_HH-mm-ss.log
   if (target === 'oicq') {
     return (info) => {
       const now = dayjs(info.startTime).format(`YYYY-MM-DD HH:mm:ss:SSS`)
@@ -44,38 +44,38 @@ log4js.addLayout('kivi', (config) => {
     }
   }
 
-  // KiviBot 框架日志输出到控制台（包括插件，可选关闭）
+  // MioBot 框架日志输出到控制台（包括插件，可选关闭）
   return (info) => {
     const level = info.level.levelStr.toLowerCase() as keyof typeof LogTypeMap
     const now = dayjs(info.startTime).format(`HH:mm:ss`)
     const color = LogTypeMap[level] as keyof typeof colors
-    const type = target === 'kivi' ? qq : 'Plugin'
+    const type = target === 'mio' ? qq : 'Plugin'
     const head = colors[color](`[${now}-${type}]`)
     return head + colors.gray(' - ') + info.data
   }
 })
 
 /** 重定向 oicq 日志输出到日志文件 */
-export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account: number) {
+export function redirectLog(mioLogLevel = 'info', oicq_config: Config, account: number) {
   const { platform = 5, log_level: oicqLogLevel } = oicq_config
 
   // 定义输出文件名和路径
   const now = dayjs().format('YYYY-MM-DD_HH-mm-ss')
-  const filename = `KiviBot_${now}_${account}_${Devices[platform]}`
+  const filename = `MioBot_${now}_${account}_${Devices[platform]}`
   const logFilePath = path.join(LogDir, `${filename}.log`)
   const errorFilePath = path.join(LogDir, `${filename}_error.log`)
 
-  // 使用自定义的 Kivi Layout
+  // 使用自定义的 Mio Layout
   const layout = {
     platform,
-    type: 'kivi',
+    type: 'mio',
     qq: account
   }
 
   // 配置 log4js
   log4js.configure({
     appenders: {
-      kivi: {
+      mio: {
         layout,
         type: 'stdout'
       },
@@ -113,13 +113,13 @@ export function redirectLog(kiviLogLevel = 'info', oicq_config: Config, account:
         appenders: ['log_file', 'error_file'],
         level: oicqLogLevel as string
       },
-      kivi: {
-        appenders: ['kivi'],
-        level: kiviLogLevel
+      mio: {
+        appenders: ['mio'],
+        level: mioLogLevel
       },
       plugin: {
         appenders: ['plugin'],
-        level: kiviLogLevel
+        level: mioLogLevel
       }
     }
   })

@@ -1,11 +1,11 @@
 import fg from 'fast-glob'
 import path from 'node:path'
 
-import { NodeModulesDir, PluginDir } from '@/path'
+import { NodeModuleDir, PluginDir } from '@/path'
 
 /** 检索 `node_modules` 中可用的插件模块 */
 export async function searchNpmPlugin() {
-  return searchPlugins(NodeModulesDir, 'kivibot-plugin-*')
+  return searchPlugins(NodeModuleDir, 'miobot-plugin-*')
 }
 
 /** 检索 `plugins` 中可用的插件模块 */

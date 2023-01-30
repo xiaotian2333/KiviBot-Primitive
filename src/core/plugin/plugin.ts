@@ -5,13 +5,12 @@ import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
 import path from 'node:path'
 
-import { KiviPluginError } from './pluginError'
-import { KiviEvents, MessageEvents, OicqEvents } from '@/events'
+import { MioPluginError } from './pluginError'
+import { MioEvents, MessageEvents, OicqEvents } from '@/core'
 import { PluginDataDir } from '@/src'
-import { ensureArray, stringifyError } from '@/src/utils'
+import { ensureArray, stringifyError } from '@/utils'
 
-import type { AdminArray, MainAdmin } from '@/config'
-import type { KiviEventMap } from '@/events'
+import type { AdminArray, MainAdmin, MioEventMap } from '@/core'
 import type { Logger } from 'log4js'
 import type { ScheduledTask } from 'node-cron'
 import type {
@@ -52,13 +51,13 @@ export type MessageCmdHandler = (
   }
 ) => any
 
-export interface KiviPluginConf {
+export interface MioPluginConf {
   debug?: boolean
   enableGroups?: number[]
   enableFriends?: number[]
 }
 
-export class KiviPlugin extends EventEmitter {
+export class MioPlugin extends EventEmitter {
   /** 插件名称 */
   public name: string
   /** 插件版本 */
@@ -68,18 +67,18 @@ export class KiviPlugin extends EventEmitter {
   /** 挂载的 Bot 实例 */
   public bot: Client | null = null
   /** 插件配置 */
-  public config: KiviPluginConf = {}
+  public config: MioPluginConf = {}
   private _cronTasks: ScheduledTask[] = []
   private _handlers: Map<string, AnyFunc[]> = new Map()
 
   /**
-   * KiviBot 插件类
+   * MioBot 插件类
    *
    * @param {string} name 插件名称，建议英文，插件数据目录以此结尾
    * @param {string} version 插件版本，如 1.0.0，建议 require `package.json` 的版本号统一管理
    * @param conf
    */
-  constructor(name: string, version: string, conf?: KiviPluginConf) {
+  constructor(name: string, version: string, conf?: MioPluginConf) {
     super()
 
     this.name = name ?? 'null'
@@ -87,7 +86,7 @@ export class KiviPlugin extends EventEmitter {
     this._dataDir = path.join(PluginDataDir, this.name)
     this.config = conf ?? {}
 
-    this.debug('create KiviPlugin instance')
+    this.debug('create MioPlugin instance')
   }
 
   private _admins: AdminArray | undefined
@@ -129,22 +128,22 @@ export class KiviPlugin extends EventEmitter {
   }
 
   /**
-   * 抛出一个 KiviBot 插件标准错误，会被框架捕获并输出到日志
+   * 抛出一个 MioBot 插件标准错误，会被框架捕获并输出到日志
    *
    * @param {string} message 错误信息
    */
   throwPluginError(message: string) {
-    throw new KiviPluginError(this.name, message)
+    throw new MioPluginError(this.name, message)
   }
 
   /**
-   * **插件请勿调用**，KiviBot 框架调用此函数启用插件
+   * **插件请勿调用**，MioBot 框架调用此函数启用插件
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
-   * @return {Promise<KiviPlugin>} 插件实例 Promise
+   * @return {Promise<MioPlugin>} 插件实例 Promise
    */
-  async mountKiviBotClient(bot: Client, admins: AdminArray): Promise<KiviPlugin> {
-    this.debug('mountKiviBotClient')
+  async mountMioBotClient(bot: Client, admins: AdminArray): Promise<MioPlugin> {
+    this.debug('mountMioBotClient')
 
     // 挂载 Bot
     this.bot = bot
@@ -153,7 +152,7 @@ export class KiviPlugin extends EventEmitter {
     this._admins = [...admins]
 
     // 监听框架管理变动
-    bot.on('kivi.admins', this.adminChangeHandler)
+    bot.on('mio.admins', this.adminChangeHandler)
 
     try {
       this.debug('_mounted')
@@ -167,11 +166,11 @@ export class KiviPlugin extends EventEmitter {
       this.throwPluginError('onMounted 发生错误: \n' + stringifyError(e))
     }
 
-    this.debug('add all KiviBot events listeners')
+    this.debug('add all MioBot events listeners')
 
-    // 插件监听 KiviBot 的所有事件
-    KiviEvents.forEach((evt) => {
-      const handler = (e: FirstParam<KiviEventMap<Client>[typeof evt]>) => {
+    // 插件监听 MioBot 的所有事件
+    MioEvents.forEach((evt) => {
+      const handler = (e: FirstParam<MioEventMap<Client>[typeof evt]>) => {
         this.emit(evt, e)
       }
 
@@ -209,15 +208,15 @@ export class KiviPlugin extends EventEmitter {
   }
 
   /**
-   * **插件请勿调用**，KiviBot 框架调用此函数禁用插件
+   * **插件请勿调用**，MioBot 框架调用此函数禁用插件
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
    */
-  async unmountKiviBotClient(bot: Client, admins: AdminArray) {
-    this.debug('unmountKiviBotClient')
+  async unmountMioBotClient(bot: Client, admins: AdminArray) {
+    this.debug('unmountMioBotClient')
 
     // 取消监听框架管理变动
-    bot.off('kivi.admins', this.adminChangeHandler)
+    bot.off('mio.admins', this.adminChangeHandler)
 
     try {
       this.debug('_unmounted')
@@ -606,9 +605,9 @@ export class KiviPlugin extends EventEmitter {
 }
 
 /**
- * KiviBot 插件类
+ * MioBot 插件类
  */
-export interface KiviPlugin extends EventEmitter {
+export interface MioPlugin extends EventEmitter {
   /** @deprecated 请使用 on 进行事件监听 */
   addListener: never
   /** @deprecated 请使用 off 取消事件监听 */
@@ -632,7 +631,7 @@ export interface KiviPlugin extends EventEmitter {
   /** @deprecated 不推荐使用 */
   prependOnceListener: never
 
-  /** 监听 oicq 标准事件以及 KiviBot 标准事件 */
+  /** 监听 oicq 标准事件以及 MioBot 标准事件 */
   on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 监听自定义事件或其他插件触发的事件 */
@@ -641,7 +640,7 @@ export interface KiviPlugin extends EventEmitter {
     listener: (this: this, ...args: any[]) => void
   ): this
 
-  /** 单次监听 oicq 标准事件以及 KiviBot 标准事件 */
+  /** 单次监听 oicq 标准事件以及 MioBot 标准事件 */
   once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 单次监听自定义事件或其他插件触发的事件 */
@@ -650,7 +649,7 @@ export interface KiviPlugin extends EventEmitter {
     listener: (this: this, ...args: any[]) => void
   ): this
 
-  /** 取消监听 oicq 标准事件以及 KiviBot 标准事件 */
+  /** 取消监听 oicq 标准事件以及 MioBot 标准事件 */
   off<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 取消监听自定义事件或其他插件触发的事件 */

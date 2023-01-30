@@ -3,16 +3,15 @@ import minimist from 'minimist'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import { fetchStatus } from './status'
-import { KiviLogger } from '@/src'
-import { notice, stringifyError, update } from '@/src/utils'
-import { pkg } from '@/start'
+import { pkg } from '@/core'
+import { MioLogger } from '@/src'
+import { notice, stringifyError, update } from '@/utils'
 
-import type { KiviConf } from '@/config'
-import type { AllMessageEvent } from '@/plugin'
+import type { MioConf, AllMessageEvent } from '@/core'
 import type { Client } from 'oicq'
 
 const HelpMenu = `
-〓 KiviBot 帮助 〓
+〓 MioBot 帮助 〓
 /plugin 插件操作
 /status 查看状态
 /config 框架配置
@@ -22,14 +21,12 @@ const HelpMenu = `
 `.trim()
 
 const AboutText = `
-〓 关于 KiviBot 〓
-KiviBot 是一个开源、轻量、跨平台、注重体验、开发者友好、能跑就行的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
-使用文档: https://beta.kivibot.com/
-开源地址: https://github.com/KiviBotLab/KiviBot
+〓 关于 MioBot 〓
+MioBot 是一个开源、轻量、跨平台、注重体验、开发者友好、能跑就行的 QQ 机器人框架，基于 Node.js 和 oicq v2 构建。
 `.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
-export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiviConf: KiviConf) {
+export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioConf: MioConf) {
   const msg = event.toString().trim()
 
   if (!/^\s*\/[a-z0-9]+/i.test(msg)) {
@@ -41,9 +38,9 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   const cmd = params.shift()?.replace(/^\s*\//, '') ?? ''
 
   // 是否是管理员
-  const isAdmin = kiviConf.admins.includes(event.sender.user_id)
+  const isAdmin = mioConf.admins.includes(event.sender.user_id)
   // 是否是主管理员
-  const isMainAdmin = kiviConf.admins[0] === event.sender.user_id
+  const isMainAdmin = mioConf.admins[0] === event.sender.user_id
 
   // 过滤非管理员消息
   if (!isAdmin) {
@@ -63,7 +60,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
       const status = await fetchStatus(bot)
       return event.reply(status)
     } catch (e) {
-      KiviLogger.error(stringifyError(e))
+      MioLogger.error(stringifyError(e))
       return event.reply('〓 设备状态获取失败 〓\n' + stringifyError(e))
     }
   }
@@ -74,7 +71,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
   }
 
   if (cmd === 'exit') {
-    await event.reply('〓 KiviBot 进程已停止 〓')
+    await event.reply('〓 MioBot 进程已停止 〓')
 
     notice.success('框架进程已由管理员通过 /exit 消息指令退出')
     process.exit(0)
@@ -96,7 +93,7 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
 
       if (upInfo) {
         const info = Object.entries(upInfo)
-          .map(([k, v]) => `${k.replace('kivibot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
+          .map(([k, v]) => `${k.replace('miobot-plugin-', 'plugin: ')} => ${v.replace('^', '')}`)
           .join('\n')
 
         const msg = info
@@ -108,10 +105,10 @@ export async function handleKiviCommand(event: AllMessageEvent, bot: Client, kiv
         await event.reply('〓 更新失败，详情查看日志 〓')
       }
     } catch (e) {
-      KiviLogger.error(stringifyError(e))
+      MioLogger.error(stringifyError(e))
       await event.reply(`〓 更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `KiviBot ${pkg.version} ${kiviConf.account}`
+    process.title = `MioBot ${pkg.version} ${mioConf.account}`
   }
 }
