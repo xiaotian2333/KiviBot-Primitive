@@ -10,10 +10,10 @@ const TypeMap = {
 } as const
 
 /** 消息监听函数，打印框架日志 */
-export async function messageHandler(e: AllMessageEvent) {
-  const { sender, message_type } = e
+export async function messageHandler(event: AllMessageEvent) {
+  const { sender, message_type } = event
 
-  const type = TypeMap[e.message_type]
+  const type = TypeMap[event.message_type]
   const nick = `${sender.nickname}(${sender.user_id})`
 
   let head: string
@@ -23,15 +23,15 @@ export async function messageHandler(e: AllMessageEvent) {
     head = `↓ [${type}:${nick}]`
   } else if (message_type === 'discuss') {
     // 讨论组消息
-    const discuss = `${e.discuss_name}(${e.discuss_id})`
+    const discuss = `${event.discuss_name}(${event.discuss_id})`
     head = `↓ [${type}:${discuss}:${nick}]`
   } else {
     // 群聊消息
-    const group = `${e.group_name}(${e.group_id})`
+    const group = `${event.group_name}(${event.group_id})`
     head = `↓ [${type}:${group}-${nick}]`
   }
 
-  const message = mioConf.message_mode === 'detail' ? e.toString() : e.raw_message
+  const message = mioConf.message_mode === 'detail' ? event.toString() : event.raw_message
 
   MioLogger.info(`${colors.gray(head)} ${message}`)
 }
