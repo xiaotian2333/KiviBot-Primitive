@@ -31,7 +31,7 @@
     "import-local": "^3.1.0",
     "log4js": "^6.7.1",
     "minimist": "^1.2.7",
-    "movo": "latest",
+    "movo": "^0.0.5",
     "nanoid": "^3",
     "node-cron": "^3.0.2",
     "npm-check-updates": "^16.6.2",

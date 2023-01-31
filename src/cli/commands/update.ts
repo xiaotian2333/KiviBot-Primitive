@@ -4,7 +4,7 @@ import ncu from 'npm-check-updates'
 import ora from 'ora'
 
 import { CWD } from '@/path'
-import { colors, notice, promiseExec, getPackageVersion } from '@/utils'
+import { colors, notice, promiseExec, v } from '@/utils'
 
 const loading = ora()
 
@@ -22,7 +22,7 @@ export async function update() {
   loading.start(`正在检查 miobot 更新...`)
   const lv = await getLatestVersion('miobot')
 
-  if (lv !== getPackageVersion()) {
+  if (lv !== v) {
     loading.stop()
 
     const updateCmd = 'npm up miobot'

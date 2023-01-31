@@ -21,7 +21,7 @@ specifiers:
   import-local: ^3.1.0
   log4js: ^6.7.1
   minimist: ^1.2.7
-  movo: latest
+  movo: ^0.0.5
   nanoid: ^3
   node-cron: ^3.0.2
   npm-check-updates: ^16.6.2
@@ -41,7 +41,7 @@ dependencies:
   import-local: 3.1.0
   log4js: 6.7.1
   minimist: 1.2.7
-  movo: 0.0.4
+  movo: 0.0.5
   nanoid: 3.3.4
   node-cron: 3.0.2
   npm-check-updates: 16.6.2
@@ -2571,8 +2571,8 @@ packages:
     hasBin: true
     dev: false
 
-  /movo/0.0.4:
-    resolution: {integrity: sha512-v+dOVzo3bk5BMTnj6i4f8FciEDVMTdY48c9xy5yLDsKAQDnbuCNcJ/4HhB8W4a+r436JCQ4N45pfCIXawsqBsg==}
+  /movo/0.0.5:
+    resolution: {integrity: sha512-c/0D0+hoN8wRjE/yFN/BLVilJQLDMCOihcgtrAP2TpQJURG8yELGjSf5PoE7xbd1FtSnIt9EIwx+0/bg38JM9A==}
     engines: {node: '>= v14'}
     dependencies:
       axios: 1.2.6
@@ -2580,6 +2580,7 @@ packages:
       long: 4.0.0
       pngjs: 6.0.0
       probe-image-size: 7.2.3
+      ptb: 1.0.0
       silk-sdk: 0.2.2
     transitivePeerDependencies:
       - debug
@@ -3098,6 +3099,10 @@ packages:
 
   /proxy-from-env/1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
+
+  /ptb/1.0.0:
+    resolution: {integrity: sha512-Vlqq0Mam9Y05HVT0Tvy3v8Ks0D1LMbOtwY8NrQdAeNa7wVm4B9CbxtbD6lun7l2XPTCMDYdfDlO68HQQJkr1ug==}
     dev: false
 
   /pump/3.0.0:
