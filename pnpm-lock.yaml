@@ -21,7 +21,7 @@ specifiers:
   import-local: ^3.1.0
   log4js: ^6.7.1
   minimist: ^1.2.7
-  movo: ^0.0.3
+  movo: latest
   nanoid: ^3
   node-cron: ^3.0.2
   npm-check-updates: ^16.6.2
@@ -41,7 +41,7 @@ dependencies:
   import-local: 3.1.0
   log4js: 6.7.1
   minimist: 1.2.7
-  movo: 0.0.3
+  movo: 0.0.4
   nanoid: 3.3.4
   node-cron: 3.0.2
   npm-check-updates: 16.6.2
@@ -2571,8 +2571,8 @@ packages:
     hasBin: true
     dev: false
 
-  /movo/0.0.3:
-    resolution: {integrity: sha512-XbhSiwmUPZAc90R8QJIhASpRzVg9+FuHloHpMtPPjZe0+fALsMZ2mUizCtcUTynXPsukT2rQ8TPyPzIttaIbMA==}
+  /movo/0.0.4:
+    resolution: {integrity: sha512-v+dOVzo3bk5BMTnj6i4f8FciEDVMTdY48c9xy5yLDsKAQDnbuCNcJ/4HhB8W4a+r436JCQ4N45pfCIXawsqBsg==}
     engines: {node: '>= v14'}
     dependencies:
       axios: 1.2.6

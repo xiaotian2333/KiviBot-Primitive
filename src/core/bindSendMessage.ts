@@ -3,11 +3,6 @@ import { colors } from '@/utils'
 
 import type { Anonymous, Client, MessageElem, Quotable, Sendable } from 'movo'
 
-/** 记录已发送的消息数 */
-export const MessageCounts = {
-  value: 0
-}
-
 /** 重写消息发送函数，记录发送消息数并打印日志 */
 export async function bindSendMessage(bot: Client) {
   bot.gl.forEach(({ group_id, group_name = '未知' }) => {
@@ -22,9 +17,6 @@ export async function bindSendMessage(bot: Client) {
     ) => {
       MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
-      // 已发送消息计数
-      MessageCounts.value++
-
       return sendMsg(content, source, anony)
     }
   })
@@ -36,9 +28,6 @@ export async function bindSendMessage(bot: Client) {
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
       MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
-
-      // 已发送消息计数
-      MessageCounts.value++
 
       return sendMsg(content, source)
     }
@@ -60,9 +49,6 @@ export async function bindSendMessage(bot: Client) {
     ) => {
       MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
-      // 已发送消息计数
-      MessageCounts.value++
-
       return sendMsg(content, source, anony)
     }
   })
@@ -74,9 +60,6 @@ export async function bindSendMessage(bot: Client) {
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
       MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
-
-      // 已发送消息计数
-      MessageCounts.value++
 
       return sendMsg(content, source)
     }
