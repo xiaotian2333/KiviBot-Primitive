@@ -4,11 +4,11 @@
 
 const importLocal = require('import-local')
 
-// Prefer the local installation of `miobot`
+// Prefer the local installation of `keli`
 if (importLocal(__filename)) {
-  console.log('Using local version of miobot')
+  console.log('Using local version of keli')
 } else {
-  process.title = 'miobot'
+  process.title = 'keli'
 
   require('../lib/cli/index.js')
 }

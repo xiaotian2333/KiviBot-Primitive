@@ -1,4 +1,4 @@
-import { mioConf, MioLogger } from '@/core'
+import { keliConf, KeliLogger } from '@/core'
 import { colors } from '@/utils'
 
 import type { AllMessageEvent } from '@/core'
@@ -31,7 +31,7 @@ export async function messageHandler(event: AllMessageEvent) {
     head = `↓ [${type}:${group}-${nick}]`
   }
 
-  const message = mioConf.message_mode === 'detail' ? event.toString() : event.raw_message
+  const message = keliConf.message_mode === 'detail' ? event.toString() : event.raw_message
 
-  MioLogger.info(`${colors.gray(head)} ${message}`)
+  KeliLogger.info(`${colors.gray(head)} ${message}`)
 }

@@ -2,9 +2,9 @@ import log4js from 'log4js'
 
 import { colors } from '@/utils'
 
-/** miobot 插件错误类 */
-export class MioPluginError extends Error {
-  public name = 'MioPluginError'
+/** keli 插件错误类 */
+export class PluginError extends Error {
+  public name = 'PluginError'
   public pluginName: string
   public message: string
 

@@ -1,35 +1,35 @@
 import { killPlugin } from './killPlugin'
-import { MioPluginError } from './pluginError'
+import { PluginError } from './pluginError'
 import { getPluginNameByPath } from './utils'
-import { MioLogger, plugins } from '@/core'
+import { KeliLogger, plugins } from '@/core'
 import { colors, escapeColor, stringifyError } from '@/utils'
 
-import type { MioPlugin } from './plugin'
-import type { MioConf } from '@/core'
+import type { Plugin } from './plugin'
+import type { KeliConf } from '@/core'
 import type { Client } from 'movo'
 
 /** 通过插件模块路径启用单个插件 */
-export async function enablePlugin(bot: Client, mioConf: MioConf, pluginPath: string) {
+export async function enablePlugin(bot: Client, keliConf: KeliConf, pluginPath: string) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
-    MioLogger.error(msg, ...args)
+    KeliLogger.error(msg, ...args)
   }
 
-  MioLogger.debug('enablePlugin: ' + pluginPath)
+  KeliLogger.debug('enablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
   const pn = colors.green(pluginName)
 
   try {
-    const { plugin } = (await require(pluginPath)) as { plugin: MioPlugin | undefined }
+    const { plugin } = (await require(pluginPath)) as { plugin: Plugin | undefined }
 
-    if (plugin && plugin?.mountMioClient) {
+    if (plugin && plugin?.mountKeliClient) {
       try {
-        await plugin.mountMioClient(bot, [...mioConf.admins])
+        await plugin.mountKeliClient(bot, [...keliConf.admins])
 
         plugins.set(pluginName, plugin)
 
-        MioLogger.debug(`插件 ${pn} 启用成功`)
+        KeliLogger.debug(`插件 ${pn} 启用成功`)
 
         return true
       } catch (e: any) {
@@ -38,7 +38,7 @@ export async function enablePlugin(bot: Client, mioConf: MioConf, pluginPath: st
         // 删除 require 缓存
         killPlugin(pluginPath)
 
-        if (e instanceof MioPluginError) {
+        if (e instanceof PluginError) {
           return e.log()
         } else {
           const msg = stringifyError(e)
@@ -52,7 +52,7 @@ export async function enablePlugin(bot: Client, mioConf: MioConf, pluginPath: st
       // 删除 require 缓存
       killPlugin(pluginPath)
 
-      const info = colors.red(`插件 ${pn} 没有导出 \`MioPlugin\` 类实例的 \`plugin\` 属性`)
+      const info = colors.red(`插件 ${pn} 没有导出 \`Plugin\` 类实例的 \`plugin\` 属性`)
       error(info)
       return escapeColor(info)
     }
@@ -62,7 +62,7 @@ export async function enablePlugin(bot: Client, mioConf: MioConf, pluginPath: st
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    if (e instanceof MioPluginError) {
+    if (e instanceof PluginError) {
       return e.log()
     } else {
       const msg = stringifyError(e)

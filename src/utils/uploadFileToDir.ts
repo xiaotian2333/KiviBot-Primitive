@@ -1,7 +1,7 @@
 import os from 'node:os'
 
 import { stringifyError } from './utils'
-import { MioLogger } from '@/core'
+import { KeliLogger } from '@/core'
 
 import type { Client } from 'movo'
 
@@ -40,7 +40,7 @@ export async function uploadFileToDir(
 
     return true
   } catch (e) {
-    MioLogger.error(stringifyError(e))
+    KeliLogger.error(stringifyError(e))
 
     return true
   }

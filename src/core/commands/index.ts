@@ -3,14 +3,14 @@ import minimist from 'minimist'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import { fetchStatus } from './status'
-import { MioLogger } from '@/src'
+import { KeliLogger } from '@/src'
 import { notice, stringifyError, update, v } from '@/utils'
 
-import type { MioConf, AllMessageEvent } from '@/core'
+import type { KeliConf, AllMessageEvent } from '@/core'
 import type { Client } from 'movo'
 
 const HelpMenu = `
-〓 miobot 帮助 〓
+〓 keli 帮助 〓
 /plugin 插件操作
 /status 查看状态
 /config 框架配置
@@ -20,12 +20,12 @@ const HelpMenu = `
 `.trim()
 
 const AboutText = `
-〓 关于 miobot 〓
+〓 关于 keli 〓
 能跑就行 の Bot，基于 Node.js 和 oicq v2 构建。
 `.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
-export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioConf: MioConf) {
+export async function handleKeliCommand(event: AllMessageEvent, bot: Client, keliConf: KeliConf) {
   const msg = event.toString().trim()
 
   if (!/^\s*\/[a-z0-9]+/i.test(msg)) {
@@ -37,9 +37,9 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
   const cmd = params.shift()?.replace(/^\s*\//, '') ?? ''
 
   // 是否是管理员
-  const isAdmin = mioConf.admins.includes(event.sender.user_id)
+  const isAdmin = keliConf.admins.includes(event.sender.user_id)
   // 是否是主管理员
-  const isMainAdmin = mioConf.admins[0] === event.sender.user_id
+  const isMainAdmin = keliConf.admins[0] === event.sender.user_id
 
   // 过滤非管理员消息
   if (!isAdmin) {
@@ -59,7 +59,7 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
       const status = await fetchStatus(bot)
       return event.reply(status)
     } catch (e) {
-      MioLogger.error(stringifyError(e))
+      KeliLogger.error(stringifyError(e))
       return event.reply('〓 设备状态获取失败 〓\n' + stringifyError(e))
     }
   }
@@ -70,7 +70,7 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
   }
 
   if (cmd === 'exit') {
-    await event.reply('〓 miobot 进程已停止 〓')
+    await event.reply('〓 keli 进程已停止 〓')
 
     notice.success('框架进程已由管理员通过 /exit 消息指令退出')
     process.exit(0)
@@ -88,13 +88,9 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
     await event.reply('〓 正在检查更新... 〓')
 
     try {
-      const upInfo = await update()
+      const { isOK, info } = await update()
 
-      if (upInfo) {
-        const info = Object.entries(upInfo)
-          .map(([k, v]) => `${k.replace('miobot-', 'plugin: ')} => ${v.replace('^', '')}`)
-          .join('\n')
-
+      if (isOK) {
         const msg = info
           ? `〓 更新成功 〓\n${info}\ntip: 需要重启框架才能生效`
           : '〓 已是最新版本 〓'
@@ -104,10 +100,10 @@ export async function handleMioCommand(event: AllMessageEvent, bot: Client, mioC
         await event.reply('〓 更新失败，详情查看日志 〓')
       }
     } catch (e) {
-      MioLogger.error(stringifyError(e))
+      KeliLogger.error(stringifyError(e))
       await event.reply(`〓 更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `miobot ${v} ${mioConf.account}`
+    process.title = `keli ${v} ${keliConf.account}`
   }
 }

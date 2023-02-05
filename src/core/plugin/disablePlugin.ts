@@ -1,38 +1,38 @@
 import { killPlugin } from './killPlugin'
-import { MioPluginError } from './pluginError'
+import { PluginError } from './pluginError'
 import { getPluginNameByPath } from './utils'
-import { MioLogger } from '@/core'
+import { KeliLogger } from '@/core'
 import { colors, stringifyError } from '@/utils'
 
-import type { MioPlugin } from './plugin'
-import type { MioConf } from '@/core'
+import type { Plugin } from './plugin'
+import type { KeliConf } from '@/core'
 import type { Client } from 'movo'
 
 /** 通过插件路径禁用单个插件  */
 export async function disablePlugin(
   bot: Client,
-  mioConf: MioConf,
-  plugin: MioPlugin,
+  keliConf: KeliConf,
+  plugin: Plugin,
   pluginPath: string
 ) {
   const error = (msg: any, ...args: any[]) => {
     bot.logger.error(msg, ...args)
-    MioLogger.error(msg, ...args)
+    KeliLogger.error(msg, ...args)
   }
 
   const debug = (msg: any, ...args: any[]) => {
     bot.logger.debug(msg, ...args)
-    MioLogger.debug(msg, ...args)
+    KeliLogger.debug(msg, ...args)
   }
 
-  MioLogger.debug('disablePlugin: ' + pluginPath)
+  KeliLogger.debug('disablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
   const pn = colors.green(pluginName)
 
   try {
     // 调用插件挂载的禁用函数
-    await plugin.unmountMioClient(bot, [...mioConf.admins])
+    await plugin.unmountKeliClient(bot, [...keliConf.admins])
 
     // 删除 require 缓存
     killPlugin(pluginPath)
@@ -44,7 +44,7 @@ export async function disablePlugin(
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    if (e instanceof MioPluginError) {
+    if (e instanceof PluginError) {
       return e.log()
     } else {
       const msg = stringifyError(e)

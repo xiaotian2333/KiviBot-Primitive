@@ -1,4 +1,4 @@
-import { MioLogger } from '@/core'
+import { KeliLogger } from '@/core'
 import { colors } from '@/utils'
 
 import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'movo'
@@ -33,5 +33,5 @@ export function requestHandler(event: AllRequestEvent) {
     }
   }
 
-  MioLogger.info(colors.gray(message))
+  KeliLogger.info(colors.gray(message))
 }

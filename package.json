@@ -1,12 +1,13 @@
 {
-  "name": "miobot",
+  "name": "keli",
   "version": "0.0.1",
+  "update": "2023/2/5",
   "description": "Just run の Bot, based on oicq v2",
   "main": "lib/index.js",
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MPL-2.0",
   "bin": {
-    "mio": "./bin/mio.js"
+    "keli": "./bin/keli.js"
   },
   "scripts": {
     "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
@@ -17,14 +18,14 @@
     "clean": "rimraf lib"
   },
   "files": [
+    "bin",
     "lib"
   ],
   "engines": {
     "node": ">= v14"
   },
   "dependencies": {
-    "axios": "^1.2.2",
-    "clipboardy": "^2.3.0",
+    "axios": "^1.3.2",
     "dayjs": "^1.11.7",
     "fast-glob": "^3.2.12",
     "fs-extra": "^10.1.0",
@@ -32,28 +33,28 @@
     "log4js": "^6.7.1",
     "minimist": "^1.2.7",
     "movo": "^0.0.5",
-    "nanoid": "^3",
+    "nanoid": "^3.3.4",
     "node-cron": "^3.0.2",
-    "npm-check-updates": "^16.6.2",
-    "ora": "^5",
+    "npm-check-updates": "^16.6.3",
+    "ora": "^5.4.1",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
-    "@types/eslint": "^8.4.10",
+    "@types/eslint": "^8.21.0",
     "@types/fs-extra": "^9.0.13",
     "@types/minimist": "^1.2.2",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.11.19",
     "@types/node-cron": "^3.0.7",
     "@types/prompts": "^2.4.2",
     "@vikiboss/prettier-config": "^0.2.2",
     "concurrently": "^7.6.0",
-    "eslint": "^8.31.0",
+    "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-viki-ts": "^0.1.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.2",
+    "prettier": "^2.8.3",
     "rimraf": "^3.0.2",
     "tsc-alias": "^1.8.2",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.5"
   }
 }

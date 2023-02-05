@@ -5,12 +5,12 @@ import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
 import path from 'node:path'
 
-import { MioPluginError } from './pluginError'
-import { MioEvents, MessageEvents, OicqEvents } from '@/core'
+import { PluginError } from './pluginError'
+import { KeliEvents, MessageEvents, OicqEvents } from '@/core'
 import { PluginDataDir } from '@/src'
 import { ensureArray, stringifyError } from '@/utils'
 
-import type { AdminArray, MainAdmin, MioEventMap } from '@/core'
+import type { AdminArray, MainAdmin, KeliEventMap } from '@/core'
 import type { Logger } from 'log4js'
 import type {
   Client,
@@ -51,13 +51,13 @@ export type MessageCmdHandler = (
   }
 ) => any
 
-export interface MioPluginConf {
+export interface PluginConf {
   debug?: boolean
   enableGroups?: number[]
   enableFriends?: number[]
 }
 
-export class MioPlugin extends EventEmitter {
+export class Plugin extends EventEmitter {
   /** 插件名称 */
   public name: string
   /** 插件版本 */
@@ -67,18 +67,18 @@ export class MioPlugin extends EventEmitter {
   /** 挂载的 Bot 实例 */
   public bot: Client | null = null
   /** 插件配置 */
-  public config: MioPluginConf = {}
+  public config: PluginConf = {}
   private _cronTasks: ScheduledTask[] = []
   private _handlers: Map<string, AnyFunc[]> = new Map()
 
   /**
-   * miobot 插件类
+   * keli 插件类
    *
    * @param {string} name 插件名称，建议英文，插件数据目录以此结尾
    * @param {string} version 插件版本，如 1.0.0，建议 require package.json 的版本号统一管理
    * @param conf
    */
-  constructor(name: string, version: string, conf?: MioPluginConf) {
+  constructor(name: string, version: string, conf?: PluginConf) {
     super()
 
     this.name = name ?? 'null'
@@ -86,7 +86,7 @@ export class MioPlugin extends EventEmitter {
     this._dataDir = path.join(PluginDataDir, this.name)
     this.config = conf ?? {}
 
-    this.debug('create MioPlugin instance')
+    this.debug('create Plugin instance')
   }
 
   private _admins: AdminArray | undefined
@@ -128,22 +128,22 @@ export class MioPlugin extends EventEmitter {
   }
 
   /**
-   * 抛出一个 miobot 插件标准错误，会被框架捕获并输出到日志
+   * 抛出一个 keli 插件标准错误，会被框架捕获并输出到日志
    *
    * @param {string} message 错误信息
    */
   throwPluginError(message: string) {
-    throw new MioPluginError(this.name, message)
+    throw new PluginError(this.name, message)
   }
 
   /**
-   * **插件请勿调用**，miobot 框架调用此函数启用插件
+   * **插件请勿调用**，keli 框架调用此函数启用插件
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
-   * @return {Promise<MioPlugin>} 插件实例 Promise
+   * @return {Promise<Plugin>} 插件实例 Promise
    */
-  async mountMioClient(bot: Client, admins: AdminArray): Promise<MioPlugin> {
-    this.debug('mountMioClient')
+  async mountKeliClient(bot: Client, admins: AdminArray): Promise<Plugin> {
+    this.debug('mountKeliClient')
 
     // 挂载 Bot
     this.bot = bot
@@ -152,7 +152,7 @@ export class MioPlugin extends EventEmitter {
     this._admins = [...admins]
 
     // 监听框架管理变动
-    bot.on('mio.admins', this.adminChangeHandler)
+    bot.on('keli.admins', this.adminChangeHandler)
 
     try {
       this.debug('_mounted')
@@ -166,11 +166,11 @@ export class MioPlugin extends EventEmitter {
       this.throwPluginError('onMounted 发生错误: \n' + stringifyError(e))
     }
 
-    this.debug('add all miobot events listeners')
+    this.debug('add all keli events listeners')
 
-    // 插件监听 miobot 的所有事件
-    MioEvents.forEach((evt) => {
-      const handler = (e: FirstParam<MioEventMap<Client>[typeof evt]>) => {
+    // 插件监听 keli 的所有事件
+    KeliEvents.forEach((evt) => {
+      const handler = (e: FirstParam<KeliEventMap<Client>[typeof evt]>) => {
         this.emit(evt, e)
       }
 
@@ -208,15 +208,15 @@ export class MioPlugin extends EventEmitter {
   }
 
   /**
-   * **插件请勿调用**，miobot 框架调用此函数禁用插件
+   * **插件请勿调用**，keli 框架调用此函数禁用插件
    * @param {Client} bot oicq Client 实例
    * @param {AdminArray} admins 框架管理员列表
    */
-  async unmountMioClient(bot: Client, admins: AdminArray) {
-    this.debug('unmountMioClient')
+  async unmountKeliClient(bot: Client, admins: AdminArray) {
+    this.debug('unmountKeliClient')
 
     // 取消监听框架管理变动
-    bot.off('mio.admins', this.adminChangeHandler)
+    bot.off('keli.admins', this.adminChangeHandler)
 
     try {
       this.debug('_unmounted')
@@ -605,9 +605,9 @@ export class MioPlugin extends EventEmitter {
 }
 
 /**
- * miobot 插件类
+ * keli 插件类
  */
-export interface MioPlugin extends EventEmitter {
+export interface Plugin extends EventEmitter {
   /** @deprecated 请使用 on 进行事件监听 */
   addListener: never
   /** @deprecated 请使用 off 取消事件监听 */
@@ -631,7 +631,7 @@ export interface MioPlugin extends EventEmitter {
   /** @deprecated 不推荐使用 */
   prependOnceListener: never
 
-  /** 监听 oicq 标准事件以及 miobot 标准事件 */
+  /** 监听 oicq 标准事件以及 keli 标准事件 */
   on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 监听自定义事件或其他插件触发的事件 */
@@ -640,7 +640,7 @@ export interface MioPlugin extends EventEmitter {
     listener: (this: this, ...args: any[]) => void
   ): this
 
-  /** 单次监听 oicq 标准事件以及 miobot 标准事件 */
+  /** 单次监听 oicq 标准事件以及 keli 标准事件 */
   once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 单次监听自定义事件或其他插件触发的事件 */
@@ -649,7 +649,7 @@ export interface MioPlugin extends EventEmitter {
     listener: (this: this, ...args: any[]) => void
   ): this
 
-  /** 取消监听 oicq 标准事件以及 miobot 标准事件 */
+  /** 取消监听 oicq 标准事件以及 keli 标准事件 */
   off<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
 
   /** 取消监听自定义事件或其他插件触发的事件 */

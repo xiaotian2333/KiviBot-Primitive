@@ -1,3 +1,4 @@
+import axios from 'axios'
 import dayjs from 'dayjs'
 import { segment } from 'movo'
 import { exec } from 'node:child_process'
@@ -72,6 +73,35 @@ export function randomItem<T = any>(array: [T, ...T[]]): T {
   return array[randomInt(0, array.length - 1)]
 }
 
+/** 获取某个 npm 模块的最新版本，形如 'x.x.x' */
+export async function getLatestVersion(module: string) {
+  const api = `https://registry.npmjs.org/${module}`
+  const accept = 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*'
+
+  const { data } = await axios.get(api, { headers: { accept } })
+  const vs = Object.keys(data?.versions)
+
+  return vs.length ? vs[vs.length - 1] : ''
+}
+
+/**  版本号比较，前者大时返回  1，后者大返回  -1，相同返回  0 */
+export function compareVersion(v1: string, v2: string) {
+  const v1s = v1.split('.')
+  const v2s = v2.split('.')
+
+  const length = Math.max(v1s.length, v2s.length)
+
+  for (let i = 0; i < length; i++) {
+    const n1 = Number(v1s[i] || 0)
+    const n2 = Number(v2s[i] || 0)
+
+    if (n1 > n2) return 1
+    if (n1 < n2) return -1
+  }
+
+  return 0
+}
+
 /**
  * 取格式化时间，默认当前时间，使用 dayjs 的 format 函数封装
  * @param {string | undefined} format 格式化模板，默认'YYYY-MM-DD HH:mm'
@@ -80,6 +110,14 @@ export function randomItem<T = any>(array: [T, ...T[]]): T {
  */
 export function time(format?: string, date?: Date): string {
   return dayjs(date ?? new Date()).format(format ?? 'YYYY-MM-DD HH:mm')
+}
+
+/** 打乱字符串 */
+export function shuffleString(str: string) {
+  return str
+    .split('')
+    .sort(() => (Math.random() > 0.5 ? 1 : -1))
+    .join('')
 }
 
 /**
@@ -162,19 +200,19 @@ export function moduleExists(moduleName: string): boolean {
 /** promisify 的 exec 方法 */
 export const promiseExec = promisify(exec)
 
-/** miobot LOGO */
-export const MioLogo = `
-888b     d888 8888888  .d88888b. 
-8888b   d8888   888   d88P" "Y88b
-88888b.d88888   888   888     888
-888Y88888P888   888   888     888
-888 Y888P 888   888   888     888
-888  Y8P  888   888   888     888
-888   "   888   888   Y88b. .d88P
-888       888 8888888  "Y88888P" 
+/** keli LOGO */
+export const KeliLogo = `
+888    d8P  8888888888 888      8888888
+888   d8P   888        888        888  
+888  d8P    888        888        888  
+888d88K     8888888    888        888  
+8888888b    888        888        888  
+888  Y88b   888        888        888  
+888   Y88b  888        888        888  
+888    Y88b 8888888888 88888888 8888888
 `.trim()
 
-/** 停止 miobot 框架进程并输出规范化 miobot 错误信息 */
+/** 停止 keli 框架进程并输出规范化 keli 错误信息 */
 export function exitWithError(msg: string) {
   notice.error(msg)
   process.exit(1)
@@ -280,12 +318,12 @@ export function getGroupAvatarLink(group: number, size = 640, element = false) {
 
 /** 取当前配置的账号 id */
 export function getConfigUin() {
-  const mioConf = require(ConfigPath)
-  return String(mioConf?.account ?? 'mio')
+  const keliConf = require(ConfigPath)
+  return String(keliConf?.account ?? 'keli')
 }
 
-/** miobot package 信息 */
+/** keli package 信息 */
 export const pkg = require(path.join(__dirname, '../../package.json'))
 
-/** miobot 版本 */
+/** keli 版本 */
 export const v = pkg.version as string

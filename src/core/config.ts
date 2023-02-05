@@ -1,10 +1,10 @@
 import { writeJsonSync } from 'fs-extra'
 
-import { MioLogger } from './logger'
+import { KeliLogger } from './logger'
 import { plugins } from './start'
 import { ConfigPath } from '@/path'
 
-import type { MioPlugin } from './plugin'
+import type { Plugin } from './plugin'
 import type { Config } from 'movo'
 
 export type MainAdmin = number
@@ -52,8 +52,8 @@ export interface NoticeConf {
   }
 }
 
-/** miobot 配置文件 */
-export interface MioConf {
+/** keli 配置文件 */
+export interface KeliConf {
   /** 登录账号 */
   account: number
   /** 登录模式，可选 password，qrcode */
@@ -70,23 +70,23 @@ export interface MioConf {
   notice: NoticeConf
   /** 启用插件列表 */
   plugins: string[]
-  /** miobot 日志显示等级 */
+  /** keli 日志显示等级 */
   log_level: Config['log_level']
   /** oicq 相关配置 */
   oicq_config: Config
 }
 
-export const mioConf = {} as MioConf
+export const keliConf = {} as KeliConf
 
-/** 保存 miobot 框架配置到配置文件mio.json */
-export const saveMioConf = (_plugins?: Map<string, MioPlugin>) => {
+/** 保存 keli 框架配置到配置文件keli.json */
+export const saveKeliConf = (_plugins?: Map<string, Plugin>) => {
   try {
-    mioConf.plugins = [...(_plugins ?? plugins).keys()]
+    keliConf.plugins = [...(_plugins ?? plugins).keys()]
 
-    writeJsonSync(ConfigPath, mioConf, { encoding: 'utf-8', spaces: 2 })
+    writeJsonSync(ConfigPath, keliConf, { encoding: 'utf-8', spaces: 2 })
     return true
   } catch (e) {
-    MioLogger.error(JSON.stringify(e, null, 2))
+    KeliLogger.error(JSON.stringify(e, null, 2))
     return false
   }
 }

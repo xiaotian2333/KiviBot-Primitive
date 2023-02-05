@@ -36,7 +36,7 @@ export async function fetchStatus(bot: Client) {
   const arch = ArchMap[process.arch] || process.arch
 
   return `
-〓 miobot 状态 〓
+〓 keli 状态 〓
 昵称: ${bot.nickname}
 账号: ${bot.uin}
 列表: ${bot.fl.size} 好友，${bot.gl.size} 群

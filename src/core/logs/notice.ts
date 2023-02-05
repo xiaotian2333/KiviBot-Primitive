@@ -1,4 +1,4 @@
-import { MioLogger } from '@/core'
+import { KeliLogger } from '@/core'
 import { colors } from '@/utils'
 
 import type { Client, EventMap } from 'movo'
@@ -117,5 +117,5 @@ export function noticeHandler(
     }
   }
 
-  MioLogger.info(colors.gray(message))
+  KeliLogger.info(colors.gray(message))
 }

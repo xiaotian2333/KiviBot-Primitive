@@ -1,33 +1,30 @@
-import fs from 'fs-extra'
+import { ensureDirSync, writeFileSync, removeSync, existsSync } from 'fs-extra'
 import path from 'node:path'
 import prompts from 'prompts'
 
-import { installDependencies } from './install'
-import { js_template } from '../templates/javascript'
-import { pkg_js_template, pkg_ts_template } from '../templates/package-json'
-import { ts_config, ts_template } from '../templates/typescript'
+import { js_template, p_pkg_js, p_pkg_ts, ts_config, ts_template } from '../utils'
 import { PluginDir } from '@/path'
-import { moduleExists, notice } from '@/utils'
+import { install, moduleExists, notice } from '@/utils'
 
 import type { ParsedArgs } from 'minimist'
 
 export const create = async (args: ParsedArgs) => {
   const pluginName = args._[0]
 
-  // 当前 node_modules 目录下是否已存在 TS 依赖
-  const isTypeScriptExist = moduleExists('typescript')
+  // 是否已安装 TypeScript 依赖
+  const isTsInstalled = moduleExists('typescript')
 
-  const { lang, inputPluginName, needInstallTypescript } = await prompts([
+  const { lang, inputPluginName, needTS } = await prompts([
     {
       type: pluginName ? null : 'text',
       name: 'inputPluginName',
-      message: '插件名',
+      message: 'plugin name',
       initial: 'demo'
     },
     {
       type: 'select',
       name: 'lang',
-      message: '开发语言',
+      message: 'develop language',
       choices: [
         { title: 'JavaScript', value: 'JS' },
         { title: 'TypeScript', value: 'TS' }
@@ -35,9 +32,9 @@ export const create = async (args: ParsedArgs) => {
       initial: 0
     },
     {
-      type: (pre) => (pre === 'TS' && !isTypeScriptExist ? 'confirm' : null),
-      name: 'needInstallTypescript',
-      message: '未检测到 TS 依赖，是否要为你安装?',
+      type: (pre) => (pre === 'TS' && !isTsInstalled ? 'confirm' : null),
+      name: 'needTS',
+      message: 'no TS dependency detected, install it now?',
       initial: true
     }
   ])
@@ -45,56 +42,55 @@ export const create = async (args: ParsedArgs) => {
   const pname = pluginName ?? inputPluginName
   const pluginDirPath = path.join(PluginDir, pname)
 
-  if (fs.existsSync(pluginDirPath)) {
+  if (existsSync(pluginDirPath)) {
     const { cover } = await prompts([
       {
         type: 'confirm',
         name: 'cover',
-        message: `插件 ${pname} 已存在，是否覆盖？`,
+        message: `plugin ${pname} already exist, cover it?`,
         initial: false
       }
     ])
 
     if (cover) {
-      fs.removeSync(pluginDirPath)
+      removeSync(pluginDirPath)
 
-      notice.info(`已删除: ${pluginDirPath}`)
+      notice.success(`deleted: ${pluginDirPath}`)
     } else {
-      notice.success('已取消')
+      notice.success('cancelled')
       process.exit(0)
     }
   }
 
   // 确保插件目录存在
-  fs.ensureDirSync(pluginDirPath)
+  ensureDirSync(pluginDirPath)
 
   if (lang === 'TS') {
     try {
+      p_pkg_ts.name = pluginName
       // 写入 package.json
-      fs.writeFileSync(path.join(pluginDirPath, 'package.json'), pkg_ts_template)
-      fs.writeFileSync(path.join(pluginDirPath, 'index.ts'), ts_template)
-      fs.writeFileSync(path.join(pluginDirPath, 'tsconfig.json'), ts_config)
+      writeFileSync(path.join(pluginDirPath, 'package.json'), JSON.stringify(p_pkg_ts, null, 2))
+      writeFileSync(path.join(pluginDirPath, 'index.ts'), ts_template.replace('xxx', pluginName))
+      writeFileSync(path.join(pluginDirPath, 'tsconfig.json'), JSON.stringify(ts_config, null, 2))
     } catch {
-      notice.error('文件写入失败')
+      notice.error('failed to write file')
       process.exit(1)
     }
 
-    if (needInstallTypescript) {
-      await installDependencies('typescript')
+    if (needTS) {
+      await install('typescript')
     }
   } else if (lang === 'JS') {
     try {
+      p_pkg_js.name = pluginName
       // 写入 package.json
-      fs.writeFileSync(path.join(pluginDirPath, 'package.json'), pkg_js_template)
-      fs.writeFileSync(path.join(pluginDirPath, 'index.js'), js_template)
+      writeFileSync(path.join(pluginDirPath, 'package.json'), JSON.stringify(p_pkg_js, null, 2))
+      writeFileSync(path.join(pluginDirPath, 'index.js'), js_template.replace('xxx', pluginName))
     } catch {
-      notice.error('文件写入失败')
+      notice.error('failed to write file')
       process.exit(1)
     }
   }
 
-  notice.success(`已创建: ${pluginDirPath}`)
+  notice.success(`created: ${pluginDirPath}`)
 }
-
-create.help = `
-      create\t初始化插件开发模板 (JS/TS)，可选传入插件名`

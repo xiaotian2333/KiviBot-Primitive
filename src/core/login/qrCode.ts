@@ -1,4 +1,4 @@
-import { MioLogger } from '@/core'
+import { KeliLogger } from '@/core'
 
 import type { Client } from 'movo'
 
@@ -11,14 +11,14 @@ export function qrCodeHandler(this: Client) {
     const { retcode, uin } = await this.queryQrcodeResult()
 
     if (retcode === 53 && !hasShowReadMessage) {
-      MioLogger.info(`二维码扫描成功，正在等待确认...`)
+      KeliLogger.info(`二维码扫描成功，正在等待确认...`)
       hasShowReadMessage = true
       return
     }
 
     if (retcode === 54) {
-      MioLogger.warn('扫码验证被用户手动取消')
-      MioLogger.warn('你可以按 Enter 键重新获取二维码，或者退出框架')
+      KeliLogger.warn('扫码验证被用户手动取消')
+      KeliLogger.warn('你可以按 Enter 键重新获取二维码，或者退出框架')
 
       clearInterval(interval_id)
 
@@ -26,7 +26,7 @@ export function qrCodeHandler(this: Client) {
     }
 
     if (retcode === 17) {
-      MioLogger.warn('二维码已失效，正在重新获取...')
+      KeliLogger.warn('二维码已失效，正在重新获取...')
       clearInterval(interval_id)
       await this.login()
     }
@@ -36,17 +36,17 @@ export function qrCodeHandler(this: Client) {
       clearInterval(interval_id)
 
       if (uin === this.uin) {
-        MioLogger.info(`Bot 帐号 ${uin} 扫码验证成功`)
+        KeliLogger.info(`Bot 帐号 ${uin} 扫码验证成功`)
         await this.login()
         return
       }
 
-      MioLogger.warn('扫码账号与配置账号不一致，请确认账号配置准确并使用 Bot 账号重新扫码')
-      MioLogger.warn('请在准备好后，按 Enter 键重新获取二维码')
+      KeliLogger.warn('扫码账号与配置账号不一致，请确认账号配置准确并使用 Bot 账号重新扫码')
+      KeliLogger.warn('请在准备好后，按 Enter 键重新获取二维码')
 
       process.stdin.once('data', () => this.login())
     }
   }, 1000)
 
-  MioLogger.info(`等待 Bot 账号 ${this.uin} 扫描二维码...`)
+  KeliLogger.info(`等待 Bot 账号 ${this.uin} 扫描二维码...`)
 }

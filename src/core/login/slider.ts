@@ -1,6 +1,6 @@
 import clipboard from 'clipboardy'
 
-import { MioLogger } from '@/core'
+import { KeliLogger } from '@/core'
 import { colors } from '@/utils'
 
 import type { Client } from 'movo'
@@ -14,7 +14,7 @@ interface SliderEvent {
 export function sliderHandler(this: Client, { url, isFirst }: SliderEvent) {
   const info = (msg: any, ...args: any[]) => {
     this.logger.warn(msg, ...args)
-    MioLogger.warn(msg, ...args)
+    KeliLogger.warn(msg, ...args)
   }
 
   if (isFirst) {
@@ -24,7 +24,7 @@ export function sliderHandler(this: Client, { url, isFirst }: SliderEvent) {
 
     console.log(colors.cyan(url) + '\n')
 
-    info(`输入 ticket 后，按 \`Enter\` 键继续: \n`)
+    info(`请输入抓取到的 ticket，然后按 \`Enter\` 键继续: \n`)
   }
 
   const inputTicket = () => {

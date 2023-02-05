@@ -1,4 +1,4 @@
-import { MioLogger } from '@/src'
+import { KeliLogger } from '@/src'
 import { colors } from '@/utils'
 
 import type { Anonymous, Client, MessageElem, Quotable, Sendable } from 'movo'
@@ -15,7 +15,7 @@ export async function bindSendMessage(bot: Client) {
       source?: Quotable | undefined,
       anony?: boolean | Omit<Anonymous, 'flag'> | undefined
     ) => {
-      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      KeliLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       return sendMsg(content, source, anony)
     }
@@ -27,7 +27,7 @@ export async function bindSendMessage(bot: Client) {
     const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
-      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      KeliLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       return sendMsg(content, source)
     }
@@ -47,7 +47,7 @@ export async function bindSendMessage(bot: Client) {
       source?: Quotable | undefined,
       anony?: boolean | Omit<Anonymous, 'flag'> | undefined
     ) => {
-      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      KeliLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       return sendMsg(content, source, anony)
     }
@@ -59,7 +59,7 @@ export async function bindSendMessage(bot: Client) {
     const head = `↑ [私:${nickname}(${user_id})]`
 
     friend.sendMsg = async (content: Sendable, source?: Quotable | undefined) => {
-      MioLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
+      KeliLogger.info(colors.gray(`${head} ${stringifySendable(content)}`))
 
       return sendMsg(content, source)
     }

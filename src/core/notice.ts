@@ -1,5 +1,5 @@
 import { OperationMap } from './commands/config'
-import { mioConf } from './config'
+import { keliConf } from './config'
 import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/utils'
 
 import type { Client, ImageElem } from 'movo'
@@ -10,14 +10,14 @@ function buildNotice(title: string, avatar: ImageElem, content: string) {
 
 /** 处理消息通知 */
 export function configNotice(bot: Client) {
-  const { notice, admins } = mioConf
+  const { notice, admins } = keliConf
   const { friend, group } = notice
 
   const mainAdmin = bot.pickUser(admins[0])
 
   // 好友私聊
   bot.on('message.private', (event) => {
-    if (!mioConf.notice.enable || !friend.message) return
+    if (!keliConf.notice.enable || !friend.message) return
 
     const {
       sender: { user_id, nickname },
@@ -42,7 +42,7 @@ QQ: ${user_id || '未知'}
       await event.approve(action)
     }
 
-    if (!mioConf.notice.enable || !friend.request.enable) return
+    if (!keliConf.notice.enable || !friend.request.enable) return
 
     const { user_id, nickname, comment, source } = event
     const avatar = getQQAvatarLink(user_id, 100, true)
@@ -60,7 +60,7 @@ QQ: ${user_id || '未知'}
 
   // 新增好友
   bot.on('notice.friend.increase', async (event) => {
-    if (!mioConf.notice.enable || !friend.increase) return
+    if (!keliConf.notice.enable || !friend.increase) return
 
     const { nickname, user_id } = event
     const avatar = getQQAvatarLink(user_id, 100, true)
@@ -75,7 +75,7 @@ QQ: ${user_id || '未知'}
 
   // 好友减少
   bot.on('notice.friend.decrease', async (event) => {
-    if (!mioConf.notice.enable || !friend.decrease) return
+    if (!keliConf.notice.enable || !friend.decrease) return
 
     const { nickname, user_id } = event
     const avatar = getQQAvatarLink(user_id, 100, true)
@@ -95,7 +95,7 @@ QQ: ${user_id || '未知'}
       await event.approve(action)
     }
 
-    if (!mioConf.notice.enable || !friend.request.enable) return
+    if (!keliConf.notice.enable || !friend.request.enable) return
 
     const { user_id, nickname, group_id, group_name, role } = event
     const avatar = getGroupAvatarLink(group_id, 100, true)
@@ -112,7 +112,7 @@ QQ: ${user_id || '未知'}
 
   // 新增群聊
   bot.on('notice.group.increase', async (event) => {
-    if (!mioConf.notice.enable || !group.increase) return
+    if (!keliConf.notice.enable || !group.increase) return
 
     const {
       user_id,
@@ -133,7 +133,7 @@ QQ: ${user_id || '未知'}
 
   // 群聊减少
   bot.on('notice.group.decrease', async (event) => {
-    if (!mioConf.notice.enable || !group.decrease) return
+    if (!keliConf.notice.enable || !group.decrease) return
 
     const {
       user_id,
@@ -157,7 +157,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 
   // 群管理变动
   bot.on('notice.group.admin', async (event) => {
-    if (!mioConf.notice.enable || !group.admin) return
+    if (!keliConf.notice.enable || !group.admin) return
 
     const {
       user_id,
@@ -180,7 +180,7 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 
   // Bot 被禁言
   bot.on('notice.group.ban', async (event) => {
-    if (!mioConf.notice.enable || !group.admin) return
+    if (!keliConf.notice.enable || !group.admin) return
 
     const {
       user_id,
@@ -206,7 +206,7 @@ ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 
   // 群转让
   bot.on('notice.group.transfer', async (event) => {
-    if (!mioConf.notice.enable || !group.admin) return
+    if (!keliConf.notice.enable || !group.admin) return
 
     const {
       user_id,

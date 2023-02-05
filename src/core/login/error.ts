@@ -1,6 +1,6 @@
 import { LoginErrorCode } from 'movo'
 
-import { MioLogger } from '@/core'
+import { KeliLogger } from '@/core'
 
 import type { Client } from 'movo'
 
@@ -8,7 +8,7 @@ import type { Client } from 'movo'
 export function errorHandler(this: Client, { code, message }: { code: number; message: string }) {
   const error = (msg: any, ...args: any[]) => {
     this.logger.error(msg, ...args)
-    MioLogger.error(msg, ...args)
+    KeliLogger.error(msg, ...args)
   }
 
   if (code === LoginErrorCode.AccountFrozen) {
@@ -17,7 +17,7 @@ export function errorHandler(this: Client, { code, message }: { code: number; me
   }
 
   if (code === LoginErrorCode.WrongPassword) {
-    error('账号密码错误，请通过 `mio init --force` 重新生成正确的配置文件')
+    error('账号密码错误，请通过 `keli init --force` 重新生成正确的配置文件')
     process.exit(0)
   }
 
