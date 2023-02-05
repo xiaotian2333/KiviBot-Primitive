@@ -1,7 +1,7 @@
 import { version as MovoVersion } from 'movo/package.json'
 import os from 'node:os'
 
-import { Devices, searchAllPlugins, plugins } from '@/core'
+import { ShortDevices, searchAllPlugins, plugins } from '@/core'
 import { formatDateDiff, formatFileSize, v } from '@/utils'
 
 import type { Client } from 'movo'
@@ -45,7 +45,7 @@ export async function fetchStatus(bot: Client) {
 当前: ${msg_cnt_per_min} 条/分钟
 启动: ${runTime}
 框架: ${v}-${formatFileSize(rss)}-${per(rss)}%
-协议: movo-v${MovoVersion}-${Devices[bot.config.platform]}
+协议: movo-v${MovoVersion}-${ShortDevices[bot.config.platform]}
 系统: ${SystemMap[os.type()] || '其他'}-${arch}-node${nodeVersion}
 内存: ${formatFileSize(used)}/${formatFileSize(total)}-${per(used)}%
 `.trim()

@@ -1,6 +1,9 @@
+import fs from 'fs-extra'
+import path from 'node:path'
 import prompts from 'prompts'
 
 import { KeliLogger } from '@/core'
+import { OicqDataDir } from '@/path'
 import { colors } from '@/utils'
 
 import type { KeliConf } from '@/core'
@@ -38,10 +41,10 @@ export async function deviceHandler(
       this.submitSmsCode(sms)
     })
   } else {
-    info(`需要扫描二维码验证设备锁，验证链接如下，请复制到浏览器打开：\n`)
+    fs.writeFileSync(path.join(OicqDataDir, 'url.txt'), event.url)
 
+    info(`请访问以下链接扫描二维码验证设备锁，若无法复制请打开 data/oicq/url.txt 文件进行复制\n`)
     console.log(colors.cyan(event.url) + '\n')
-
     info(`扫码验证完成后，按 \`Enter\` 键继续...`)
 
     process.stdin.once('data', () => this.login())

@@ -17,6 +17,9 @@ export const Devices = [
   'iPad'
 ] as const
 
+/** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
+export const ShortDevices = ['', 'aPhone', 'aPad', 'aWatch', 'MacOS', 'iPad'] as const
+
 export const KeliLogger = log4js.getLogger('keli')
 export const PluginLogger = log4js.getLogger('plugin')
 
@@ -89,6 +92,10 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
       log_file: {
         type: 'file',
         filename: logFilePath,
+        maxLogSize: 10485760, // 10MB
+        compress: false,
+        backups: 3,
+        encoding: 'utf-8',
         layout: {
           ...layout,
           target: 'movo'
@@ -97,6 +104,10 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
       _error_file: {
         type: 'file',
         filename: errorFilePath,
+        maxLogSize: 10485760, // 10MB
+        compress: false,
+        backups: 3,
+        encoding: 'utf-8',
         layout: {
           ...layout,
           target: 'movo'
