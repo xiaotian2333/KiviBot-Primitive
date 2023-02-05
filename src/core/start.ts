@@ -7,7 +7,7 @@ import { bindLoginEvent, qrCodeHandler } from './login'
 import { offlineHandler } from './logs'
 import { onlineHandler } from './online'
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '@/path'
-import { colors, exitWithError, KeliLogo, md5, notice, stringifyError, v } from '@/utils'
+import { colors, exitWithError, KeliLogo, md5, stringifyError, v } from '@/utils'
 
 import type { KeliConf } from './config'
 import type { Plugin } from './plugin'
@@ -26,12 +26,6 @@ export function start() {
   if (!fs.existsSync(ConfigPath)) {
     exitWithError('配置文件 keli.json 不存在')
   }
-
-  /** 捕获 Ctrl C 中断退出 */
-  process.on('SIGINT', () => {
-    notice.success(colors.yellow('已退出 keli'), true)
-    process.exit(0)
-  })
 
   try {
     // 读取框架账号配置文件 keli.json

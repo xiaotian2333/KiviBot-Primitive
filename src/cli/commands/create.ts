@@ -1,4 +1,4 @@
-import { ensureDirSync, writeFileSync, removeSync, existsSync } from 'fs-extra'
+import fs from 'fs-extra'
 import path from 'node:path'
 import prompts from 'prompts'
 
@@ -42,7 +42,7 @@ export const create = async (args: ParsedArgs) => {
   const pname = pluginName ?? inputPluginName
   const pluginDirPath = path.join(PluginDir, pname)
 
-  if (existsSync(pluginDirPath)) {
+  if (fs.existsSync(pluginDirPath)) {
     const { cover } = await prompts([
       {
         type: 'confirm',
@@ -53,7 +53,7 @@ export const create = async (args: ParsedArgs) => {
     ])
 
     if (cover) {
-      removeSync(pluginDirPath)
+      fs.removeSync(pluginDirPath)
 
       notice.success(`deleted: ${pluginDirPath}`)
     } else {
@@ -63,15 +63,18 @@ export const create = async (args: ParsedArgs) => {
   }
 
   // 确保插件目录存在
-  ensureDirSync(pluginDirPath)
+  fs.ensureDirSync(pluginDirPath)
 
   if (lang === 'TS') {
     try {
       p_pkg_ts.name = pluginName
       // 写入 package.json
-      writeFileSync(path.join(pluginDirPath, 'package.json'), JSON.stringify(p_pkg_ts, null, 2))
-      writeFileSync(path.join(pluginDirPath, 'index.ts'), ts_template.replace('xxx', pluginName))
-      writeFileSync(path.join(pluginDirPath, 'tsconfig.json'), JSON.stringify(ts_config, null, 2))
+      fs.writeFileSync(path.join(pluginDirPath, 'package.json'), JSON.stringify(p_pkg_ts, null, 2))
+      fs.writeFileSync(path.join(pluginDirPath, 'index.ts'), ts_template.replace('xxx', pluginName))
+      fs.writeFileSync(
+        path.join(pluginDirPath, 'tsconfig.json'),
+        JSON.stringify(ts_config, null, 2)
+      )
     } catch {
       notice.error('failed to write file')
       process.exit(1)
@@ -84,8 +87,8 @@ export const create = async (args: ParsedArgs) => {
     try {
       p_pkg_js.name = pluginName
       // 写入 package.json
-      writeFileSync(path.join(pluginDirPath, 'package.json'), JSON.stringify(p_pkg_js, null, 2))
-      writeFileSync(path.join(pluginDirPath, 'index.js'), js_template.replace('xxx', pluginName))
+      fs.writeFileSync(path.join(pluginDirPath, 'package.json'), JSON.stringify(p_pkg_js, null, 2))
+      fs.writeFileSync(path.join(pluginDirPath, 'index.js'), js_template.replace('xxx', pluginName))
     } catch {
       notice.error('failed to write file')
       process.exit(1)

@@ -1,5 +1,5 @@
 import fg from 'fast-glob'
-import { writeJsonSync } from 'fs-extra'
+import fs from 'fs-extra'
 import path from 'node:path'
 
 import { CWD } from '@/path'
@@ -23,7 +23,11 @@ export async function fix(args: ParsedArgs) {
 
     try {
       const config = require(filePath)
-      writeJsonSync(filePath, { ...config, imei: shuffleString(config?.imei || '') }, { spaces: 2 })
+      fs.writeJsonSync(
+        filePath,
+        { ...config, imei: shuffleString(config?.imei || '') },
+        { spaces: 2 }
+      )
 
       notice.success('successfully modified device file')
     } catch {

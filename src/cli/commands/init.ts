@@ -1,4 +1,4 @@
-import fs, { writeFileSync } from 'fs-extra'
+import fs from 'fs-extra'
 import prompts from 'prompts'
 
 import { start } from './start'
@@ -176,8 +176,8 @@ export async function init(args: ParsedArgs) {
     }
   })
 
-  writeFileSync(AppPath, "require('keli').start()")
-  writeFileSync(PkgPath, JSON.stringify(bot_pkg, null, 2))
+  fs.writeFileSync(AppPath, "require('keli').start()")
+  fs.writeFileSync(PkgPath, JSON.stringify(bot_pkg, null, 2))
 
   const files = ['keli.json', 'app.js', 'package.json'].map(colors.cyan)
 

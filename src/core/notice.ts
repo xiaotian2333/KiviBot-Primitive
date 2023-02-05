@@ -36,10 +36,10 @@ QQ: ${user_id || '未知'}
   })
 
   // 好友申请
-  bot.on('request.friend.add', async (event) => {
+  bot.on('request.friend.add', (event) => {
     if (friend.request.action !== 'ignore') {
       const action = friend.request.action === 'accept'
-      await event.approve(action)
+      event.approve(action)
     }
 
     if (!keliConf.notice.enable || !friend.request.enable) return
@@ -55,11 +55,11 @@ QQ: ${user_id || '未知'}
 操作: ${OperationMap[friend.request.action]}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
   })
 
   // 新增好友
-  bot.on('notice.friend.increase', async (event) => {
+  bot.on('notice.friend.increase', (event) => {
     if (!keliConf.notice.enable || !friend.increase) return
 
     const { nickname, user_id } = event
@@ -70,11 +70,11 @@ QQ: ${user_id || '未知'}
 QQ: ${user_id || '未知'}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice('新增好友', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('新增好友', avatar, msg))
   })
 
   // 好友减少
-  bot.on('notice.friend.decrease', async (event) => {
+  bot.on('notice.friend.decrease', (event) => {
     if (!keliConf.notice.enable || !friend.decrease) return
 
     const { nickname, user_id } = event
@@ -85,14 +85,14 @@ QQ: ${user_id || '未知'}
 QQ: ${user_id || '未知'}
   `.trim()
 
-    await mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('好友减少', avatar, msg))
   })
 
   // 邀请 Bot 进群
-  bot.on('request.group.invite', async (event) => {
+  bot.on('request.group.invite', (event) => {
     if (group.request.action !== 'ignore') {
       const action = group.request.action === 'accept'
-      await event.approve(action)
+      event.approve(action)
     }
 
     if (!keliConf.notice.enable || !friend.request.enable) return
@@ -107,11 +107,11 @@ QQ: ${user_id || '未知'}
 操作: ${OperationMap[group.request.action]}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice('邀请进群', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('邀请进群', avatar, msg))
   })
 
   // 新增群聊
-  bot.on('notice.group.increase', async (event) => {
+  bot.on('notice.group.increase', (event) => {
     if (!keliConf.notice.enable || !group.increase) return
 
     const {
@@ -128,11 +128,11 @@ QQ: ${user_id || '未知'}
 群号: ${group_id || '未知'}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice('新增群聊', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('新增群聊', avatar, msg))
   })
 
   // 群聊减少
-  bot.on('notice.group.decrease', async (event) => {
+  bot.on('notice.group.decrease', (event) => {
     if (!keliConf.notice.enable || !group.decrease) return
 
     const {
@@ -152,11 +152,11 @@ QQ: ${user_id || '未知'}
 ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice(isKick ? 'Bot 被踢' : 'Bot 退群', avatar, msg))
+    mainAdmin.sendMsg(buildNotice(isKick ? 'Bot 被踢' : 'Bot 退群', avatar, msg))
   })
 
   // 群管理变动
-  bot.on('notice.group.admin', async (event) => {
+  bot.on('notice.group.admin', (event) => {
     if (!keliConf.notice.enable || !group.admin) return
 
     const {
@@ -175,11 +175,11 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 被操作人: ${user_id || '未知'}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice(set ? '设置群管理' : '取消群管理', avatar, msg))
+    mainAdmin.sendMsg(buildNotice(set ? '设置群管理' : '取消群管理', avatar, msg))
   })
 
   // Bot 被禁言
-  bot.on('notice.group.ban', async (event) => {
+  bot.on('notice.group.ban', (event) => {
     if (!keliConf.notice.enable || !group.admin) return
 
     const {
@@ -201,11 +201,11 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice(`Bot 被${isBan ? '禁言' : '解除禁言'}`, avatar, msg))
+    mainAdmin.sendMsg(buildNotice(`Bot 被${isBan ? '禁言' : '解除禁言'}`, avatar, msg))
   })
 
   // 群转让
-  bot.on('notice.group.transfer', async (event) => {
+  bot.on('notice.group.transfer', (event) => {
     if (!keliConf.notice.enable || !group.admin) return
 
     const {
@@ -223,6 +223,6 @@ ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 新群主: ${user_id || '未知'}
 `.trim()
 
-    await mainAdmin.sendMsg(buildNotice('群聊转让', avatar, msg))
+    mainAdmin.sendMsg(buildNotice('群聊转让', avatar, msg))
   })
 }

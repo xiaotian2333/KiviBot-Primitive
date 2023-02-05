@@ -15,16 +15,6 @@ export async function disablePlugin(
   plugin: Plugin,
   pluginPath: string
 ) {
-  const error = (msg: any, ...args: any[]) => {
-    bot.logger.error(msg, ...args)
-    KeliLogger.error(msg, ...args)
-  }
-
-  const debug = (msg: any, ...args: any[]) => {
-    bot.logger.debug(msg, ...args)
-    KeliLogger.debug(msg, ...args)
-  }
-
   KeliLogger.debug('disablePlugin: ' + pluginPath)
 
   const pluginName = getPluginNameByPath(pluginPath)
@@ -37,7 +27,7 @@ export async function disablePlugin(
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    debug(`插件 ${pn} 禁用成功`)
+    KeliLogger.debug(`插件 ${pn} 禁用成功`)
 
     return true
   } catch (e: any) {
@@ -48,7 +38,7 @@ export async function disablePlugin(
       return e.log()
     } else {
       const msg = stringifyError(e)
-      error(`插件 ${pn} 禁用过程中发生错误: \n${msg}`)
+      KeliLogger.error(`插件 ${pn} 禁用过程中发生错误: \n${msg}`)
       return msg
     }
   }

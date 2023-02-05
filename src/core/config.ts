@@ -1,4 +1,4 @@
-import { writeJsonSync } from 'fs-extra'
+import fs from 'fs-extra'
 
 import { KeliLogger } from './logger'
 import { plugins } from './start'
@@ -83,7 +83,7 @@ export const saveKeliConf = (_plugins?: Map<string, Plugin>) => {
   try {
     keliConf.plugins = [...(_plugins ?? plugins).keys()]
 
-    writeJsonSync(ConfigPath, keliConf, { encoding: 'utf-8', spaces: 2 })
+    fs.writeJsonSync(ConfigPath, keliConf, { encoding: 'utf-8', spaces: 2 })
     return true
   } catch (e) {
     KeliLogger.error(JSON.stringify(e, null, 2))
