@@ -1,4 +1,3 @@
-import clipboard from 'clipboardy'
 import prompts from 'prompts'
 
 import { KeliLogger } from '@/core'
@@ -39,9 +38,7 @@ export async function deviceHandler(
       this.submitSmsCode(sms)
     })
   } else {
-    clipboard.writeSync(event.url)
-
-    info(`需要扫描二维码验证设备锁，二维码链接已自动复制到剪切板，你也可以手动复制：\n`)
+    info(`需要扫描二维码验证设备锁，验证链接如下，请复制到浏览器打开：\n`)
 
     console.log(colors.cyan(event.url) + '\n')
 
