@@ -6,8 +6,6 @@ export const CWD = process.cwd()
 export const AppPath = path.join(CWD, 'app.js')
 /** 配置文件路径 */
 export const ConfigPath = path.join(CWD, 'keli.json')
-/** npm 配置文件路径 */
-export const NpmConfPath = path.join(CWD, '.npmrc')
 /** package.json 文件路径 */
 export const PkgPath = path.join(CWD, 'package.json')
 /** logs 日志目录 */

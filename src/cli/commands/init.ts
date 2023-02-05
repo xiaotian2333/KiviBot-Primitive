@@ -157,14 +157,15 @@ export async function init(args: ParsedArgs) {
   }
 
   const level = isDev ? 'debug' : 'info'
+  const msg_mode = isDev ? 'detail' : config?.message_mode ?? 'short'
 
   const isOK = writeKeliConf({
     account: answer.account,
     login_mode: answer.login_mode,
     device_mode: answer.device_mode,
-    message_mode: config?.message_mode ?? (isDev ? 'detail' : 'short'),
+    message_mode: isProd ? 'short' : msg_mode,
     password: base64encode(answer.password),
-    log_level: isProd ? 'off' : config?.log_level ?? level,
+    log_level: config?.log_level ?? level,
     admins: config?.admins ?? answer.admins,
     plugins: config?.plugins ?? [],
     notice: config?.notice ?? DefaultNoticeConfig,
