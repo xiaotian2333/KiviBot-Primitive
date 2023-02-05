@@ -369,6 +369,70 @@ export class Plugin extends EventEmitter {
   }
 
   /**
+   * 群消息匹配函数，传入字符串或正则，或字符串和正则的数组，进行精确匹配，匹配成功则调用函数
+   * @param {string | RegExp | (string | RegExp)[]} matches 待匹配的内容，字符串或者正则，对整个消息进行匹配
+   * @param {GroupMessageHandler} handler 群消息处理函数，包含群消息，讨论组消息和私聊消息
+   */
+  onGroupMatch(matches: string | RegExp | (string | RegExp)[], handler: GroupMessageHandler) {
+    this.checkMountStatus()
+
+    const matchList = ensureArray(matches)
+
+    const oicqHandler = (e: GroupMessageEvent) => {
+      if (this.isTargetOn(e)) {
+        const msg = e.toString()
+
+        for (const match of matchList) {
+          const isReg = match instanceof RegExp
+
+          const hitReg = isReg && match.test(msg)
+          const hitString = !isReg && match === msg
+
+          if (hitReg || hitString) {
+            handler(e, this.bot!)
+            break
+          }
+        }
+      }
+    }
+
+    this.bot!.on('message.group', oicqHandler)
+    this.addHandler('message.group', oicqHandler)
+  }
+
+  /**
+   * 私聊消息匹配函数，传入字符串或正则，或字符串和正则的数组，进行精确匹配，匹配成功则调用函数
+   * @param {string | RegExp | (string | RegExp)[]} matches 待匹配的内容，字符串或者正则，对整个消息进行匹配
+   * @param {PrivateMessageHandler} handler 私聊消息处理函数，包含群消息，讨论组消息和私聊消息
+   */
+  onPrivateMatch(matches: string | RegExp | (string | RegExp)[], handler: PrivateMessageHandler) {
+    this.checkMountStatus()
+
+    const matchList = ensureArray(matches)
+
+    const oicqHandler = (e: PrivateMessageEvent) => {
+      if (this.isTargetOn(e)) {
+        const msg = e.toString()
+
+        for (const match of matchList) {
+          const isReg = match instanceof RegExp
+
+          const hitReg = isReg && match.test(msg)
+          const hitString = !isReg && match === msg
+
+          if (hitReg || hitString) {
+            handler(e, this.bot!)
+            break
+          }
+        }
+      }
+    }
+
+    this.bot!.on('message.private', oicqHandler)
+    this.addHandler('message.private', oicqHandler)
+  }
+
+  /**
    * 管理员消息匹配函数，传入字符串或正则，或字符串和正则的数组，进行精确匹配，匹配成功则调用函数
    * @param {string | RegExp | (string | RegExp)[]} matches 待匹配的内容，字符串或者正则，对整个消息进行匹配
    * @param {MessageHandler} handler 消息处理函数，包含群消息，讨论组消息和私聊消息
@@ -540,7 +604,7 @@ export class Plugin extends EventEmitter {
    */
   private checkMountStatus() {
     if (!this.bot) {
-      this.throwPluginError('Bot 实例此时还未挂载。请在 onMounted 与 onUnmounted 中进行调用。')
+      this.throwPluginError('Bot 实例此时还未挂载，请在 onMounted 与 onUnmounted 中进行调用。')
     }
   }
 

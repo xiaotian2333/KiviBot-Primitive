@@ -3,7 +3,7 @@ import { colors } from '@/utils'
 
 import type { Anonymous, Client, MessageElem, Quotable, Sendable } from 'movo'
 
-/** 重写消息发送函数，记录发送消息数并打印日志 */
+/** 重写消息发送函数，打印发送消息的日志 */
 export async function bindSendMessage(bot: Client) {
   bot.gl.forEach(({ group_id, group_name = '未知' }) => {
     const group = bot.pickGroup(group_id)
