@@ -8,8 +8,8 @@ export const ConfigMenu = `
 /config detail
 /config admin add/rm <qq>
 /config notice on/off
-/config friend <operation>
-/config group <operation>
+/config friend <操作>
+/config group <操作>
 `.trim()
 
 export type Operation = 'refuse' | 'ignore' | 'accept'
