@@ -1,4 +1,4 @@
-import log4js from 'movo'
+import { log4js } from 'movo'
 
 import { colors } from '@/utils'
 
