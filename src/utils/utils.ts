@@ -1,6 +1,5 @@
-import axios from 'axios'
 import dayjs from 'dayjs'
-import { segment } from 'movo'
+import { axios, segment } from 'movo'
 import { exec } from 'node:child_process'
 import crypto from 'node:crypto'
 import path from 'node:path'

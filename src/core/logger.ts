@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import log4js from 'log4js'
+import log4js from 'movo'
 import path from 'node:path'
 
 import { LogDir } from '@/path'

@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
-import log4js from 'log4js'
 import minimist from 'minimist'
+import { log4js } from 'movo'
 import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
 import path from 'node:path'

@@ -91,9 +91,7 @@ export async function handleKeliCommand(event: AllMessageEvent, bot: Client, kel
       const { isOK, info } = await update()
 
       if (isOK) {
-        const msg = info
-          ? `〓 更新成功 〓\n${info}\ntip: 需要重启框架才能生效`
-          : '〓 已是最新版本 〓'
+        const msg = info ? `〓 更新成功 〓\n${info}\n需要重启框架才能生效` : '〓 已是最新版本 〓'
 
         await event.reply(msg)
       } else {
