@@ -1,7 +1,6 @@
 export * from './base64'
 export * from './canBan'
 export * from './colors'
-export * from './makeForwardMsg'
 export * from './nanoid'
 export * from './notice'
 export * from './request'
