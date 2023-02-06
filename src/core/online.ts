@@ -1,7 +1,7 @@
 import { bindSendMessage } from './bindSendMessage'
 import { handleKeliCommand } from './cmd'
-import { KeliLogger } from './logger'
 import { messageHandler, noticeHandler, requestHandler } from './log'
+import { KeliLogger } from './logger'
 import { configNotice } from './notice'
 import { PluginError, loadPlugins } from './plugin'
 import { colors, stringifyError, wait } from '@/utils'

@@ -1,6 +1,6 @@
 {
   "name": "keli",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "packageManager": "pnpm@7.26.3",
   "update": "2023/2/6",
   "description": "Just run の Bot, based on oicq v2",
@@ -14,8 +14,8 @@
     "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
     "build": "npm run clean && tsc && tsc-alias",
     "release": "npm run build && npm publish --access public",
-    "lint": "eslint --ext .js,.json,.ts .",
-    "lint:fix": "eslint --fix --ext .js,.json,.ts .",
+    "lint": "eslint --ext .js,ts,jsx,tsx .",
+    "lint:fix": "eslint --fix --ext .js,ts,jsx,tsx .",
     "clean": "rimraf lib"
   },
   "files": [
