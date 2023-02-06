@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import path from 'node:path'
 import prompts from 'prompts'
 
-import { js_template, p_pkg_js, p_pkg_ts, ts_config, ts_template } from '../utils'
+import { js_template, p_pkg_js, p_pkg_ts, ts_config, ts_template } from '../constants'
 import { PluginDir } from '@/path'
 import { install, moduleExists, notice } from '@/utils'
 

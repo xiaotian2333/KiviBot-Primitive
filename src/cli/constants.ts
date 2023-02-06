@@ -34,7 +34,7 @@ export const bot_pkg = {
 }
 
 export const p_pkg_js = {
-  name: '',
+  name: 'xxx',
   version: '0.1.0',
   main: 'index.js',
   scripts: {
@@ -46,7 +46,7 @@ export const p_pkg_js = {
 }
 
 export const p_pkg_ts = {
-  name: '',
+  name: 'xxx',
   version: '0.1.0',
   main: 'index.js',
   scripts: {

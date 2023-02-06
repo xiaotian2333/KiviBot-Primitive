@@ -1,4 +1,4 @@
-import { OperationMap } from './commands/config'
+import { OperationMap } from './cmd/config'
 import { keliConf } from './config'
 import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/utils'
 

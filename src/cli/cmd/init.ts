@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import prompts from 'prompts'
 
 import { start } from './start'
-import { bot_pkg } from '../utils'
+import { bot_pkg } from '../constants'
 import { AppPath, ConfigPath, PkgPath } from '@/path'
 import { base64encode, notice, colors } from '@/utils'
 

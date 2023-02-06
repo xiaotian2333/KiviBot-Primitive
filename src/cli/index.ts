@@ -1,7 +1,7 @@
 import minimist from 'minimist'
 
-import * as cmds from './commands'
-import { help, version, checkNodeVersion } from './utils'
+import * as cmds from './cmd'
+import { help, version, checkNodeVersion } from './constants'
 import { notice } from '@/utils'
 
 const args = minimist(process.argv.slice(2))
