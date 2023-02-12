@@ -655,7 +655,7 @@ export class Plugin extends EventEmitter {
     const isGroupEnable =
       (isGroup && enableGroups?.includes(event.group_id)) ||
       (isDiscuss && enableGroups?.includes(event.discuss_id))
-    // TODO if语句简化
+
     if (isPrivate && (!enableFriends || isUserEnable)) {
       return true
     }
