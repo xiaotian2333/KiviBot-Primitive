@@ -7,22 +7,22 @@ export async function canBan(this: Client, gid: number, qq: number) {
     return false
   }
 
-  try {
-    // 严格模式，目标群号不存在会抛出异常
-    const group = this.pickGroup(gid, true)
-
-    const botIsOwner = group.is_owner
-    const botIsAdmin = group.is_admin
-
-    // 严格模式，目标 qq 不在目标群会抛出异常
-    const member = group.pickMember(qq, true)
-
-    const targetIsMember = !member.is_admin && !member.is_owner
-
-    // Bot 是群主，或者 Bot 是群管理员但目标 qq 只是普通群员时 可以禁言
-    return botIsOwner || (botIsAdmin && targetIsMember)
-  } catch {
+  if (!this.gl.has(gid)) {
     // 目标群不存在或者目标 qq 不在目标群返回 false
     return false
   }
+
+  const g = this.pickGroup(gid, true)
+
+  const botIsOwner = g.is_owner
+  const botIsAdmin = g.is_admin
+
+  // 严格模式，目标 qq 不在目标群会抛出异常
+  const member = g.pickMember(qq, true)
+
+  // 仅为普通群员（不是群主和管理员）
+  const targetIsMember = !member.is_admin && !member.is_owner
+
+  // Bot 是群主，或者 Bot 是群管理员但目标 qq 只是普通群员时 可以禁言
+  return botIsOwner || (botIsAdmin && targetIsMember)
 }

@@ -1,21 +1,17 @@
-import os from 'node:os'
+import { notice, pkg } from '@/utils'
 
-import { notice, pkg, v } from '@/utils'
-
-const { version: movov } = require('movo/package.json')
 const nodev = process.versions.node
 const mainv = Number(nodev.split('.')[0]) || 0
 
-export const version = `
-keli v${v} (update at ${pkg.update})
-movo v${movov} | node v${nodev} | ${os.platform()}-${os.arch()}
-`.trim()
-
 export const help = `
-Usage: keli <command> [option...]
+Usage: keli <command> [options...]
 
-commands: init, start, fix, create
-options: -v, -s, -p, --dev
+commands: 
+
+    init: --start, --production, --dev
+    start
+    fix: --device, --deviceFile [filePath]
+    create: [pluginName]
 `.trim()
 
 /** 检查 node 版本 */

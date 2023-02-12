@@ -1,8 +1,8 @@
 import minimist from 'minimist'
 
 import * as cmds from './cmd'
-import { help, version, checkNodeVersion } from './constants'
-import { notice } from '@/utils'
+import { help, checkNodeVersion } from './constants'
+import { notice, v } from '@/utils'
 
 const args = minimist(process.argv.slice(2))
 const cmd: string | undefined = args._[0]
@@ -13,7 +13,7 @@ async function cli() {
   checkNodeVersion()
 
   if (args.v || args.version) {
-    return console.log(version)
+    return console.log(`v${v}`)
   }
 
   if (!cmd || !Object.keys(cmds).includes(cmd)) {

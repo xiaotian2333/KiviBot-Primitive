@@ -23,6 +23,7 @@ export async function fix(args: ParsedArgs) {
 
     try {
       const config = require(filePath)
+
       fs.writeJsonSync(
         filePath,
         { ...config, imei: shuffleString(config?.imei || '') },
@@ -34,5 +35,7 @@ export async function fix(args: ParsedArgs) {
       notice.error('failed to modify device file')
       process.exit(1)
     }
+  } else {
+    console.log('--device: fix device file')
   }
 }
