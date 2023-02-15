@@ -19,14 +19,11 @@ const compileConfig = {
   deadCodeInjectionThreshold: 0.1
 }
 
+const begin = Date.now()
 const loading = ora({ color: 'blue' })
 const { default: pkg } = await import('../package.json', { assert: { type: 'json' } })
 
-function compile(code) {
-  return obfuscator.obfuscate(code, compileConfig).getObfuscatedCode()
-}
-
-console.log('⏰ begin: ' + dayjs().format('YYYY/MM/DD HH:mm:ss:SSS'))
+console.log('⏰ ' + dayjs().format('YYYY/MM/DD HH:mm:ss:SSS'))
 console.log(chalk.yellow(`🔨 obfuscatoring keli v${pkg.version} now...`))
 
 // 代码混淆加密并压缩 JS 源码
@@ -47,5 +44,8 @@ for (const file of await fg('lib/**/*.js')) {
 }
 
 loading.stop()
+console.log(`✅ v${pkg.version} done, cost ${Date.now() - begin} ms`)
 
-console.log(`✅ done: ` + dayjs().format('YYYY/MM/DD HH:mm:ss:SSS'))
+function compile(code) {
+  return obfuscator.obfuscate(code, compileConfig).getObfuscatedCode()
+}

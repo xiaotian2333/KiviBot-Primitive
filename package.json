@@ -15,7 +15,7 @@
     "build": "npm run build:dev",
     "build:dev": "npm run clean && tsc && tsc-alias",
     "build:prod": "npm run clean && tsc && tsc-alias && npm run obfuscate",
-    "obfuscate": "node --experimental-json-modules scripts/obfuscate.mjs",
+    "obfuscate": "node --no-warnings scripts/obfuscate.mjs",
     "release": "npm run build:prod && npm publish",
     "lint": "eslint --ext .js,ts,jsx,tsx .",
     "lint:fix": "eslint --fix --ext .js,ts,jsx,tsx .",
