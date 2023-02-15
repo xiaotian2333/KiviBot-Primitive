@@ -34,10 +34,7 @@ export function start() {
     // 载入配置到内存
     Object.assign(keliConf, conf)
 
-    console.log(`welcome to keli，just run の bot\n`)
-
-    console.log('frame version: ' + colors.green(`keli ${v}`))
-    console.log('config path: ' + colors.green(`${ConfigPath}\n`))
+    console.log(`welcome to keli v${v}，just run の bot\n`)
 
     const { log_level = 'info', oicq_config = {} } = keliConf
 
@@ -69,12 +66,12 @@ export function start() {
     fs.ensureDirSync(PluginDir)
     fs.ensureDirSync(PluginDataDir)
 
-    const protocol = Devices[oicq_config.platform] || 'unknown'
-
     // 终端标题加上账号
+    const protocol = Devices[oicq_config.platform] || 'unknown'
     process.title = `keli v${v} ${keliConf.account}-${protocol}`
 
-    KeliLogger.info(colors.gray(`using ${protocol} protocol`))
+    KeliLogger.info(colors.gray(`using config: ${ConfigPath}`))
+    KeliLogger.info(colors.gray(`using protocol: ${protocol}`))
     KeliLogger.info(colors.gray(`start to login ${keliConf.account}...`))
     KeliLogger.info(colors.gray(`looking for available servers...`))
 

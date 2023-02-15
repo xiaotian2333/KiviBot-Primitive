@@ -22,9 +22,9 @@ export function sliderHandler(this: Client, { url, isFirst }: SliderEvent) {
   if (isFirst) {
     fs.writeFileSync(path.join(OicqDataDir, 'url.txt'), url)
 
-    info(`请访问以下链接验证滑块并抓取 ticket，若无法复制请打开 data/oicq/url.txt 文件进行复制\n`)
+    info(`open url below to capture ticket code, or open \`data/oicq/url.txt\` to copy url\n`)
     console.log(colors.cyan(url) + '\n')
-    info(`请输入抓取到的 ticket，然后按 \`Enter\` 键继续: \n`)
+    info(`press Enter after input the ticket code\n`)
   }
 
   const inputTicket = () => {

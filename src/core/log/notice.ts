@@ -17,10 +17,10 @@ export function noticeHandler(
 
     if (sub_type === 'decrease') {
       // 好友减少
-      message = `- [好友减少:${event.nickname}(${user_id})]`
+      message = `- [Friend Decrease:${event.nickname}(${user_id})]`
     } else if (sub_type === 'increase') {
       // 好友增加
-      message = `+ [新增好友:${event.nickname}(${user_id})]`
+      message = `+ [Friend Increase:${event.nickname}(${user_id})]`
     } else if (sub_type === 'poke') {
       // 好友戳一戳
       const { target_id, operator_id, friend } = event
@@ -31,25 +31,25 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf
         ? `${this.nickname}(${this.uin})`
-        : `${friend.nickname || '未知'}(${friend.user_id})`
+        : `${friend.nickname || 'unknown'}(${friend.user_id})`
 
       // 被戳方
       const target = isTargetSelf
         ? `${this.nickname}(${this.uin})`
-        : `${friend.nickname || '未知'}(${friend.user_id})`
+        : `${friend.nickname || 'unknown'}(${friend.user_id})`
 
-      message = `↓ [私聊戳:${operator}->${target}]`
+      message = `↓ [Private Poke:${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 私聊撤回
       const { friend, operator_id, message_id } = event
 
       const isOperatorSelf = operator_id === this.uin
-      const friendInfo = `${friend.nickname || '未知'}(${friend.user_id})`
+      const friendInfo = `${friend.nickname || 'unknown'}(${friend.user_id})`
 
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : friendInfo
 
-      message = `↓ [私聊撤回:${friendInfo}] [${operator}:${message_id}]`
+      message = `↓ [Private Recall:${friendInfo}] [${operator}:${message_id}]`
     }
   } else if (event.notice_type === 'group') {
     // 群通知
@@ -60,26 +60,26 @@ export function noticeHandler(
       const { set } = event
 
       if (set) {
-        message = `+ [新增群管:${groupInfo}-${user_id}]`
+        message = `+ [New Group Admin:${groupInfo}-${user_id}]`
       } else {
-        message = `- [取消群管:${groupInfo}-${user_id}]`
+        message = `- [Cancel Group Admin:${groupInfo}-${user_id}]`
       }
     } else if (sub_type === 'ban') {
       // 群禁言
       const { duration, operator_id } = event
 
       const isBan = duration !== 0
-      const label = isBan ? '+ [禁言' : '- [解禁'
+      const label = isBan ? '+ [Ban' : '- [Unban'
       const desc = `${groupInfo}-${operator_id}->${user_id}${isBan ? `-${duration}分钟` : ''}`
 
       message = `${label}:${desc}]`
     } else if (sub_type === 'decrease') {
       // 群人数减少
       const { operator_id } = event
-      message = `- [退群:${groupInfo}-${operator_id || '主动'}->${user_id}]`
+      message = `- [Leave Group:${groupInfo}-${operator_id || 'Initiative'}->${user_id}]`
     } else if (sub_type === 'increase') {
       // 群人数增加
-      message = `+ [进群:${groupInfo}-${user_id}]`
+      message = `+ [New Group Member:${groupInfo}-${user_id}]`
     } else if (sub_type === 'poke') {
       // 群戳一戳
       const { target_id, operator_id } = event
@@ -93,7 +93,7 @@ export function noticeHandler(
       // 被戳方
       const target = isTargetSelf ? `${this.nickname}(${this.uin})` : target_id
 
-      message = `↓ [群聊戳:${groupInfo}-${operator}->${target}]`
+      message = `↓ [Group Poke:${groupInfo}-${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 群聊撤回
       const { operator_id, message_id } = event
@@ -103,7 +103,7 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
 
-      message = `↓ [群聊撤回:${groupInfo}-${operator_id}] [${operator}:${message_id}]`
+      message = `↓ [Group Recall:${groupInfo}-${operator_id}] [${operator}:${message_id}]`
     } else if (sub_type === 'transfer') {
       // 群聊转让
       const { operator_id } = event
@@ -113,7 +113,7 @@ export function noticeHandler(
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
 
-      message = `↓ [群转让:${groupInfo}] [${operator}->${user_id}]`
+      message = `↓ [Group transfer:${groupInfo}] [${operator}->${user_id}]`
     }
   }
 

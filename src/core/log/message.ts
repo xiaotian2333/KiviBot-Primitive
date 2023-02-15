@@ -4,9 +4,9 @@ import { colors } from '@/utils'
 import type { AllMessageEvent } from '@/core'
 
 const TypeMap = {
-  private: '私',
-  group: '群',
-  discuss: '组'
+  private: 'P',
+  group: 'G',
+  discuss: 'D'
 } as const
 
 /** 消息监听函数，打印框架日志 */

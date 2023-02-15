@@ -16,9 +16,9 @@ export function requestHandler(event: AllRequestEvent) {
     const { comment, source } = event
 
     if (sub_type === 'add') {
-      message = `+ [好友申请:${userInfo}-${source}-${comment}]`
+      message = `+ [Friend Request:${userInfo}-${source}-${comment}]`
     } else if (sub_type === 'single') {
-      message = `+ [单项好友:${userInfo}-${source}-${comment}]`
+      message = `+ [Single Friend Request:${userInfo}-${source}-${comment}]`
     }
   } else if (request_type === 'group') {
     // 群通知
@@ -26,10 +26,10 @@ export function requestHandler(event: AllRequestEvent) {
     const groupInfo = `${group_name}(${group_id})`
 
     if (sub_type === 'add') {
-      message = `+ [申请进群:${groupInfo}-${userInfo}]`
+      message = `+ [Group Request:${groupInfo}-${userInfo}]`
     } else if (sub_type === 'invite') {
       const { role } = event
-      message = `+ [邀请进群:${groupInfo}-${userInfo}-${role}]`
+      message = `+ [Group Invite:${groupInfo}-${userInfo}-${role}]`
     }
   }
 

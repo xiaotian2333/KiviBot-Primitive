@@ -27,7 +27,7 @@ export async function disablePlugin(
     // 删除 require 缓存
     killPlugin(pluginPath)
 
-    KeliLogger.debug(`插件 ${pn} 禁用成功`)
+    KeliLogger.debug(`plugin ${pn} has been disabled successfully`)
 
     return true
   } catch (e: any) {
@@ -38,7 +38,7 @@ export async function disablePlugin(
       return e.log()
     } else {
       const msg = stringifyError(e)
-      KeliLogger.error(`插件 ${pn} 禁用过程中发生错误: \n${msg}`)
+      KeliLogger.error(`error occurred when disabling plugin ${pn}:\n${msg}`)
       return msg
     }
   }

@@ -24,7 +24,7 @@ export async function enablePlugin(bot: Client, keliConf: KeliConf, pluginPath: 
 
         plugins.set(pluginName, plugin)
 
-        KeliLogger.debug(`插件 ${pn} 启用成功`)
+        KeliLogger.debug(`plugin ${pn} has been enabled successfully`)
 
         return true
       } catch (e: any) {
@@ -37,7 +37,7 @@ export async function enablePlugin(bot: Client, keliConf: KeliConf, pluginPath: 
           return e.log()
         } else {
           const msg = stringifyError(e)
-          KeliLogger.error(`插件 ${pn} 启用过程中发生错误: \n${msg}`)
+          KeliLogger.error(`error occurred when enabling plugin ${pn}:\n${msg}`)
           return msg
         }
       }
@@ -47,7 +47,7 @@ export async function enablePlugin(bot: Client, keliConf: KeliConf, pluginPath: 
       // 删除 require 缓存
       killPlugin(pluginPath)
 
-      const info = `插件 ${pn} 没有导出 \`Plugin\` 类实例的 \`plugin\` 属性`
+      const info = `plugin ${pn} dose not export \`Plugin\` instance as \`plugin\` prop`
       KeliLogger.error(info)
       return colors.escape(info)
     }
@@ -61,7 +61,7 @@ export async function enablePlugin(bot: Client, keliConf: KeliConf, pluginPath: 
       return e.log()
     } else {
       const msg = stringifyError(e)
-      KeliLogger.error(`插件 ${pn} 导入过程中发生错误: \n${msg}`)
+      KeliLogger.error(`error ocurred when importing plugin ${pn}:\n${msg}`)
       return msg
     }
   }

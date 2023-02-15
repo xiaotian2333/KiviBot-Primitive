@@ -3,6 +3,7 @@ import minimist from 'minimist'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import { fetchStatus } from './status'
+import { Devices } from '@/core'
 import { KeliLogger } from '@/src'
 import { notice, stringifyError, update, v } from '@/utils'
 
@@ -21,7 +22,7 @@ const HelpMenu = `
 
 const AboutText = `
 〓 关于 keli 〓
-能跑就行 の Bot，基于 Node.js 和 oicq v2 构建。
+能跑就行 の Bot，基于 Node.js 和 movo 构建。
 `.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
@@ -102,6 +103,8 @@ export async function handleKeliCommand(event: AllMessageEvent, bot: Client, kel
       await event.reply(`〓 更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `keli ${v} ${keliConf.account}`
+    // 终端标题加上账号
+    const protocol = Devices[Number(keliConf.oicq_config.platform)] || 'unknown'
+    process.title = `keli v${v} ${keliConf.account}-${protocol}`
   }
 }

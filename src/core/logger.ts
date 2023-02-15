@@ -64,7 +64,7 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
 
   // 定义输出文件名和路径
   const now = dayjs().format('YYYY-MM-DD_HH-mm-ss')
-  const filename = `keli_${now}_${account}_${Devices[platform]}`
+  const filename = `keli_${account}_${now}_${Devices[platform]}`
   const logFilePath = path.join(LogDir, `${filename}.log`)
   const errorFilePath = path.join(LogDir, `${filename}_error.log`)
 

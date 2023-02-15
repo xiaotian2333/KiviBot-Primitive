@@ -36,17 +36,17 @@ export async function fetchStatus(bot: Client) {
   const arch = ArchMap[process.arch] || process.arch
 
   return `
-〓 keli 状态 〓
+〓 Bot 状态 〓
 昵称: ${bot.nickname}
 账号: ${bot.uin}
 列表: ${bot.fl.size} 好友，${bot.gl.size} 群
-插件: 启用 ${plugins.size}，共 ${cnts.all} 
+插件: 启用 ${plugins.size} 个，共 ${cnts.all} 个
 消息: 收 ${recv_msg_cnt}，发 ${sent_msg_cnt}
 当前: ${msg_cnt_per_min} 条/分钟
 启动: ${runTime}
-框架: ${v}-${formatFileSize(rss)}-${per(rss)}%
+框架: v${v}-${formatFileSize(rss)}-${per(rss)}%
 协议: movo-v${MovoVersion}-${ShortDevices[bot.config.platform]}
-系统: ${SystemMap[os.type()] || '其他'}-${arch}-node${nodeVersion}
+系统: ${SystemMap[os.type()] || os.type()}-${arch}-node${nodeVersion}
 内存: ${formatFileSize(used)}/${formatFileSize(total)}-${per(used)}%
 `.trim()
 }

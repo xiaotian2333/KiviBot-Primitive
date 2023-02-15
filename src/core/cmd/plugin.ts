@@ -7,7 +7,8 @@ import {
   getPluginNameByPath,
   getPluginPathByName,
   searchAllPlugins,
-  plugins
+  plugins,
+  Devices
 } from '@/core'
 import { install, stringifyError, update, v } from '@/utils'
 
@@ -145,7 +146,9 @@ ${pinfo.join('\n')}
       await reply(`〓 ${name}更新失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `keli ${v} ${keliConf.account}`
+    // 终端标题加上账号
+    const protocol = Devices[Number(keliConf.oicq_config.platform)] || 'unknown'
+    process.title = `keli v${v} ${keliConf.account}-${protocol}`
 
     return
   }
@@ -244,16 +247,20 @@ ${pinfo.join('\n')}
     let shortName = pname
 
     if (/^keli-/i.test(shortName)) {
-      shortName = shortName.replace(/^keli-/i, '')
+      shortName = shortName.replace(/^keli-/i, '').trim()
     }
 
-    await reply(`〓 正在安装 ${pname}... 〓`)
+    shortName = shortName.trim()
+
+    await reply(`〓 正在安装 ${shortName}... 〓`)
 
     try {
-      if (await install(`keli-${shortName}`)) {
+      const { isOK, info } = await install(`keli-${shortName}`)
+
+      if (isOK) {
         await reply(`〓 ${pname} 安装成功 〓`)
       } else {
-        await reply(`〓 ${pname} 安装失败，详情查看日志 〓`)
+        await reply(`〓 ${pname} 安装失败 〓\n${info}`)
       }
     } catch (e) {
       KeliLogger.error(stringifyError(e))
@@ -261,7 +268,9 @@ ${pinfo.join('\n')}
       await reply(`〓 ${pname} 安装失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `keli ${v} ${keliConf.account}`
+    // 终端标题加上账号
+    const protocol = Devices[Number(keliConf.oicq_config.platform)] || 'unknown'
+    process.title = `keli v${v} ${keliConf.account}-${protocol}`
   }
 
   if (secondCmd === 'remove' || secondCmd === 'rm') {
@@ -278,10 +287,12 @@ ${pinfo.join('\n')}
     await reply(`〓 正在移除 ${pname}... 〓`)
 
     try {
-      if (await install(`keli-${shortName}`, true)) {
+      const { isOK, info } = await install(`keli-${shortName}`, true)
+
+      if (isOK) {
         await reply(`〓 ${pname} 移除成功 〓`)
       } else {
-        await reply(`〓 ${pname} 移除失败，详情查看日志 〓`)
+        await reply(`〓 ${pname} 移除失败 〓\n${info}`)
       }
     } catch (e) {
       KeliLogger.error(stringifyError(e))
@@ -289,6 +300,8 @@ ${pinfo.join('\n')}
       await reply(`〓 ${pname} 移除失败 〓\n${stringifyError(e)}`)
     }
 
-    process.title = `keli ${v} ${keliConf.account}`
+    // 终端标题加上账号
+    const protocol = Devices[Number(keliConf.oicq_config.platform)] || 'unknown'
+    process.title = `keli v${v} ${keliConf.account}-${protocol}`
   }
 }

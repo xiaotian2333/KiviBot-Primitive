@@ -23,19 +23,19 @@ export async function deviceHandler(
   const phone = colors.cyan(event.phone)
 
   if (device_mode === 'sms') {
-    info(`需要验证设备锁，按 \`Enter\` 键发送短信验证码到手机号 ${phone} 进行验证`)
+    info(`press Enter to send sms code to ${phone}`)
 
     process.stdin.once('data', async () => {
       this.sendSmsCode()
 
-      info(`短信验证码已发送至手机号 ${phone}，输入后按 \`Enter\` 键继续`)
+      info(`sms code has been sent to ${phone}, press Enter after input`)
 
       const { sms } = await prompts({
         type: 'text',
         name: 'sms',
         format: (sms: string) => sms.trim(),
-        validate: (sms: string) => (sms.trim() === '' ? '短信验证码不为空' : true),
-        message: `请输入短信验证码（${phone}）`
+        validate: (sms: string) => (sms.trim() === '' ? 'sms code cannot be empty' : true),
+        message: `please input sms code（${phone}）`
       })
 
       this.submitSmsCode(sms)
@@ -43,9 +43,9 @@ export async function deviceHandler(
   } else {
     fs.writeFileSync(path.join(OicqDataDir, 'url.txt'), event.url)
 
-    info(`请访问以下链接扫描二维码验证设备锁，若无法复制请打开 data/oicq/url.txt 文件进行复制\n`)
+    info(`open url below to verify device lock, or open \`data/oicq/url.txt\` file to copy\n`)
     console.log(colors.cyan(event.url) + '\n')
-    info(`扫码验证完成后，按 \`Enter\` 键继续...`)
+    info(`press Enter after the verification has finished`)
 
     process.stdin.once('data', () => this.login())
   }

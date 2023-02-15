@@ -17,7 +17,7 @@ export class PluginError extends Error {
 
   log() {
     const logger = log4js.getLogger('plugin')
-    const info = `插件 ${colors.cyan(this.pluginName)} 抛出错误: ${this.message}`
+    const info = `plugin ${colors.cyan(this.pluginName)} throw an error: ${this.message}`
     logger.error(info)
     return this.message
   }

@@ -163,7 +163,7 @@ export class Plugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e) {
-      this.throwPluginError('onMounted 发生错误: \n' + stringifyError(e))
+      this.throwPluginError('error occurred in onMounted:\n' + stringifyError(e))
     }
 
     this.debug('add all keli events listeners')
@@ -227,7 +227,7 @@ export class Plugin extends EventEmitter {
       // 如果是 Promise 等待其执行完
       if (res instanceof Promise) await res
     } catch (e) {
-      this.throwPluginError('onUnmounted 发生错误: \n' + stringifyError(e))
+      this.throwPluginError('error occurred in onUnmounted:\n' + stringifyError(e))
     }
 
     this.removeAllHandler()
@@ -254,7 +254,7 @@ export class Plugin extends EventEmitter {
       try {
         return fs.readJsonSync(filepath, options)
       } catch (e) {
-        this.throwPluginError('读取插件配置出错，路径: ' + filepath)
+        this.throwPluginError('error occurred when reading plugin config, path: ' + filepath)
       }
     } else {
       return defaultValue
@@ -280,7 +280,7 @@ export class Plugin extends EventEmitter {
 
       return true
     } catch (e) {
-      this.throwPluginError('写入插件配置出错，路径: ' + filepath)
+      this.throwPluginError('error occurred when writing plugin config, path: ' + filepath)
       return false
     }
   }
@@ -584,7 +584,7 @@ export class Plugin extends EventEmitter {
     const isSyntaxOK = nodeCron.validate(cronExpression)
 
     if (!isSyntaxOK) {
-      this.throwPluginError('无效的 cron 表达式')
+      this.throwPluginError('invalid cron expression')
     }
 
     // 创建 cron 任务
@@ -604,7 +604,9 @@ export class Plugin extends EventEmitter {
    */
   private checkMountStatus() {
     if (!this.bot) {
-      this.throwPluginError('Bot 实例此时还未挂载，请在 onMounted 与 onUnmounted 中进行调用。')
+      this.throwPluginError(
+        'Bot (Client) has not been mounted in this time, please ensure that only call bot in onMounted and onUnmounted'
+      )
     }
   }
 
