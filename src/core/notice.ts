@@ -4,9 +4,11 @@ import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/utils'
 
 import type { Client, ImageElem } from 'movo'
 
-function buildNotice(title: string, avatar: ImageElem, content: string) {
-  return [avatar, `\n〓 ${title} 〓`, `\n${content}`]
-}
+export const RoleMap = {
+  owner: '群主',
+  admin: '管理',
+  member: '成员'
+} as const
 
 /** 处理消息通知 */
 export function configNotice(bot: Client) {
@@ -15,16 +17,24 @@ export function configNotice(bot: Client) {
 
   const mainAdmin = bot.pickUser(admins[0])
 
+  if (!mainAdmin) {
+    throw new Error("main admin have to be the bot's friend")
+  }
+
   // 好友私聊
   bot.on('message.private', (event) => {
-    if (!keliConf.notice.enable || !friend.message) return
+    if (!keliConf.notice.enable || !friend.message) {
+      return
+    }
 
     const {
       sender: { user_id, nickname },
       message
     } = event
 
-    if (user_id === admins[0]) return
+    if (keliConf.admins.includes(user_id)) {
+      return
+    }
 
     const avatar = getQQAvatarLink(user_id, 100, true)
 
@@ -42,10 +52,16 @@ QQ: ${user_id || '未知'}
       event.approve(action)
     }
 
-    if (!keliConf.notice.enable || !friend.request.enable) return
+    if (!keliConf.notice.enable || !friend.request.enable) {
+      return
+    }
 
     const { user_id, nickname, comment, source } = event
     const avatar = getQQAvatarLink(user_id, 100, true)
+
+    if (keliConf.admins.includes(user_id)) {
+      return
+    }
 
     const msg = `
 昵称: ${nickname || '未知'}
@@ -53,32 +69,44 @@ QQ: ${user_id || '未知'}
 来源: ${source}
 附加信息: ${comment}
 操作: ${OperationMap[friend.request.action]}
-`.trim()
+`
 
     mainAdmin.sendMsg(buildNotice('好友申请', avatar, msg))
   })
 
   // 新增好友
   bot.on('notice.friend.increase', (event) => {
-    if (!keliConf.notice.enable || !friend.increase) return
+    if (!keliConf.notice.enable || !friend.increase) {
+      return
+    }
 
     const { nickname, user_id } = event
     const avatar = getQQAvatarLink(user_id, 100, true)
 
+    if (keliConf.admins.includes(user_id)) {
+      return
+    }
+
     const msg = `
 昵称: ${nickname || '未知'}
 QQ: ${user_id || '未知'}
-`.trim()
+`
 
     mainAdmin.sendMsg(buildNotice('新增好友', avatar, msg))
   })
 
   // 好友减少
   bot.on('notice.friend.decrease', (event) => {
-    if (!keliConf.notice.enable || !friend.decrease) return
+    if (!keliConf.notice.enable || !friend.decrease) {
+      return
+    }
 
     const { nickname, user_id } = event
     const avatar = getQQAvatarLink(user_id, 100, true)
+
+    if (keliConf.admins.includes(user_id)) {
+      return
+    }
 
     const msg = `
 昵称: ${nickname || '未知'}
@@ -95,7 +123,9 @@ QQ: ${user_id || '未知'}
       event.approve(action)
     }
 
-    if (!keliConf.notice.enable || !friend.request.enable) return
+    if (!keliConf.notice.enable || !friend.request.enable) {
+      return
+    }
 
     const { user_id, nickname, group_id, group_name, role } = event
     const avatar = getGroupAvatarLink(group_id, 100, true)
@@ -103,37 +133,43 @@ QQ: ${user_id || '未知'}
     const msg = `
 目标群聊: ${group_name || '未知'}
 目标群号: ${group_id || '未知'}
-邀请人: ${nickname || '未知'}(${user_id || '未知'}, ${role})
+邀请人: ${nickname || '未知'}(${user_id || '未知'}, ${RoleMap[role]})
 操作: ${OperationMap[group.request.action]}
-`.trim()
+`
 
     mainAdmin.sendMsg(buildNotice('邀请进群', avatar, msg))
   })
 
   // 新增群聊
   bot.on('notice.group.increase', (event) => {
-    if (!keliConf.notice.enable || !group.increase) return
+    if (!keliConf.notice.enable || !group.increase) {
+      return
+    }
 
     const {
       user_id,
       group: { group_id, name }
     } = event
 
-    if (user_id !== bot.uin) return
+    if (user_id !== bot.uin) {
+      return
+    }
 
     const avatar = getGroupAvatarLink(group_id, 100, true)
 
     const msg = `
 群名: ${name || '未知'}
 群号: ${group_id || '未知'}
-`.trim()
+`
 
     mainAdmin.sendMsg(buildNotice('新增群聊', avatar, msg))
   })
 
   // 群聊减少
   bot.on('notice.group.decrease', (event) => {
-    if (!keliConf.notice.enable || !group.decrease) return
+    if (!keliConf.notice.enable || !group.decrease) {
+      return
+    }
 
     const {
       user_id,
@@ -141,7 +177,9 @@ QQ: ${user_id || '未知'}
       group: { group_id, name }
     } = event
 
-    if (user_id !== bot.uin) return
+    if (user_id !== bot.uin) {
+      return
+    }
 
     const isKick = operator_id !== bot.uin
     const avatar = getGroupAvatarLink(group_id, 100, true)
@@ -150,14 +188,16 @@ QQ: ${user_id || '未知'}
 群名: ${name || '未知'}
 群号: ${group_id || '未知'}
 ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
-`.trim()
+`
 
     mainAdmin.sendMsg(buildNotice(isKick ? 'Bot 被踢' : 'Bot 退群', avatar, msg))
   })
 
   // 群管理变动
   bot.on('notice.group.admin', (event) => {
-    if (!keliConf.notice.enable || !group.admin) return
+    if (!keliConf.notice.enable || !group.admin) {
+      return
+    }
 
     const {
       user_id,
@@ -165,7 +205,9 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
       group: { group_id, name }
     } = event
 
-    if (user_id !== bot.uin) return
+    if (user_id !== bot.uin) {
+      return
+    }
 
     const avatar = getGroupAvatarLink(group_id, 100, true)
 
@@ -173,14 +215,16 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 群名: ${name || '未知'}
 群号: ${group_id || '未知'}
 被操作人: ${user_id || '未知'}
-`.trim()
+`
 
     mainAdmin.sendMsg(buildNotice(set ? '设置群管理' : '取消群管理', avatar, msg))
   })
 
   // Bot 被禁言
   bot.on('notice.group.ban', (event) => {
-    if (!keliConf.notice.enable || !group.admin) return
+    if (!keliConf.notice.enable || !group.admin) {
+      return
+    }
 
     const {
       user_id,
@@ -189,7 +233,9 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
       group: { group_id, name }
     } = event
 
-    if (user_id !== bot.uin) return
+    if (user_id !== bot.uin) {
+      return
+    }
 
     const isBan = duration !== 0
     const avatar = getGroupAvatarLink(group_id, 100, true)
@@ -199,9 +245,9 @@ ${isKick ? `操作人: ${operator_id || '未知'}` : ''}
 群号: ${group_id || '未知'}
 操作人: ${operator_id || '未知'}
 ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
-`.trim()
+`
 
-    mainAdmin.sendMsg(buildNotice(`Bot 被${isBan ? '禁言' : '解除禁言'}`, avatar, msg))
+    mainAdmin.sendMsg(buildNotice(`Bot 被${isBan ? '' : '解除'}禁言`, avatar, msg))
   })
 
   // 群转让
@@ -221,8 +267,12 @@ ${isBan ? `时长: ${formatDateDiff(duration * 1000)}` : ''}
 群号: ${group_id || '未知'}
 原群主: ${operator_id || '未知'}
 新群主: ${user_id || '未知'}
-`.trim()
+`
 
     mainAdmin.sendMsg(buildNotice('群聊转让', avatar, msg))
   })
+}
+
+function buildNotice(title: string, avatar: ImageElem, content: string) {
+  return [avatar, `\n〓 ${title} 〓`, `\n${content.trim()}`]
 }

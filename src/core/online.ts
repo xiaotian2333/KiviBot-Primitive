@@ -1,10 +1,10 @@
-import { bindSendMessage } from './bindSendMessage'
 import { handleKeliCommand } from './cmd'
 import { messageHandler, noticeHandler, requestHandler } from './log'
 import { KeliLogger } from './logger'
 import { configNotice } from './notice'
 import { PluginError, loadPlugins } from './plugin'
-import { colors, stringifyError, wait } from '@/utils'
+import { bindSendMessage } from './send'
+import { colors, exitWithError, stringifyError, wait } from '@/utils'
 
 import type { KeliConf } from './config'
 import type { Client } from 'movo'
@@ -20,7 +20,7 @@ export async function onlineHandler(this: Client, keliConf: KeliConf) {
 
   hasOnline = true
 
-  KeliLogger.info(colors.green(`${this.nickname}(${this.uin}) 上线成功！`))
+  KeliLogger.info(colors.green(`${this.nickname}(${this.uin}) is online!`))
 
   /** 全局错误处理函数 */
   const handleGlobalError = (e: Error) => {
@@ -55,23 +55,25 @@ export async function onlineHandler(this: Client, keliConf: KeliConf) {
 
   // 检索并加载插件
   const { all, cnt, npm, local, plugins } = await loadPlugins(this, keliConf)
+  const pluginInfo = `${all} plugins found in total, ${local} local，${npm} npm`
 
-  const pluginInfo = `共检索到 ${all} 个插件 (${local} 个本地，${npm} 个 npm)`
-
-  KeliLogger.info(colors.cyan(`${pluginInfo}, 启用 ${cnt} 个：${colors.green(plugins.join(', '))}`))
+  KeliLogger.info(colors.cyan(`${pluginInfo}, ${cnt} are on: ${colors.green(plugins.join(', '))}`))
 
   // 初始化完成
-  KeliLogger.info(colors.gray('框架初始化完成'))
-  KeliLogger.info(colors.gray('开始处理消息...'))
+  KeliLogger.info(colors.gray('keli is initialized successfully'))
+  KeliLogger.info(colors.gray('start to deal with message...'))
 
   // 上线通知，通知 Bot 主管理
 
   if (!keliConf.admins[0]) {
-    KeliLogger.error(colors.red('主管理员必须添加 Bot 为好友，否则无法正常控制 Bot 和发送消息通知'))
+    exitWithError("main admin have to be the bot's friend")
   } else {
     const mainAdmin = this.pickFriend(keliConf.admins[0])
 
-    await wait(600)
-    await mainAdmin.sendMsg(`上线成功，启用了 ${cnt} 个插件\n发送 /help 查看 keli 帮助`)
+    if (mainAdmin) {
+      await wait(600)
+      const msg = `✅ 上线成功，${cnt > 0 ? `启用了 ${cnt} 个插件` : '未启用任何插件'}`
+      await mainAdmin.sendMsg(msg)
+    }
   }
 }

@@ -1,6 +1,6 @@
 export * from 'movo'
 
-export * from './bindSendMessage'
+export * from './send'
 export * from './config'
 export * from './events'
 export * from './logger'

@@ -5,7 +5,7 @@ import { start } from './start'
 import { bot_pkg } from '../constants'
 import { getQuestions } from '../questions'
 import { AppPath, ConfigPath, PkgPath } from '@/path'
-import { base64encode, notice, colors } from '@/utils'
+import { notice, colors, md5 } from '@/utils'
 
 import type { ParsedArgs } from 'minimist'
 
@@ -64,7 +64,7 @@ export async function init(args: ParsedArgs) {
     login_mode: answer.login_mode,
     device_mode: answer.device_mode,
     message_mode: isProd ? 'short' : msg_mode,
-    password: base64encode(answer.password),
+    password: answer.password ? md5(answer.password, 'hex') : '',
     log_level: config?.log_level ?? level,
     admins: config?.admins ?? answer.admins,
     plugins: config?.plugins ?? [],
