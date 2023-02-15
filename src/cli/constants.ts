@@ -1,4 +1,4 @@
-import { notice, pkg } from '@/utils'
+import { notice, pkg, v } from '@/utils'
 
 const nodev = process.versions.node
 const mainv = Number(nodev.split('.')[0]) || 0
@@ -11,7 +11,7 @@ commands:
     init: --start, --production, --dev
     start
     fix: --device, --deviceFile [filePath]
-    create: [pluginName]
+    create [pluginName]?
 `.trim()
 
 /** 检查 node 版本 */
@@ -26,7 +26,9 @@ export const bot_pkg = {
   name: 'keli-bot',
   version: '0.0.0',
   private: true,
-  author: 'Viki <hi@viki.moe> (https://github.com/vikiboss)'
+  dependencies: {
+    keli: `^${v}`
+  }
 }
 
 export const p_pkg_js = {
