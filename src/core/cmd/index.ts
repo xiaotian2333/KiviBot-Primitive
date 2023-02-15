@@ -1,4 +1,5 @@
 import minimist from 'minimist'
+import str2argv from 'string2argv'
 
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
@@ -29,12 +30,12 @@ const AboutText = `
 export async function handleKeliCommand(event: AllMessageEvent, bot: Client, keliConf: KeliConf) {
   const msg = event.toString().trim()
 
-  if (!/^\s*\/[a-z0-9]+/i.test(msg)) {
+  if (!/^\s*\/\w+/i.test(msg)) {
     return
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { _: params, '--': __, ...options } = minimist(msg.split(/\s+/))
+  const { _: params, '--': __, ...options } = minimist(str2argv(msg))
   const cmd = params.shift()?.replace(/^\s*\//, '') ?? ''
 
   // 是否是管理员

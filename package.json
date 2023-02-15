@@ -1,9 +1,9 @@
 {
   "name": "keli",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "packageManager": "pnpm@7.26.3",
   "update": "2023/2/15",
-  "description": "Just run の Bot, based on oicq v2",
+  "description": "Just run の Bot, based on Node.js & movo",
   "main": "lib/index.js",
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MPL-2.0",
@@ -39,7 +39,8 @@
     "node-cron": "^3.0.2",
     "npm-check-updates": "^16.7.4",
     "ora": "^5.4.1",
-    "prompts": "^2.4.2"
+    "prompts": "^2.4.2",
+    "string2argv": "^1.0.2"
   },
   "devDependencies": {
     "@types/eslint": "^8.21.1",
