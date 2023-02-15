@@ -20,14 +20,14 @@ const compileConfig = {
 }
 
 const loading = ora({ color: 'blue' })
-const { version: v } = await import('../package.json', { assert: { type: 'json' } })
+const { default: pkg } = await import('../package.json', { assert: { type: 'json' } })
 
 function compile(code) {
   return obfuscator.obfuscate(code, compileConfig).getObfuscatedCode()
 }
 
 console.log('⏰ begin: ' + dayjs().format('YYYY/MM/DD HH:mm:ss:SSS'))
-console.log(chalk.yellow(`🔨 obfuscatoring keli v${v} now...`))
+console.log(chalk.yellow(`🔨 obfuscatoring keli v${pkg.v} now...`))
 
 // 代码混淆加密并压缩 JS 源码
 for (const file of await fg('lib/**/*.js')) {
