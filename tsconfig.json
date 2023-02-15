@@ -18,7 +18,6 @@
     "declaration": true,
     "outDir": "lib",
     "esModuleInterop": true,
-    "removeComments": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
