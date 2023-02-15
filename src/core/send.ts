@@ -7,28 +7,28 @@ export type SendFunc = (content: Sendable, source?: Quotable | undefined) => Pro
 
 /** 重写消息发送函数，打印发送消息的日志 */
 export async function bindSendMessage(bot: Client) {
-  for (const [gid, { group_name = '未知' }] of bot.gl) {
+  for (const [gid, { group_name = 'unknown' }] of bot.gl) {
     const group = bot.pickGroup(gid)
-    const head = `↑ [群:${group_name}(${gid})]`
+    const head = `↑ [G:${group_name}(${gid})]`
     bindSend(group, head)
   }
 
-  for (const [qq, { nickname = '未知' }] of bot.fl) {
+  for (const [qq, { nickname = 'unknown' }] of bot.fl) {
     const friend = bot.pickFriend(qq)
-    const head = `↑ [私:${nickname}(${qq})]`
+    const head = `↑ [P:${nickname}(${qq})]`
     bindSend(friend, head)
   }
 
   bot.on('notice.group.increase', ({ group, user_id }) => {
     if (user_id !== bot.uin) return
-    const { group_id, name = '未知' } = group
-    const head = `↑ [群:${name}(${group_id})]`
+    const { group_id, name = 'unknown' } = group
+    const head = `↑ [G:${name}(${group_id})]`
     bindSend(group, head)
   })
 
   bot.on('notice.friend.increase', ({ friend }) => {
-    const { user_id, nickname = '未知' } = friend
-    const head = `↑ [私:${nickname}(${user_id})]`
+    const { user_id, nickname = 'unknown' } = friend
+    const head = `↑ [P:${nickname}(${user_id})]`
     bindSend(friend, head)
   })
 }
