@@ -20,7 +20,7 @@ const compileConfig = {
 }
 
 const loading = ora({ color: 'blue' })
-const v = import('../package.json', { assert: 'json' }).version
+const v = import('../package.json', { assert: { type: 'json' } }).version
 
 function compile(code) {
   return obfuscator.obfuscate(code, compileConfig).getObfuscatedCode()
