@@ -5,7 +5,7 @@ import { NodeModuleDir, PluginDir } from '@/path'
 
 /** 检索 `node_modules` 中可用的插件模块 */
 export async function searchNpmPlugin() {
-  return searchPlugins(NodeModuleDir, 'keli-plugin-*')
+  return searchPlugins(NodeModuleDir, 'keli-*')
 }
 
 /** 检索 `plugins` 中可用的插件模块 */
