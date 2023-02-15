@@ -27,7 +27,7 @@ function compile(code) {
 }
 
 console.log('⏰ begin: ' + dayjs().format('YYYY/MM/DD HH:mm:ss:SSS'))
-console.log(chalk.yellow(`🔨 obfuscatoring keli v${pkg.v} now...`))
+console.log(chalk.yellow(`🔨 obfuscatoring keli v${pkg.version} now...`))
 
 // 代码混淆加密并压缩 JS 源码
 for (const file of await fg('lib/**/*.js')) {
