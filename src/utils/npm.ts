@@ -7,6 +7,7 @@ import { CWD } from '@/path'
 /** 更新依赖 node 依赖 */
 export async function update(pkg?: string) {
   const jsonInfo = (await ncu({
+    upgrade: true,
     cacheClear: true,
     packageFile: path.join(CWD, 'package.json'),
     filter: pkg ?? ['keli', 'keli-*']
