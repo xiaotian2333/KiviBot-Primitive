@@ -2,12 +2,13 @@ import path from 'node:path'
 import ncu from 'npm-check-updates'
 
 import { promiseExec } from './utils'
+import { CWD } from '@/path'
 
 /** 更新依赖 node 依赖 */
 export async function update(pkg?: string) {
   const jsonInfo = (await ncu({
     cacheClear: true,
-    packageFile: path.join(__dirname, '../../package.json'),
+    packageFile: path.join(CWD, 'package.json'),
     filter: pkg ?? ['keli', 'keli-*']
   })) as Record<string, string>
 

@@ -1,9 +1,13 @@
 import dayjs from 'dayjs'
+import fg from 'fast-glob'
+import fs from 'fs-extra'
+import minimist from 'minimist'
 import { axios, segment } from 'movo'
 import { exec } from 'node:child_process'
 import crypto from 'node:crypto'
 import path from 'node:path'
 import { promisify } from 'node:util'
+import { string2argv } from 'string2argv'
 
 import { notice } from './notice'
 import { ConfigPath } from '@/path'
@@ -13,7 +17,12 @@ import type { ImageElem } from 'movo'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
 // 导出 dayjs
-export { dayjs }
+export { dayjs, fg, fs }
+
+/** 从字符串解析命令行参数 */
+export function parseCommandLine(line: string) {
+  return minimist(string2argv(line.trim()))
+}
 
 /**
  * 异步延时函数
