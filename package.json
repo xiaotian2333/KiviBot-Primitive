@@ -1,6 +1,6 @@
 {
   "name": "keli",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "packageManager": "pnpm@7.26.3",
   "update": "2023/2/15",
   "description": "Just run の Bot, based on Node.js & movo",
@@ -34,7 +34,7 @@
     "fs-extra": "^10.1.0",
     "import-local": "^3.1.0",
     "minimist": "^1.2.8",
-    "movo": "1.1.5",
+    "movo": "1.1.6",
     "nanoid": "^3.3.4",
     "node-cron": "^3.0.2",
     "npm-check-updates": "^16.7.4",
