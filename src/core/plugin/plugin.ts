@@ -4,6 +4,7 @@ import { log4js } from 'movo'
 import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
 import path from 'node:path'
+import { str2argv } from 'string2argv'
 
 import { PluginError } from './pluginError'
 import { KeliEvents, MessageEvents, OicqEvents } from '@/core'
@@ -477,7 +478,7 @@ export class Plugin extends EventEmitter {
     const oicqHandler = (e: AllMessageEvent) => {
       if (this.isTargetOn(e)) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { _: params, '--': __, ...options } = minimist(e.toString().trim().split(/\s+/))
+        const { _: params, '--': __, ...options } = minimist(str2argv(e.toString().trim()))
         const inputCmd = params.shift() ?? ''
         const cmdList = ensureArray(cmds)
 
@@ -510,7 +511,7 @@ export class Plugin extends EventEmitter {
       if (this.isTargetOn(e)) {
         if (this.admins.includes(e.sender.user_id)) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { _: params, '--': __, ...options } = minimist(e.toString().trim().split(/\s+/))
+          const { _: params, '--': __, ...options } = minimist(str2argv(e.toString().trim()))
           const inputCmd = params.shift() ?? ''
           const cmdList = ensureArray(cmds)
 
