@@ -28,7 +28,7 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
           value: 1
         },
         {
-          title: 'APad',
+          title: 'aPad',
           value: 2
         },
         {
