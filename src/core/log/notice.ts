@@ -27,6 +27,7 @@ export function noticeHandler(
 
       const isOperatorSelf = operator_id === this.uin
       const isTargetSelf = target_id === this.uin
+      const arrow = isOperatorSelf ? '↑' : '↓'
 
       // 触发方
       const operator = isOperatorSelf
@@ -38,18 +39,19 @@ export function noticeHandler(
         ? `${this.nickname}(${this.uin})`
         : `${friend.nickname || 'unknown'}(${friend.user_id})`
 
-      message = `↓ [Private Poke:${operator}->${target}]`
+      message = `${arrow} [Private Poke:${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 私聊撤回
       const { friend, operator_id, message_id } = event
 
       const isOperatorSelf = operator_id === this.uin
+      const arrow = isOperatorSelf ? '↑' : '↓'
       const friendInfo = `${friend.nickname || 'unknown'}(${friend.user_id})`
 
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : friendInfo
 
-      message = `↓ [Private Recall:${friendInfo}] [${operator}:${message_id}]`
+      message = `${arrow} [Private Recall:${friendInfo}] [${operator}:${message_id}]`
     }
   } else if (event.notice_type === 'group') {
     // 群通知
@@ -86,6 +88,7 @@ export function noticeHandler(
 
       const isOperatorSelf = operator_id === this.uin
       const isTargetSelf = target_id === this.uin
+      const arrow = isOperatorSelf ? '↑' : '↓'
 
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
@@ -93,27 +96,28 @@ export function noticeHandler(
       // 被戳方
       const target = isTargetSelf ? `${this.nickname}(${this.uin})` : target_id
 
-      message = `↓ [Group Poke:${groupInfo}-${operator}->${target}]`
+      message = `${arrow} [Group Poke:${groupInfo}-${operator}->${target}]`
     } else if (sub_type === 'recall') {
       // 群聊撤回
       const { operator_id, message_id } = event
-
       const isOperatorSelf = operator_id === this.uin
 
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
+      const arrow = isOperatorSelf ? '↑' : '↓'
 
-      message = `↓ [Group Recall:${groupInfo}-${operator_id}] [${operator}:${message_id}]`
+      message = `${arrow} [Group Recall:${groupInfo}-${operator_id}] [${operator}:${message_id}]`
     } else if (sub_type === 'transfer') {
       // 群聊转让
       const { operator_id } = event
 
       const isOperatorSelf = operator_id === this.uin
+      const arrow = isOperatorSelf ? '↑' : '↓'
 
       // 触发方
       const operator = isOperatorSelf ? `${this.nickname}(${this.uin})` : operator_id
 
-      message = `↓ [Group transfer:${groupInfo}] [${operator}->${user_id}]`
+      message = `${arrow} [Group transfer:${groupInfo}] [${operator}->${user_id}]`
     }
   }
 

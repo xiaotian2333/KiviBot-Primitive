@@ -56,17 +56,18 @@ export async function onlineHandler(this: Client, keliConf: KeliConf) {
   // 检索并加载插件
   const { all, cnt, npm, local, plugins } = await loadPlugins(this, keliConf)
   const pluginInfo = `${all} plugins found in total, ${local} local，${npm} npm`
+  const extraInfo = plugins.length ? `, ${cnt} on: ${colors.green(plugins.join(', '))}` : ''
 
-  KeliLogger.info(colors.cyan(`${pluginInfo}, ${cnt} are on: ${colors.green(plugins.join(', '))}`))
+  KeliLogger.info(colors.cyan(`${pluginInfo}${extraInfo}`))
 
   // 初始化完成
-  KeliLogger.info(colors.gray('keli is initialized successfully'))
+  KeliLogger.info(colors.gray('keli initialized successfully'))
   KeliLogger.info(colors.gray('start to deal with message...'))
 
   // 上线通知，通知 Bot 主管理
 
   if (!keliConf.admins[0]) {
-    exitWithError("main admin have to be the bot's friend")
+    exitWithError('main admin have to be friends with the bot')
   } else {
     const mainAdmin = this.pickFriend(keliConf.admins[0])
 

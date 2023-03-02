@@ -34,7 +34,7 @@ export function start() {
     // 载入配置到内存
     Object.assign(keliConf, conf)
 
-    console.log(`welcome to keli v${v}，just run の bot\n`)
+    console.log(`welcome to keli，just run の bot\n`)
 
     const { log_level = 'info', oicq_config = {} } = keliConf
 
@@ -72,7 +72,7 @@ export function start() {
 
     KeliLogger.info(colors.gray(`using config: ${ConfigPath}`))
     KeliLogger.info(colors.gray(`using protocol: ${protocol}`))
-    KeliLogger.info(colors.gray(`start to login ${keliConf.account}...`))
+    KeliLogger.info(colors.gray(`ready to login ${keliConf.account}`))
     KeliLogger.info(colors.gray(`looking for available servers...`))
 
     // 初始化实例
@@ -97,7 +97,7 @@ export function start() {
       if (conf.password) {
         bot.login(Buffer.from(conf.password, 'hex'))
       } else {
-        exitWithError('password cannot be empty in keli.json')
+        exitWithError('password in keli.json cannot be empty')
       }
     }
   } catch (e) {
