@@ -6,7 +6,7 @@ import { handlePluginCommand } from './plugin'
 import { fetchStatus } from './status'
 import { Devices } from '@/core'
 import { KeliLogger } from '@/src'
-import { notice, stringifyError, update, v } from '@/utils'
+import { notice, pkg, stringifyError, update, v } from '@/utils'
 
 import type { KeliConf, AllMessageEvent } from '@/core'
 import type { Client } from 'movo'
@@ -23,7 +23,7 @@ const HelpMenu = `
 
 const AboutText = `
 〓 关于 keli 〓
-能跑就行 の Bot，基于 Node.js 和 movo 构建。
+能跑就行 の Bot，基于 Node.js 和 movo 构建，当前版本 v${v}，更新日期：${pkg?.update || '未知'}。
 `.trim()
 
 /** 解析框架命令，进行框架操作，仅框架主管理有权限 */
