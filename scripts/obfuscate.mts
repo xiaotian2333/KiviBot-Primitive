@@ -6,7 +6,9 @@ import obfuscator from 'javascript-obfuscator'
 import path from 'node:path'
 import ora from 'ora'
 
-const compileConfig = {
+import type { ObfuscatorOptions } from 'javascript-obfuscator'
+
+const compileConfig: ObfuscatorOptions = {
   target: 'node',
   splitStrings: true,
   selfDefending: true,
@@ -22,6 +24,10 @@ const compileConfig = {
 const begin = Date.now()
 const loading = ora({ color: 'blue' })
 const { default: pkg } = await import('../package.json', { assert: { type: 'json' } })
+
+function compile(code: string) {
+  return obfuscator.obfuscate(code, compileConfig).getObfuscatedCode()
+}
 
 console.log('⏰ ' + dayjs().format('YYYY/MM/DD HH:mm:ss:SSS'))
 console.log(chalk.yellow(`🔨 obfuscatoring keli v${pkg.version} now...`))
@@ -45,7 +51,3 @@ for (const file of await fg('lib/**/*.js')) {
 
 loading.stop()
 console.log(`✅ v${pkg.version} done, cost ${Date.now() - begin} ms`)
-
-function compile(code) {
-  return obfuscator.obfuscate(code, compileConfig).getObfuscatedCode()
-}
