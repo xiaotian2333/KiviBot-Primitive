@@ -1,7 +1,7 @@
 {
   "name": "keli",
   "version": "1.2.8",
-  "packageManager": "pnpm@7.28.0",
+  "packageManager": "pnpm@7.30.0",
   "update": "2023/3/4",
   "description": "Just run の Bot, based on Node.js & movo",
   "main": "lib/index.js",
@@ -57,6 +57,7 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-viki-ts": "^0.1.1",
     "eslint-plugin-prettier": "^4.2.1",
+    "esno": "^0.16.3",
     "javascript-obfuscator": "^4.0.2",
     "log4js": "^6.7.1",
     "prettier": "^2.8.4",
