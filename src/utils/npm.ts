@@ -17,7 +17,7 @@ export async function update(pkg?: string) {
 
   const upInfo =
     Object.entries(jsonInfo)
-      .map(([k, v]) => `${k.replace('keli-', 'plugin: ')} => ${v.replace('^', '')}`)
+      .map(([k, v]) => `${k.replace('keli-', 'plugin: ')} => ${v.replace(/\^\~/, '')}`)
       .join('\n') || ''
 
   return {
@@ -28,7 +28,7 @@ export async function update(pkg?: string) {
 
 /** 安装或卸载 node 依赖 */
 export async function install(pkg?: string, uninstall = false) {
-  const cmd = `npm ${uninstall ? 'uninstall' : 'install'} ${pkg ?? ''} --force`
+  const cmd = `npm ${uninstall ? 'uninstall' : 'install'} ${pkg ?? ''} --prefer-online`
 
   const { stderr } = await promiseExec(cmd)
 

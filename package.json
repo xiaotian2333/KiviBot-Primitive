@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.7",
+    "degit": "^2.8.4",
     "fs-extra": "^10.1.0",
     "globby": "^13.1.3",
     "import-local": "^3.1.0",
@@ -43,6 +44,7 @@
     "npm-check-updates": "^16.7.4",
     "ora": "^5.4.1",
     "prompts": "^2.4.2",
+    "semver": "^7.3.8",
     "string2argv": "^1.0.2"
   },
   "devDependencies": {
