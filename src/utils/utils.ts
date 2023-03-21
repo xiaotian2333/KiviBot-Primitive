@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import fg from 'fast-glob'
-import fs from 'fs-extra'
+import fse from 'fs-extra'
+import { globby } from 'globby'
 import minimist from 'minimist'
 import { axios, segment } from 'movo'
 import { exec } from 'node:child_process'
@@ -16,8 +16,8 @@ import type { AllMessageEvent } from '@/core'
 import type { ImageElem } from 'movo'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
-// 导出 dayjs
-export { dayjs, fg, fs }
+// 导出实用的库
+export { dayjs, globby, fse, string2argv }
 
 /** 从字符串解析命令行参数 */
 export function parseCommandLine(line: string) {

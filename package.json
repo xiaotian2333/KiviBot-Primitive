@@ -1,6 +1,6 @@
 {
   "name": "keli",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "packageManager": "pnpm@7.30.0",
   "update": "2023/3/19",
   "description": "Just run の Bot, based on Node.js & movo",
@@ -21,6 +21,9 @@
     "lint:fix": "eslint --fix --ext .js,ts,jsx,tsx .",
     "clean": "rimraf lib"
   },
+  "overrides": {
+    "cacache": "^17.0.4"
+  },
   "files": [
     "bin",
     "lib"
@@ -30,8 +33,8 @@
   },
   "dependencies": {
     "dayjs": "^1.11.7",
-    "fast-glob": "^3.2.12",
     "fs-extra": "^10.1.0",
+    "globby": "^13.1.3",
     "import-local": "^3.1.0",
     "minimist": "^1.2.8",
     "movo": "1.2.0",

@@ -1,5 +1,5 @@
-import fg from 'fast-glob'
 import fs from 'fs-extra'
+import { globby } from 'globby'
 import path from 'node:path'
 
 import { CWD } from '@/path'
@@ -12,7 +12,7 @@ export async function fix(args: ParsedArgs) {
   const deviceFile = args.deviceFile
 
   if (device) {
-    const oicqDevicePath = deviceFile || (await fg('data/oicq/*/*.json'))?.[0]
+    const oicqDevicePath = deviceFile || (await globby('data/oicq/*/*.json'))?.[0]
 
     if (!oicqDevicePath) {
       notice.error('no device file detected')

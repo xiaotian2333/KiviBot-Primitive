@@ -14,11 +14,12 @@ export const Devices = [
   'Android Pad',
   'Android Watch',
   'MacOS',
-  'iPad'
+  'iPad',
+  'Qidian'
 ] as const
 
 /** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
-export const ShortDevices = ['', 'aPhone', 'aPad', 'aWatch', 'MacOS', 'iPad'] as const
+export const ShortDevices = ['', 'aPhone', 'aPad', 'aWatch', 'MacOS', 'iPad', 'Qidian'] as const
 
 export const KeliLogger = log4js.getLogger('keli')
 export const PluginLogger = log4js.getLogger('plugin')

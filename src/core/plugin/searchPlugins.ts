@@ -1,4 +1,4 @@
-import fg from 'fast-glob'
+import { globby } from 'globby'
 import path from 'node:path'
 
 import { NodeModuleDir, PluginDir } from '@/path'
@@ -15,7 +15,7 @@ export async function searchLocalPlugin() {
 
 /** 通过目录和 `glob` 匹配模式检索插件 */
 const searchPlugins = async (cwd: string, pattern: string) => {
-  const plugins = await fg(pattern, { cwd, onlyDirectories: true })
+  const plugins = await globby(pattern, { cwd, onlyDirectories: true })
   return plugins.map((dir) => path.join(cwd, dir))
 }
 

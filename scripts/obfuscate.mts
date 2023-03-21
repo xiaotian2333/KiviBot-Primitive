@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import dayjs from 'dayjs'
-import fg from 'fast-glob'
 import fs from 'fs-extra'
+import { globby } from 'globby'
 import obfuscator from 'javascript-obfuscator'
 import path from 'node:path'
 import ora from 'ora'
@@ -33,7 +33,7 @@ console.log('⏰ ' + dayjs().format('YYYY/MM/DD HH:mm:ss:SSS'))
 console.log(chalk.yellow(`🔨 obfuscatoring keli v${pkg.version} now...`))
 
 // 代码混淆加密并压缩 JS 源码
-for (const file of await fg('lib/**/*.js')) {
+for (const file of await globby('lib/**/*.js')) {
   loading.start(`obfuscatoring: ${file}`)
 
   // 原 JS 文件路径
