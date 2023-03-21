@@ -17,7 +17,7 @@ export async function update(pkg?: string) {
 
   const upInfo =
     Object.entries(jsonInfo)
-      .map(([k, v]) => `${k.replace('keli-', 'plugin: ')} => ${v.replace(/\^\~/, '')}`)
+      .map(([k, v]) => `${k.replace('keli-', 'plugin: ')} => ${v.replace(/\^~/, '')}`)
       .join('\n') || ''
 
   return {
