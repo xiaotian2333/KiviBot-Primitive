@@ -11,12 +11,12 @@
     "keli": "./bin/keli.js"
   },
   "scripts": {
+    "predev": "npm run clean",
     "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
-    "build": "npm run build:dev",
-    "build:dev": "npm run clean && tsc && tsc-alias",
-    "build:prod": "npm run clean && tsc && tsc-alias && npm run obfuscate",
+    "prebuild": "npm run clean",
+    "build": "tsc && tsc-alias",
     "obfuscate": "esno scripts/obfuscate.mts",
-    "release": "npm run build:prod && npm publish",
+    "release": "npm run build && npm run obfuscate && npm publish",
     "lint": "eslint --ext .js,ts,jsx,tsx .",
     "lint:fix": "eslint --fix --ext .js,ts,jsx,tsx .",
     "clean": "rimraf lib"
