@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import fse from 'fs-extra'
-import { globby } from 'globby'
+import globby from 'globby'
 import minimist from 'minimist'
 import { axios, segment } from 'movo'
 import { exec } from 'node:child_process'

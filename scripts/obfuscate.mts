@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import dayjs from 'dayjs'
 import fs from 'fs-extra'
-import { globby } from 'globby'
+import globby from 'globby'
 import obfuscator from 'javascript-obfuscator'
 import path from 'node:path'
 import ora from 'ora'
