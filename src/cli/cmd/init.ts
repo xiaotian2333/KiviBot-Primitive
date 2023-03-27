@@ -76,7 +76,7 @@ export async function init(args: ParsedArgs) {
     }
   })
 
-  fs.writeFileSync(AppPath, "require('keli').start()")
+  fs.writeFileSync(AppPath, "require('keli').start()\n")
   fs.writeFileSync(PkgPath, JSON.stringify(bot_pkg, null, 2))
 
   const files = ['keli.json', 'app.js', 'package.json'].map(colors.cyan)

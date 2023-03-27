@@ -1,6 +1,6 @@
 {
   "name": "keli",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "packageManager": "pnpm@7.30.0",
   "update": "2023/3/19",
   "description": "Just run の Bot, based on Node.js & movo",
