@@ -21,6 +21,8 @@ const HelpMenu = `
 /exit 退出框架
 `.trim()
 
+// TODO: 连接 pm2 主进程，执行重启
+
 const AboutText = `
 〓 关于 keli 〓
 能跑就行 の Bot，基于 Node.js 和 movo 构建，当前版本 v${v}，更新日期：${pkg?.update || '未知'}。
