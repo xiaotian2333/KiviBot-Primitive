@@ -2,6 +2,7 @@ import minimist from 'minimist'
 
 import * as cmds from './cmd'
 import { help, checkNodeVersion } from './constants'
+
 import { notice, v } from '@/utils'
 
 const args = minimist(process.argv.slice(2))

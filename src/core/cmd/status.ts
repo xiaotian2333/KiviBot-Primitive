@@ -1,10 +1,10 @@
 import { version as MovoVersion } from 'movo/package.json'
 import os from 'node:os'
 
+import type { Client } from 'movo'
+
 import { ShortDevices, searchAllPlugins, plugins } from '@/core'
 import { formatDateDiff, formatFileSize, v } from '@/utils'
-
-import type { Client } from 'movo'
 
 export const SystemMap: Record<string, string> = {
   Linux: 'Linux',

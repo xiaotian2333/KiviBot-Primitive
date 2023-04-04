@@ -2,10 +2,10 @@ import fs from 'fs-extra'
 import globby from 'globby'
 import path from 'node:path'
 
+import type { ParsedArgs } from 'minimist'
+
 import { CWD } from '@/path'
 import { notice, shuffleString } from '@/utils'
-
-import type { ParsedArgs } from 'minimist'
 
 export async function fix(args: ParsedArgs) {
   const device = args.device

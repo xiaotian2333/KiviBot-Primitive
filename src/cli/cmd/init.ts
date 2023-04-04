@@ -4,10 +4,11 @@ import prompts from 'prompts'
 import { start } from './start'
 import { bot_pkg } from '../constants'
 import { getQuestions } from '../questions'
-import { AppPath, ConfigPath, PkgPath } from '@/path'
-import { notice, colors, md5 } from '@/utils'
 
 import type { ParsedArgs } from 'minimist'
+
+import { AppPath, ConfigPath, PkgPath } from '@/path'
+import { notice, colors, md5 } from '@/utils'
 
 export const DefaultNoticeConfig = {
   enable: true,

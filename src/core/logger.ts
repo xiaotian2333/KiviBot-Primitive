@@ -2,10 +2,10 @@ import dayjs from 'dayjs'
 import { log4js } from 'movo'
 import path from 'node:path'
 
+import type { Config } from 'movo'
+
 import { LogDir } from '@/path'
 import { colors } from '@/utils'
-
-import type { Config } from 'movo'
 
 /** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
 export const Devices = [

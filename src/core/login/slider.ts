@@ -1,11 +1,11 @@
 import fs from 'fs-extra'
 import path from 'node:path'
 
+import type { Client } from 'movo'
+
 import { KeliLogger } from '@/core'
 import { OicqDataDir } from '@/path'
 import { colors } from '@/utils'
-
-import type { Client } from 'movo'
 
 interface SliderEvent {
   url: string

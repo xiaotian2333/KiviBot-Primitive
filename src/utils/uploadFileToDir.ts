@@ -1,9 +1,10 @@
 import os from 'node:os'
 
 import { stringifyError } from './utils'
-import { KeliLogger } from '@/core'
 
 import type { Client } from 'movo'
+
+import { KeliLogger } from '@/core'
 
 export async function uploadFileToDir(
   this: Client,

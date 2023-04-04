@@ -1,12 +1,13 @@
 import { killPlugin } from './killPlugin'
 import { PluginError } from './pluginError'
 import { getPluginNameByPath } from './utils'
-import { KeliLogger, plugins } from '@/core'
-import { colors, stringifyError } from '@/utils'
 
 import type { Plugin } from './plugin'
 import type { KeliConf } from '@/core'
 import type { Client } from 'movo'
+
+import { KeliLogger, plugins } from '@/core'
+import { colors, stringifyError } from '@/utils'
 
 /** 通过插件模块路径启用单个插件 */
 export async function enablePlugin(bot: Client, keliConf: KeliConf, pluginPath: string) {

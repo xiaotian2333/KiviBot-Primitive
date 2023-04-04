@@ -2,10 +2,11 @@ import fs from 'fs-extra'
 
 import { KeliLogger } from './logger'
 import { plugins } from './start'
-import { ConfigPath } from '@/path'
 
 import type { Plugin } from './plugin'
 import type { Config } from 'movo'
+
+import { ConfigPath } from '@/path'
 
 export type MainAdmin = number
 export type AdminArray = [MainAdmin, ...number[]]

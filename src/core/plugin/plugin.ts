@@ -7,9 +7,6 @@ import path from 'node:path'
 import { str2argv } from 'string2argv'
 
 import { PluginError } from './pluginError'
-import { KeliEvents, MessageEvents, OicqEvents } from '@/core'
-import { PluginDataDir } from '@/src'
-import { ensureArray, stringifyError } from '@/utils'
 
 import type { AdminArray, MainAdmin, KeliEventMap } from '@/core'
 import type { Logger } from 'log4js'
@@ -21,6 +18,10 @@ import type {
   PrivateMessageEvent
 } from 'movo'
 import type { ScheduledTask } from 'node-cron'
+
+import { KeliEvents, MessageEvents, OicqEvents } from '@/core'
+import { PluginDataDir } from '@/src'
+import { ensureArray, stringifyError } from '@/utils'
 
 export type AnyFunc = (...args: any[]) => any
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never

@@ -4,10 +4,11 @@ import { KeliLogger } from './logger'
 import { configNotice } from './notice'
 import { PluginError, loadPlugins } from './plugin'
 import { bindSendMessage } from './send'
-import { colors, exitWithError, stringifyError, wait } from '@/utils'
 
 import type { KeliConf } from './config'
 import type { Client } from 'movo'
+
+import { colors, exitWithError, stringifyError, wait } from '@/utils'
 
 /** log flag，防止掉线重新上线触发 online 事件时重复 bind */
 let hasOnline = false

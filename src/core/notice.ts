@@ -1,8 +1,9 @@
 import { OperationMap } from './cmd/config'
 import { keliConf } from './config'
-import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/utils'
 
 import type { Client, ImageElem } from 'movo'
+
+import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/utils'
 
 export const RoleMap = {
   owner: '群主',

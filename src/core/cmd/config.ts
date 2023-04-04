@@ -1,7 +1,7 @@
+import type { Client, MessageRet, Sendable } from 'movo'
+
 import { keliConf, saveKeliConf } from '@/core'
 import { parseUin } from '@/utils'
-
-import type { Client, MessageRet, Sendable } from 'movo'
 
 export const ConfigMenu = `
 〓 keli 配置 〓
@@ -117,26 +117,26 @@ export async function handleConfigCommand(bot: Client, params: string[], reply: 
   }
 
   if (secondCmd === 'group') {
-    if (!operations.includes(<Operation>thirdCmd)) {
+    if (!operations.includes(thirdCmd as Operation)) {
       return reply(`〓 操作无效，请检查 〓\n可选操作：${operations.join(', ')}`)
     }
 
-    keliConf.notice.group.request.action = <Operation>thirdCmd
+    keliConf.notice.group.request.action = thirdCmd as Operation
 
     if (saveKeliConf()) {
-      return reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}群聊邀请 〓`)
+      return reply(`〓 已设置自动${OperationMap[thirdCmd as Operation]}群聊邀请 〓`)
     }
   }
 
   if (secondCmd === 'friend') {
-    if (!operations.includes(<Operation>thirdCmd)) {
+    if (!operations.includes(thirdCmd as Operation)) {
       return reply(`〓 操作无效，请检查 〓\n可选操作：${operations.join(', ')}`)
     }
 
-    keliConf.notice.friend.request.action = <Operation>thirdCmd
+    keliConf.notice.friend.request.action = thirdCmd as Operation
 
     if (saveKeliConf()) {
-      return reply(`〓 已设置自动${OperationMap[<Operation>thirdCmd]}好友申请 〓`)
+      return reply(`〓 已设置自动${OperationMap[thirdCmd as Operation]}好友申请 〓`)
     }
   }
 }

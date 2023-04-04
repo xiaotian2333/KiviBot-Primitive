@@ -2,12 +2,12 @@ import fs from 'fs-extra'
 import path from 'node:path'
 import prompts from 'prompts'
 
+import type { KeliConf } from '@/core'
+import type { Client } from 'movo'
+
 import { KeliLogger } from '@/core'
 import { OicqDataDir } from '@/path'
 import { colors } from '@/utils'
-
-import type { KeliConf } from '@/core'
-import type { Client } from 'movo'
 
 /** 设备锁验证监听处理函数 */
 export async function deviceHandler(

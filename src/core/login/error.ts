@@ -1,8 +1,8 @@
 import { LoginErrorCode } from 'movo'
 
-import { KeliLogger } from '@/core'
-
 import type { Client } from 'movo'
+
+import { KeliLogger } from '@/core'
 
 /** 登录错误事件监听处理函数 */
 export function errorHandler(this: Client, { code, message }: { code: number; message: string }) {

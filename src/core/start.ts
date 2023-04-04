@@ -6,11 +6,12 @@ import { offlineHandler } from './log'
 import { Devices, KeliLogger, redirectLog } from './logger'
 import { bindLoginEvent, qrCodeHandler } from './login'
 import { onlineHandler } from './online'
-import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '@/path'
-import { colors, exitWithError, stringifyError, v } from '@/utils'
 
 import type { KeliConf } from './config'
 import type { Plugin } from './plugin'
+
+import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '@/path'
+import { colors, exitWithError, stringifyError, v } from '@/utils'
 
 /** 当前缓存中已载入并启用的插件 map */
 export const plugins: Map<string, Plugin> = new Map()

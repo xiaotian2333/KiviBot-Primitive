@@ -1,0 +1,6 @@
+{
+  "extends": "@vmoe",
+  "rules": {
+    "no-redeclare": "off"
+  }
+}

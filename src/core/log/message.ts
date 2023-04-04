@@ -1,7 +1,7 @@
+import type { AllMessageEvent } from '@/core'
+
 import { keliConf, KeliLogger } from '@/core'
 import { colors } from '@/utils'
-
-import type { AllMessageEvent } from '@/core'
 
 const TypeMap = {
   private: 'P',

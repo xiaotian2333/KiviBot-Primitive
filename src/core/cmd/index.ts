@@ -4,12 +4,13 @@ import str2argv from 'string2argv'
 import { handleConfigCommand } from './config'
 import { handlePluginCommand } from './plugin'
 import { fetchStatus } from './status'
-import { Devices } from '@/core'
-import { KeliLogger } from '@/src'
-import { notice, pkg, stringifyError, update, v } from '@/utils'
 
 import type { KeliConf, AllMessageEvent } from '@/core'
 import type { Client } from 'movo'
+
+import { Devices } from '@/core'
+import { KeliLogger } from '@/src'
+import { notice, pkg, stringifyError, update, v } from '@/utils'
 
 const HelpMenu = `
 〓 keli 帮助 〓

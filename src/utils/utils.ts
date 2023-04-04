@@ -10,11 +10,12 @@ import { promisify } from 'node:util'
 import { string2argv } from 'string2argv'
 
 import { notice } from './notice'
-import { ConfigPath } from '@/path'
 
 import type { AllMessageEvent } from '@/core'
 import type { ImageElem } from 'movo'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
+
+import { ConfigPath } from '@/path'
 
 // 导出实用的库
 export { dayjs, globby, fse, string2argv }

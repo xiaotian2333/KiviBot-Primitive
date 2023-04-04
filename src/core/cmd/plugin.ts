@@ -1,3 +1,6 @@
+import type { ReplyFunc } from './config'
+import type { Client } from 'movo'
+
 import {
   keliConf,
   saveKeliConf,
@@ -11,9 +14,6 @@ import {
   Devices
 } from '@/core'
 import { install, stringifyError, update, v } from '@/utils'
-
-import type { ReplyFunc } from './config'
-import type { Client } from 'movo'
 
 export const PluginMenu = `
 〓 keli 插件 〓

@@ -1,7 +1,7 @@
+import type { Client, Friend, Group, MessageElem, MessageRet, Quotable, Sendable } from 'movo'
+
 import { KeliLogger } from '@/src'
 import { colors, ensureArray } from '@/utils'
-
-import type { Client, Friend, Group, MessageElem, MessageRet, Quotable, Sendable } from 'movo'
 
 export type SendFunc = (content: Sendable, source?: Quotable | undefined) => Promise<MessageRet>
 

@@ -1,6 +1,6 @@
-import { KeliLogger } from '@/core'
-
 import type { Client } from 'movo'
+
+import { KeliLogger } from '@/core'
 
 /** 处理二维码扫描，自动轮询登录 */
 export function qrCodeHandler(this: Client) {

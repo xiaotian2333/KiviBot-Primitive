@@ -3,10 +3,11 @@ import path from 'node:path'
 import prompts from 'prompts'
 
 import { js_template, p_pkg_js, p_pkg_ts, ts_config, ts_template } from '../constants'
-import { PluginDir } from '@/path'
-import { install, moduleExists, notice } from '@/utils'
 
 import type { ParsedArgs } from 'minimist'
+
+import { PluginDir } from '@/path'
+import { install, moduleExists, notice } from '@/utils'
 
 export const create = async (args: ParsedArgs) => {
   const pluginName = args._[0]
