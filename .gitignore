@@ -1,10 +1,10 @@
 node_modules
-fixtures/data
+
+fixtures
 lib
+dist
+
 .idea
-package-lock.json
 .DS_Store
 .cache
 *.log
-test
-

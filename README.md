@@ -1,3 +1,5 @@
-## keli
+## KiviBot
 
-没文档，爱用不用
+Just run の Bot on Tencent [IM](https://im.qq.com).
+
+> This is a monorepo for KiviBot.
