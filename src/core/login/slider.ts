@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import path from 'node:path'
 
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 import { KeliLogger } from '@/core'
 import { OicqDataDir } from '@/path'

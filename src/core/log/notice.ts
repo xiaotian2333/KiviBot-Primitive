@@ -1,13 +1,10 @@
-import type { Client, EventMap } from 'movo'
+import type { Client, EventMap } from 'icqq'
 
 import { KeliLogger } from '@/core'
 import { colors } from '@/utils'
 
 /** 监听处理所有通知，打印框架日志 */
-export function noticeHandler(
-  this: Client,
-  event: Parameters<EventMap['notice.friend']>[0] | Parameters<EventMap['notice.group']>[0]
-) {
+export function noticeHandler(this: Client, event: Parameters<EventMap['notice']>[0][0]) {
   const { user_id, sub_type } = event
 
   let message = ''

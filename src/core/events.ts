@@ -1,4 +1,4 @@
-import type { Client, EventMap } from 'movo'
+import type { Client, EventMap } from 'icqq'
 
 export const SystemEvents = [
   'system.login.qrcode',
@@ -68,7 +68,7 @@ export const OicqEvents = [
   'internal.sso',
   'internal.input',
   'guild.message'
-] as (keyof EventMap<Client>)[]
+] as (keyof EventMap)[]
 
 /** keli 标准事件列表 */
 export const KeliEvents = ['keli.admin'] as const

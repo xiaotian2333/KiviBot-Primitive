@@ -4,7 +4,7 @@ import { KeliLogger } from './logger'
 import { plugins } from './start'
 
 import type { Plugin } from './plugin'
-import type { Config } from 'movo'
+import type { Config } from 'icqq'
 
 import { ConfigPath } from '@/path'
 

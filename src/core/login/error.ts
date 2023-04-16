@@ -1,6 +1,6 @@
-import { LoginErrorCode } from 'movo'
+import { LoginErrorCode } from 'icqq'
 
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 import { KeliLogger } from '@/core'
 

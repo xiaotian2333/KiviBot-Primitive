@@ -3,7 +3,7 @@ import path from 'node:path'
 import prompts from 'prompts'
 
 import type { KeliConf } from '@/core'
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 import { KeliLogger } from '@/core'
 import { OicqDataDir } from '@/path'

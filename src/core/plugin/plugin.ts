@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
+import log4js from 'log4js'
 import minimist from 'minimist'
-import { log4js } from 'movo'
 import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
 import path from 'node:path'
@@ -9,14 +9,14 @@ import { str2argv } from 'string2argv'
 import { PluginError } from './pluginError'
 
 import type { AdminArray, MainAdmin, KeliEventMap } from '@/core'
-import type { Logger } from 'log4js'
 import type {
   Client,
   DiscussMessageEvent,
   EventMap,
   GroupMessageEvent,
   PrivateMessageEvent
-} from 'movo'
+} from 'icqq'
+import type { Logger } from 'log4js'
 import type { ScheduledTask } from 'node-cron'
 
 import { KeliEvents, MessageEvents, OicqEvents } from '@/core'
@@ -186,8 +186,8 @@ export class Plugin extends EventEmitter {
     this.debug('add all oicq events listeners')
 
     // 插件监听 oicq 的所有事件
-    OicqEvents.forEach((evt) => {
-      const handler = (e: FirstParam<EventMap<Client>[typeof evt]>) => {
+    OicqEvents.forEach((evt: keyof EventMap) => {
+      const handler = (e: FirstParam<EventMap[typeof evt]>) => {
         if (MessageEvents.includes(evt as any)) {
           const event = e as AllMessageEvent
 
@@ -218,7 +218,7 @@ export class Plugin extends EventEmitter {
     this.debug('unmountKeliClient')
 
     // 取消监听框架管理变动
-    bot.off('keli.admins', this.adminChangeHandler)
+    bot.off('keli.admins')
 
     try {
       this.debug('_unmounted')
@@ -634,7 +634,7 @@ export class Plugin extends EventEmitter {
     this.debug('removeAllHandler')
 
     for (const [eventName, handlers] of this._handlers) {
-      handlers.forEach((handler) => this.bot!.off(eventName, handler))
+      handlers.forEach((handler) => this.bot!.off(eventName))
     }
   }
 
@@ -700,7 +700,7 @@ export interface Plugin extends EventEmitter {
   prependOnceListener: never
 
   /** 监听 oicq 标准事件以及 keli 标准事件 */
-  on<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+  on<T extends keyof EventMap>(event: T, listener: EventMap[T]): this
 
   /** 监听自定义事件或其他插件触发的事件 */
   on<S extends string | symbol>(
@@ -709,7 +709,7 @@ export interface Plugin extends EventEmitter {
   ): this
 
   /** 单次监听 oicq 标准事件以及 keli 标准事件 */
-  once<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+  once<T extends keyof EventMap>(event: T, listener: EventMap[T]): this
 
   /** 单次监听自定义事件或其他插件触发的事件 */
   once<S extends string | symbol>(
@@ -718,7 +718,7 @@ export interface Plugin extends EventEmitter {
   ): this
 
   /** 取消监听 oicq 标准事件以及 keli 标准事件 */
-  off<T extends keyof EventMap>(event: T, listener: EventMap<this>[T]): this
+  off<T extends keyof EventMap>(event: T, listener: EventMap[T]): this
 
   /** 取消监听自定义事件或其他插件触发的事件 */
   off<S extends string | symbol>(

@@ -1,4 +1,4 @@
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 /** 判断 Bot 是否有权限或者是否能够禁言目标群的目标 qq  */
 export async function canBan(this: Client, gid: number, qq: number) {

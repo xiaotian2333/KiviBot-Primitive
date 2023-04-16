@@ -3,7 +3,7 @@ import { errorHandler } from './error'
 import { sliderHandler } from './slider'
 
 import type { KeliConf } from '@/core'
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 export * from './qrCode'
 

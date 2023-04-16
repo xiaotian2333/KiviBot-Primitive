@@ -1,5 +1,5 @@
 import type { ReplyFunc } from './config'
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 import {
   keliConf,

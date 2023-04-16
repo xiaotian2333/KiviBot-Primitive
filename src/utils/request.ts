@@ -1,4 +1,4 @@
-import { axios } from 'movo'
+import axios from 'axios'
 import https from 'node:https'
 
 import type { AxiosInstance } from 'axios'

@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
-import { log4js } from 'movo'
+import log4js from 'log4js'
 import path from 'node:path'
 
-import type { Config } from 'movo'
+import type { Config } from 'icqq'
 
 import { LogDir } from '@/path'
 import { colors } from '@/utils'
@@ -14,12 +14,11 @@ export const Devices = [
   'Android Pad',
   'Android Watch',
   'MacOS',
-  'iPad',
-  'Qidian'
+  'iPad'
 ] as const
 
 /** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
-export const ShortDevices = ['', 'aPhone', 'aPad', 'aWatch', 'MacOS', 'iPad', 'Qidian'] as const
+export const ShortDevices = ['', 'aPhone', 'aPad', 'aWatch', 'MacOS', 'iPad'] as const
 
 export const KeliLogger = log4js.getLogger('keli')
 export const PluginLogger = log4js.getLogger('plugin')
@@ -41,7 +40,7 @@ log4js.addLayout('keli', (config) => {
   const { qq, platform, target = 'keli' } = config
 
   // oicq 日志输出到日志文件（可选关闭） logs/keli_YYYY-MM-DD_HH-mm-ss.log
-  if (target === 'movo') {
+  if (target === 'oicq') {
     return (info) => {
       const now = dayjs(info.startTime).format(`YYYY-MM-DD HH:mm:ss:SSS`)
       return `[${now}] [${info.level.levelStr}] [${qq}-${Devices[platform]}] ${info.data}`
@@ -99,7 +98,7 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
         encoding: 'utf-8',
         layout: {
           ...layout,
-          target: 'movo'
+          target: 'oicq'
         }
       },
       _error_file: {
@@ -111,7 +110,7 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
         encoding: 'utf-8',
         layout: {
           ...layout,
-          target: 'movo'
+          target: 'oicq'
         }
       },
       error_file: {

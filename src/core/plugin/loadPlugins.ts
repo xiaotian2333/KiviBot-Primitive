@@ -3,7 +3,7 @@ import { searchAllPlugins } from './searchPlugins'
 import { getPluginNameByPath } from './utils'
 
 import type { KeliConf } from '@/core'
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 /** 检索并加载 node_modules 和 plugins 目录下的插件 */
 export async function loadPlugins(bot: Client, keliConf: KeliConf) {

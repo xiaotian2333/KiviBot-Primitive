@@ -1,4 +1,4 @@
-import type { Client, MessageRet, Sendable } from 'movo'
+import type { Client, MessageRet, Sendable } from 'icqq'
 
 import { keliConf, saveKeliConf } from '@/core'
 import { parseUin } from '@/utils'

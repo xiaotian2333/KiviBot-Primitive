@@ -6,7 +6,7 @@ import { PluginError, loadPlugins } from './plugin'
 import { bindSendMessage } from './send'
 
 import type { KeliConf } from './config'
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 import { colors, exitWithError, stringifyError, wait } from '@/utils'
 
@@ -48,8 +48,11 @@ export async function onlineHandler(this: Client, keliConf: KeliConf) {
   })
 
   // 监听通知、请求，打印框架日志
-  this.on('notice', noticeHandler)
-  this.on('request', requestHandler)
+  this.on('notice', (event) => noticeHandler.call(this, event[0]))
+  // this.on('notice', (e) => {
+  //   console.log(e)
+  // })
+  this.on('request', (event) => requestHandler(event[0]))
 
   // 设置消息通知
   configNotice(this)

@@ -1,4 +1,4 @@
-export * from 'movo'
+export * from 'icqq'
 
 export * from './send'
 export * from './config'

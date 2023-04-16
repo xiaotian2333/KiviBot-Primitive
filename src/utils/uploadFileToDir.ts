@@ -2,7 +2,7 @@ import os from 'node:os'
 
 import { stringifyError } from './utils'
 
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 import { KeliLogger } from '@/core'
 

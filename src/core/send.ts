@@ -1,4 +1,4 @@
-import type { Client, Friend, Group, MessageElem, MessageRet, Quotable, Sendable } from 'movo'
+import type { Client, Friend, Group, MessageElem, MessageRet, Quotable, Sendable } from 'icqq'
 
 import { KeliLogger } from '@/src'
 import { colors, ensureArray } from '@/utils'

@@ -1,4 +1,4 @@
-import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'movo'
+import type { FriendRequestEvent, GroupInviteEvent, GroupRequestEvent } from 'icqq'
 
 import { KeliLogger } from '@/core'
 import { colors } from '@/utils'

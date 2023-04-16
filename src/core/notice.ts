@@ -1,7 +1,7 @@
 import { OperationMap } from './cmd/config'
 import { keliConf } from './config'
 
-import type { Client, ImageElem } from 'movo'
+import type { Client, ImageElem } from 'icqq'
 
 import { formatDateDiff, getGroupAvatarLink, getQQAvatarLink } from '@/utils'
 

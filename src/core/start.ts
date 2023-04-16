@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import { createClient } from 'movo'
+import { createClient } from 'icqq'
 
 import { keliConf } from './config'
 import { offlineHandler } from './log'
@@ -77,10 +77,7 @@ export function start() {
     KeliLogger.info(colors.gray(`looking for available servers...`))
 
     // 初始化实例
-    const bot = createClient(keliConf.account, oicq_config)
-
-    // 取消监听函数个数限制
-    bot.setMaxListeners(Infinity)
+    const bot = createClient(oicq_config)
 
     // 监听上线事件
     bot.on('system.online', onlineHandler.bind(bot, keliConf))
@@ -96,7 +93,7 @@ export function start() {
       bot.on('system.login.qrcode', qrCodeHandler).login()
     } else {
       if (conf.password) {
-        bot.login(Buffer.from(conf.password, 'hex'))
+        bot.login(keliConf.account, Buffer.from(conf.password, 'hex'))
       } else {
         exitWithError('password in keli.json cannot be empty')
       }

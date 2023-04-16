@@ -4,7 +4,7 @@ import { getPluginNameByPath } from './utils'
 
 import type { Plugin } from './plugin'
 import type { KeliConf } from '@/core'
-import type { Client } from 'movo'
+import type { Client } from 'icqq'
 
 import { KeliLogger, plugins } from '@/core'
 import { colors, stringifyError } from '@/utils'
