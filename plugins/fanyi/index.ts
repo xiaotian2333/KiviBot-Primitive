@@ -18,11 +18,21 @@ interface Plugin {
   onGroupMatch?: AnyFunc | AnyFunc[]
   onPrivateMatch?: AnyFunc | AnyFunc[]
   onCron?: AnyFunc | AnyFunc[]
+  api?: Record<string, AnyFunc>
 }
+
+function onMounted() {}
 
 export default {
   name: '60s',
-  onMessage(bot) {
-    bot.pickFriend(114514).sendMsg('Hi')
+  onMounted,
+  onMessage(ctx, event) {
+    ctx.config.qq = 123
+    ctx.bot.pickFriend(114514).sendMsg('Hi')
+  },
+  api: {
+    demo() {
+      console.log(123)
+    }
   }
 } satisfies Plugin

@@ -21,5 +21,10 @@
     "ora": "^5.4.1",
     "prettier": "^2.8.7",
     "pretty-ms": "^8.0.0"
+  },
+  "dependencies": {
+    "@vmoe/node-utils": "^1.2.1",
+    "jiti": "^1.18.2",
+    "valtio": "^1.10.4"
   }
 }
