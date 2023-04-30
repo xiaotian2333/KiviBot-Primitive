@@ -177,10 +177,10 @@ export class Plugin extends EventEmitter {
       }
 
       // 插件收到事件时，将事件及数据 emit 给插件里定义的处理函数
-      bot.on(evt, handler)
+      const unsubscribe = bot.on(evt, handler)
 
       // 收集监听函数
-      this.addHandler(evt, handler)
+      this.addHandler(evt, unsubscribe)
     })
 
     this.debug('add all oicq events listeners')
@@ -200,10 +200,10 @@ export class Plugin extends EventEmitter {
       }
 
       // 插件收到事件时，将事件及数据 emit 给插件里定义的处理函数
-      bot.on(evt, handler)
+      const unsubscribe = bot.on(evt, handler)
 
       // 收集监听函数
-      this.addHandler(evt, handler)
+      this.addHandler(evt, unsubscribe)
     })
 
     return this
@@ -300,8 +300,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message', oicqHandler)
-    this.addHandler('message', oicqHandler)
+    const unsubscribe = this.bot!.on('message', oicqHandler)
+    this.addHandler('message', unsubscribe)
   }
 
   /**
@@ -317,8 +317,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message.group', oicqHandler)
-    this.addHandler('message.group', oicqHandler)
+    const unsubscribe = this.bot!.on('message.group', oicqHandler)
+    this.addHandler('message.group', unsubscribe)
   }
 
   /**
@@ -334,8 +334,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message.private', oicqHandler)
-    this.addHandler('message.private', oicqHandler)
+    const unsubscribe = this.bot!.on('message.private', oicqHandler)
+    this.addHandler('message.private', unsubscribe)
   }
 
   /**
@@ -366,8 +366,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message', oicqHandler)
-    this.addHandler('message', oicqHandler)
+    const unsubscribe = this.bot!.on('message', oicqHandler)
+    this.addHandler('message', unsubscribe)
   }
 
   /**
@@ -398,8 +398,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message.group', oicqHandler)
-    this.addHandler('message.group', oicqHandler)
+    const unsubscribe = this.bot!.on('message.group', oicqHandler)
+    this.addHandler('message.group', unsubscribe)
   }
 
   /**
@@ -430,8 +430,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message.private', oicqHandler)
-    this.addHandler('message.private', oicqHandler)
+    const unsubscribe = this.bot!.on('message.private', oicqHandler)
+    this.addHandler('message.private', unsubscribe)
   }
 
   /**
@@ -464,8 +464,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message', oicqHandler)
-    this.addHandler('message', oicqHandler)
+    const unsubscribe = this.bot!.on('message', oicqHandler)
+    this.addHandler('message', unsubscribe)
   }
 
   /**
@@ -496,8 +496,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message', oicqHandler)
-    this.addHandler('message', oicqHandler)
+    const unsubscribe = this.bot!.on('message', oicqHandler)
+    this.addHandler('message', unsubscribe)
   }
 
   /**
@@ -530,8 +530,8 @@ export class Plugin extends EventEmitter {
       }
     }
 
-    this.bot!.on('message', oicqHandler)
-    this.addHandler('message', oicqHandler)
+    const unsubscribe = this.bot!.on('message', oicqHandler)
+    this.addHandler('message', unsubscribe)
   }
 
   /**
@@ -633,8 +633,8 @@ export class Plugin extends EventEmitter {
   private removeAllHandler() {
     this.debug('removeAllHandler')
 
-    for (const [eventName, handlers] of this._handlers) {
-      handlers.forEach((handler) => this.bot!.off(eventName))
+    for (const [_, handlers] of this._handlers) {
+      handlers.forEach((unsubscribe) => unsubscribe())
     }
   }
 
@@ -677,27 +677,27 @@ export class Plugin extends EventEmitter {
  */
 export interface Plugin extends EventEmitter {
   /** @deprecated 请使用 on 进行事件监听 */
-  addListener: never
+  // addListener: never
   /** @deprecated 请使用 off 取消事件监听 */
-  removeAllListeners: never
+  // removeAllListeners: never
   /** @deprecated 不推荐使用 */
-  getMaxListeners: never
+  // getMaxListeners: never
   /** @deprecated 不推荐使用 */
-  rawListeners: never
+  // rawListeners: never
   /** @deprecated 不推荐使用 */
-  setMaxListeners: never
+  // setMaxListeners: never
   /** @deprecated 不推荐使用 */
-  eventNames: never
+  // eventNames: never
   /** @deprecated 不推荐使用 */
-  listenerCount: never
+  // listenerCount: never
   /** @deprecated 不推荐使用 */
-  listeners: never
+  // listeners: never
   /** @deprecated *不推荐使用 /
-     removeListener: never
-     /** @deprecated 不推荐使用 */
-  prependListener: never
+  removeListener: never
   /** @deprecated 不推荐使用 */
-  prependOnceListener: never
+  // prependListener: never
+  /** @deprecated 不推荐使用 */
+  // prependOnceListener: never
 
   /** 监听 oicq 标准事件以及 keli 标准事件 */
   on<T extends keyof EventMap>(event: T, listener: EventMap[T]): this
