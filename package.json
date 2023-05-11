@@ -1,6 +1,6 @@
 {
   "name": "keli",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "packageManager": "pnpm@8.2.0",
   "update": "2023/5/11",
   "description": "Just run の Bot, based on Node.js & oicq",
