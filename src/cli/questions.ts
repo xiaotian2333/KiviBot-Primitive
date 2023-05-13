@@ -20,6 +20,10 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
       initial: 0,
       choices: [
         {
+          title: 'Android Fix',
+          value: 6
+        },
+        {
           title: 'iPad',
           value: 5
         },
