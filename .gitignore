@@ -1,5 +1,6 @@
 node_modules
-fixtures/data
+fixtures/**/data
+fixtures/keli
 lib
 .idea
 package-lock.json

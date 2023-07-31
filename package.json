@@ -1,7 +1,7 @@
 {
   "name": "keli",
   "version": "1.4.1",
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@8.6.11",
   "update": "2023/5/13",
   "description": "Just run の Bot, based on Node.js & oicq",
   "main": "lib/index.js",
@@ -12,7 +12,7 @@
   },
   "scripts": {
     "predev": "npm run clean",
-    "dev": "npm run clean && tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
+    "dev": "tsc && concurrently \"tsc -w\" \"tsc-alias -w\"",
     "prebuild": "npm run clean",
     "build": "tsc && tsc-alias",
     "obfuscate": "esno scripts/obfuscate.mts",
@@ -29,42 +29,42 @@
     "lib"
   ],
   "engines": {
-    "node": ">= v14"
+    "node": ">= v16"
   },
   "dependencies": {
     "axios": "^1.4.0",
-    "dayjs": "^1.11.7",
+    "dayjs": "^1.11.9",
     "fs-extra": "^10.1.0",
     "globby": "^11.1.0",
-    "icqq": "^0.3.10",
+    "icqq": "^0.4.12",
     "import-local": "^3.1.0",
     "log4js": "^6.9.1",
     "minimist": "^1.2.8",
     "nanoid": "^3.3.6",
     "node-cron": "^3.0.2",
-    "npm-check-updates": "^16.10.12",
+    "npm-check-updates": "^16.10.17",
     "ora": "^5.4.1",
     "prompts": "^2.4.2",
     "string2argv": "^1.0.2",
     "triptrap": "^0.0.16"
   },
   "devDependencies": {
-    "@types/eslint": "^8.37.0",
+    "@types/eslint": "^8.44.1",
     "@types/fs-extra": "^9.0.13",
     "@types/minimist": "^1.2.2",
-    "@types/node": "^18.16.7",
-    "@types/node-cron": "^3.0.7",
+    "@types/node": "^18.17.1",
+    "@types/node-cron": "^3.0.8",
     "@types/prompts": "^2.4.4",
     "@vmoe/eslint-config": "^0.3.1",
     "@vmoe/prettier-config": "^1.0.0",
-    "chalk": "^5.2.0",
+    "chalk": "^5.3.0",
     "concurrently": "^7.6.0",
-    "eslint": "^8.40.0",
+    "eslint": "^8.46.0",
     "esno": "^0.16.3",
     "javascript-obfuscator": "^4.0.2",
     "prettier": "^2.8.8",
     "rimraf": "^3.0.2",
-    "tsc-alias": "^1.8.6",
-    "typescript": "^5.0.4"
+    "tsc-alias": "^1.8.7",
+    "typescript": "^5.1.6"
   }
 }
