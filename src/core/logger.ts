@@ -59,9 +59,9 @@ log4js.addLayout('keli', (config) => {
   // keli 框架日志输出到控制台（包括插件，可选关闭）
   return (info) => {
     const level = info.level.levelStr.toLowerCase() as keyof typeof LogTypeMap
-    const now = dayjs(info.startTime).format(`HH:mm:ss`)
+    const now = dayjs(info.startTime).format(`MM-DD HH:mm:ss`)
     const color = LogTypeMap[level] as keyof typeof colors
-    const type = target === 'keli' ? qq : 'Plugin'
+    const type = target === 'keli' ? 'keli' : 'Plugin'
     const head = colors[color](`[${now}-${type}]`)
     return head + colors.gray(' - ') + info.data
   }

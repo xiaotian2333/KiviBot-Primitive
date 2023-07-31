@@ -71,6 +71,7 @@ export async function init(args: ParsedArgs) {
     plugins: config?.plugins ?? [],
     notice: config?.notice ?? DefaultNoticeConfig,
     oicq_config: {
+      sign_api_addr: '',
       log_level: isProd ? 'off' : level,
       ...(config?.oicq_config ?? {}),
       platform: answer.platform

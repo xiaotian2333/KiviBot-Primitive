@@ -1,8 +1,8 @@
 {
   "name": "keli",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "packageManager": "pnpm@8.6.11",
-  "update": "2023/5/13",
+  "update": "2023/7/31",
   "description": "Just run の Bot, based on Node.js & oicq",
   "main": "lib/index.js",
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
