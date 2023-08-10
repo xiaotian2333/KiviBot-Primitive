@@ -95,6 +95,6 @@ fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify(config, null, 2))
 console.log(
   [
     kleur.green(`\nKivi 初始化完成 ✨ \n`),
-    kleur.dim('你可以通过以下命令启动 Kivi:\n\nnpm i\nnpm run start\n'),
+    kleur.dim('你可以通过以下命令启动 Kivi 👇\n\nnpm i\nnpm run start\n'),
   ].join('\n')
 )

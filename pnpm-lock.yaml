@@ -230,6 +230,9 @@ importers:
       '@kivi-dev/types':
         specifier: workspace:*
         version: link:../types
+      '@types/node':
+        specifier: ^18.15.11
+        version: 18.17.4
       '@types/prompts':
         specifier: ^2.4.4
         version: 2.4.4
@@ -935,7 +938,7 @@ packages:
   /@types/fs-extra@9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
-      '@types/node': 18.15.11
+      '@types/node': 18.17.4
     dev: true
 
   /@types/gradient-string@1.1.2:
