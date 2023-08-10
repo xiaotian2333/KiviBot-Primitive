@@ -1,3 +1,3 @@
-export * from './core'
-export * from './path'
-export * from './utils'
+export * from './core/index.js'
+export * from './utils/index.js'
+export * from './path.js'

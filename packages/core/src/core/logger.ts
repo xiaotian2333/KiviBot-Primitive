@@ -15,7 +15,7 @@ export const Devices = [
   'Android Watch',
   'MacOS',
   'iPad',
-  'Qidian'
+  'Qidian',
 ] as const
 
 /** 1:安卓手机 2:aPad 3:安卓手表 4:MacOS 5:iPad */
@@ -33,7 +33,7 @@ export const LogTypeMap = {
   warn: 'yellow',
   error: 'red',
   fatal: 'magenta',
-  off: 'magenta'
+  off: 'magenta',
 } as const
 
 // 添加自定义 log4js Layout 布局：keli
@@ -73,7 +73,7 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
   const layout = {
     platform,
     type: 'keli',
-    qq: account
+    qq: account,
   }
 
   // 配置 log4js
@@ -81,14 +81,14 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
     appenders: {
       keli: {
         layout,
-        type: 'stdout'
+        type: 'stdout',
       },
       plugin: {
         type: 'stdout',
         layout: {
           ...layout,
-          target: 'plugin'
-        }
+          target: 'plugin',
+        },
       },
       log_file: {
         type: 'file',
@@ -99,8 +99,8 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
         encoding: 'utf-8',
         layout: {
           ...layout,
-          target: 'movo'
-        }
+          target: 'movo',
+        },
       },
       _error_file: {
         type: 'file',
@@ -111,28 +111,28 @@ export function redirectLog(keliLogLevel = 'info', oicq_config: Config, account:
         encoding: 'utf-8',
         layout: {
           ...layout,
-          target: 'movo'
-        }
+          target: 'movo',
+        },
       },
       error_file: {
         type: 'logLevelFilter',
         appender: '_error_file',
-        level: 'warn'
-      }
+        level: 'warn',
+      },
     },
     categories: {
       default: {
         appenders: ['log_file', 'error_file'],
-        level: oicqLogLevel as string
+        level: oicqLogLevel as string,
       },
       keli: {
         appenders: ['keli'],
-        level: keliLogLevel
+        level: keliLogLevel,
       },
       plugin: {
         appenders: ['plugin'],
-        level: keliLogLevel
-      }
-    }
+        level: keliLogLevel,
+      },
+    },
   })
 }

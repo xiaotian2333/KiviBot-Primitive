@@ -4,6 +4,13 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "strict": true,
+    "rootDir": ".",
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
   "references": [
     {

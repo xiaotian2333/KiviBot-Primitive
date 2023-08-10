@@ -1,9 +1,10 @@
-export * from 'movo'
+export * from 'icqq'
 
-export * from './send'
-export * from './config'
-export * from './events'
-export * from './logger'
-export * from './notice'
-export * from './plugin'
-export * from './start'
+export * from './send.js'
+export * from './config.js'
+export * from './events.js'
+export * from './logger.js'
+export * from './notice.js'
+export * from './start.js'
+
+export * from './plugin/index.js'

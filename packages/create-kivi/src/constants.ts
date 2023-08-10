@@ -1,4 +1,8 @@
-export const appJSCode = "import { start } from '@kivi-dev/core'\n\nstart(import.meta)\n"
+export const appJSCode = `
+import { start } from '@kivi-dev/core'
+
+start(import.meta)
+`.trimStart()
 
 const pkg = {
   name: 'kivi-bot',

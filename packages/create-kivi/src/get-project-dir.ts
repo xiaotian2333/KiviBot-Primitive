@@ -17,9 +17,9 @@ export async function getProjectDir() {
     const { dirName } = await prompts({
       type: 'text',
       name: 'dirName',
-      message: '请输入项目目录名称',
+      message: '请输入项目名称（文件夹名）',
       initial: 'kivi-bot',
-      validate: (name) => (!name ? '项目目录名称不能为空' : true),
+      validate: (name) => (!name ? '项目名称不能为空' : true),
     })
 
     if (!dirName) {
