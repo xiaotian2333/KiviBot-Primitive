@@ -27,7 +27,7 @@ const { uin = '' } = await prompts({
 const { platform } = await prompts({
   type: 'select',
   name: 'platform',
-  message: '请选择 Bot 登录协议',
+  message: '请选择登录协议',
   initial: 0,
   choices: [
     { title: '平板 Pad', value: 1 },
@@ -40,7 +40,7 @@ const { platform } = await prompts({
 const { admins = [] } = await prompts({
   type: 'list',
   name: 'admins',
-  message: '请输入 Bot 管理员',
+  message: '请输入管理员 QQ 号',
   format: (list: string[]) => [...new Set(list.filter(Boolean))],
   validate: (admins) => (!admins.length ? '管理员不能为空' : true),
 })
@@ -67,7 +67,7 @@ const config: BotConfig = {
 
 if (loginMode === 'password') {
   const { password } = await prompts({
-    type: 'text',
+    type: 'password',
     name: 'password',
     message: '请输入 Bot 的 QQ 密码',
     validate: (password) => (!password.length ? '登录密码不能为空' : true),
@@ -94,7 +94,7 @@ fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify([config], null, 2))
 
 console.log(
   [
-    kleur.green(`\nKivi 初始化完成 ✨ \n`),
+    kleur.green(`\n✨ Kivi 初始化完成\n`),
     kleur.dim('你可以通过以下命令启动 Kivi 👇\n\nnpm i\nnpm run start\n'),
   ].join('\n')
 )

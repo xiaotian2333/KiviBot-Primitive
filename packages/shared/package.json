@@ -1,13 +1,12 @@
 {
   "name": "@kivi-dev/shared",
   "version": "0.0.0-alpha.1",
-  "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc"
   },
-  "keywords": [],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT",
   "dependencies": {
