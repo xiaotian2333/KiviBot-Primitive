@@ -69,7 +69,7 @@ if (loginMode === 'password') {
   const { password } = await prompts({
     type: 'text',
     name: 'password',
-    message: '请输入 Bot 的 QQ 账号密码',
+    message: '请输入 Bot 的 QQ 密码',
     validate: (password) => (!password.length ? '登录密码不能为空' : true),
   })
 
@@ -90,7 +90,7 @@ if (loginMode === 'password') {
 
 fs.writeFileSync(path.join(dir, 'app.js'), appJSCode)
 fs.writeFileSync(path.join(dir, 'package.json'), pkgJSON)
-fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify(config, null, 2))
+fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify([config], null, 2))
 
 console.log(
   [

@@ -1,9 +1,6 @@
 {
+  "extends": "../../tsconfig.node.json",
   "compilerOptions": {
-    "target": "es2018",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "strict": true,
     "outDir": "bin"
   }
 }
