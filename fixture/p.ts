@@ -4,3 +4,5 @@ export default {
     console.log('on')
   }
 }
+
+console.log('111')

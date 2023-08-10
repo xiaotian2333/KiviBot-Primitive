@@ -23,26 +23,23 @@
 
 dependencies
 
-- kleur
-- ora
-- prompts
-- globby
-- import-local
-- semver
-- tempy
-- boxen
-- degit
-- gradient-string
-- figlet
-- mri
-- update-notifier
-- sade
+- kleur // 20kb
+- prompts // 203kb
+- mri // 13kb
+- sade // 45kb 
+
+  - semver // 124kb
+  - import-local // 61kb
+  - chalk // 44kb
+  - ora // 580kb
+  - globby // 596kb
+  - gradient-string // 480kb
+  - figlet // 6mb
+  - update-notifier // 2mb
 
 ## core
 
 - pm2
-- mri
-- get-stdin
-- chokidar
-- deepmerge
+- chokidar // 358kb
+- deepmerge // 31kb
 - pretty-ms

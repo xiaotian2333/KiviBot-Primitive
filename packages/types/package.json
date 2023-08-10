@@ -1,0 +1,7 @@
+{
+  "name": "@kivi-dev/types",
+  "version": "0.0.0",
+  "types": "index.d.ts",
+  "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
+  "license": "MIT"
+}

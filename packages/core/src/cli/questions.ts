@@ -11,7 +11,7 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
       validate: (input) => {
         return /^[1-9]\d{4,9}$/.test(input.trim()) ? true : 'invalid uin'
       },
-      format: (e) => Number(e.trim())
+      format: (e) => Number(e.trim()),
     },
     {
       name: 'platform',
@@ -21,25 +21,25 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
       choices: [
         {
           title: 'iPad',
-          value: 5
+          value: 5,
         },
         {
           title: 'aPhone',
-          value: 1
+          value: 1,
         },
         {
           title: 'aPad',
-          value: 2
+          value: 2,
         },
         {
           title: 'MacOS',
-          value: 4
+          value: 4,
         },
         {
           title: 'aWatch',
-          value: 3
-        }
-      ]
+          value: 3,
+        },
+      ],
     },
     {
       name: 'admins',
@@ -49,7 +49,7 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
       format: (list: string[]) => [...new Set(list.filter((e) => !!e).map(Number))],
       validate: (list: string) => {
         return /^[1-9]\d{4,9}(\s+[1-9]\d{4,9})*$/.test(list.trim()) ? true : 'invalid admin uin'
-      }
+      },
     },
     {
       name: 'login_mode',
@@ -59,13 +59,13 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
       choices: [
         {
           title: 'password',
-          value: 'password'
+          value: 'password',
         },
         {
           title: 'qrcode',
-          value: 'qrcode'
-        }
-      ]
+          value: 'qrcode',
+        },
+      ],
     },
     {
       name: 'password',
@@ -77,7 +77,7 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
       validate: (password) => {
         return /^.{6,16}$/.test(password.trim()) ? true : 'invalid password'
       },
-      format: (password) => password.trim()
+      format: (password) => password.trim(),
     },
     {
       name: 'device_mode',
@@ -89,13 +89,13 @@ export function getQuestions(mode: 'init' | 'switch' = 'init') {
       choices: [
         {
           title: 'sms',
-          value: 'sms'
+          value: 'sms',
         },
         {
           title: 'qrcode',
-          value: 'qrcode'
-        }
-      ]
-    }
+          value: 'qrcode',
+        },
+      ],
+    },
   ] as PromptObject[]
 }
