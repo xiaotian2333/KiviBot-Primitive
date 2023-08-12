@@ -1,9 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 /// <reference types="node" resolution-mode="require"/>
-import dayjs from 'dayjs';
 import type { ImageElem } from 'icqq';
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto';
-export { dayjs };
 export declare function dirname(meta: ImportMeta | undefined): string;
 /**
  * 异步延时函数

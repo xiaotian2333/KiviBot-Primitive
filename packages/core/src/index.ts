@@ -1,8 +1,12 @@
 import path from 'node:path'
-export * from '@kivi-dev/shared'
+import { fileURLToPath } from 'node:url'
 
-export async function start(dir: string = process.cwd()) {
-  const rootDir = path.resolve(dir)
+import KiviClient from './kivi-client.js'
 
-  console.log(rootDir)
+export const start = async (dir?: string) => {
+  return await new KiviClient().start(dir)
+}
+
+export function dirname(meta: ImportMeta) {
+  return path.dirname(fileURLToPath(meta.url))
 }

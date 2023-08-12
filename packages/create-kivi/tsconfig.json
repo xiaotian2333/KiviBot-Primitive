@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "bin"
+    "outDir": "bin",
+    "declaration": false
   }
 }

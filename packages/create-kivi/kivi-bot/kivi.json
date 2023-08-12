@@ -1,12 +1,12 @@
 [
   {
-    "uin": "1",
+    "uin": 847283413,
     "platform": 1,
     "admins": [
-      "1"
+      12312123
     ],
     "loginMode": "password",
     "deviceMode": "sms",
-    "password": "c4ca4238a0b923820dcc509a6f75849b"
+    "password": "2bbfa55dc58149cbdc795d293e8a5f7a"
   }
 ]

@@ -12,7 +12,6 @@ export default defineConfig({
   plugins: [
     typescript({
       tsconfig: './tsconfig.json',
-      declarationDir: './lib/types',
     }),
     terser(),
   ],

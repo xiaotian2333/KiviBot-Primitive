@@ -22,6 +22,7 @@ const { uin = '' } = await prompts({
   name: 'uin',
   message: '请输入 Bot 的 QQ 号',
   validate: (admins) => (!admins.length ? 'Bot QQ 号不能为空' : true),
+  format: (value) => Number(value),
 })
 
 const { platform } = await prompts({
@@ -41,7 +42,7 @@ const { admins = [] } = await prompts({
   type: 'list',
   name: 'admins',
   message: '请输入管理员 QQ 号',
-  format: (list: string[]) => [...new Set(list.filter(Boolean))],
+  format: (list: string[]) => [...new Set(list.filter(Boolean))].map(Number),
   validate: (admins) => (!admins.length ? '管理员不能为空' : true),
 })
 
@@ -61,6 +62,7 @@ const { loginMode } = await prompts({
 const config: BotConfig = {
   uin,
   platform,
+  prefix: '/',
   admins: [mainAdmin, ...subAdmins],
   loginMode,
 }

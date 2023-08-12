@@ -7,9 +7,6 @@ import { fileURLToPath } from 'node:url'
 import type { ImageElem } from 'icqq'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
-// 导出实用的库
-export { dayjs }
-
 export function dirname(meta: ImportMeta | undefined) {
   return meta ? path.dirname(fileURLToPath(meta.url)) : process.cwd()
 }
