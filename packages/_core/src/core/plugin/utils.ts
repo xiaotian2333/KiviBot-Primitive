@@ -1,6 +1,6 @@
 import os from 'node:os'
 
-import { searchAllPlugins } from './searchPlugins'
+import { searchAllPlugins } from './searchPlugins.js'
 
 const isWin = os.platform() === 'win32'
 

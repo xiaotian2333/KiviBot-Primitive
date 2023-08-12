@@ -1,5 +1,5 @@
-import { OperationMap } from './cmd/config'
-import { keliConf } from './config'
+import { OperationMap } from './cmd/config.js'
+import { keliConf } from './config.js'
 
 import type { Client, ImageElem } from 'movo'
 

@@ -1,4 +1,4 @@
-import { colors } from './colors'
+import { colors } from './colors.js'
 
 /** keli 规范化输出 */
 export const notice = {

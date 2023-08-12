@@ -1,6 +1,6 @@
 import os from 'node:os'
 
-import { stringifyError } from './utils'
+import { stringifyError } from './utils.js'
 
 import type { Client } from 'movo'
 

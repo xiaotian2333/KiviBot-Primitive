@@ -1,7 +1,7 @@
 import path from 'node:path'
 import ncu from 'npm-check-updates'
 
-import { promiseExec } from './utils'
+import { promiseExec } from './utils.js'
 
 import { CWD } from '@/path'
 

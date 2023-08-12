@@ -9,7 +9,7 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import { string2argv } from 'string2argv'
 
-import { notice } from './notice'
+import { notice } from './notice.js'
 
 import type { AllMessageEvent } from '@/core'
 import type { ImageElem } from 'movo'

@@ -1,6 +1,6 @@
-import { enablePlugin } from './enablePlugin'
-import { searchAllPlugins } from './searchPlugins'
-import { getPluginNameByPath } from './utils'
+import { enablePlugin } from './enablePlugin.js'
+import { searchAllPlugins } from './searchPlugins.js'
+import { getPluginNameByPath } from './utils.js'
 
 import type { KeliConf } from '@/core'
 import type { Client } from 'movo'

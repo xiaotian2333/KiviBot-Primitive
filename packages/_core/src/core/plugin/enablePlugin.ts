@@ -1,8 +1,8 @@
-import { killPlugin } from './killPlugin'
-import { PluginError } from './pluginError'
-import { getPluginNameByPath } from './utils'
+import { killPlugin } from './killPlugin.js'
+import { PluginError } from './pluginError.js'
+import { getPluginNameByPath } from './utils.js'
 
-import type { Plugin } from './plugin'
+import type { Plugin } from './plugin.js'
 import type { KeliConf } from '@/core'
 import type { Client } from 'movo'
 

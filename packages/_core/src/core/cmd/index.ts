@@ -1,9 +1,9 @@
 import minimist from 'minimist'
 import str2argv from 'string2argv'
 
-import { handleConfigCommand } from './config'
-import { handlePluginCommand } from './plugin'
-import { fetchStatus } from './status'
+import { handleConfigCommand } from './config.js'
+import { handlePluginCommand } from './plugin.js'
+import { fetchStatus } from './status.js'
 
 import type { KeliConf, AllMessageEvent } from '@/core'
 import type { Client } from 'movo'

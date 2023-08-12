@@ -1,0 +1,12 @@
+[
+  {
+    "uin": "1",
+    "platform": 1,
+    "admins": [
+      "1"
+    ],
+    "loginMode": "password",
+    "deviceMode": "sms",
+    "password": "c4ca4238a0b923820dcc509a6f75849b"
+  }
+]

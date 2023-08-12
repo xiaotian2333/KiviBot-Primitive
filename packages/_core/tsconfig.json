@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "bin"
+    "baseUrl": "",
+    "outDir": "lib"
   }
 }

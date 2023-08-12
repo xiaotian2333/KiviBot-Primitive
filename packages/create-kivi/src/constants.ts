@@ -1,16 +1,18 @@
 export const appJSCode = `
-import { start } from '@kivi-dev/core'
+import { start, dirname } from '@kivi-dev/core'
 
-start(import.meta)
+await start(dirname(import.meta))
 `.trimStart()
 
 const pkg = {
   name: 'kivi-bot',
+  type: 'module',
   scripts: {
     start: 'node app.js',
   },
   dependencies: {
-    '@kivi-dev/core': '^1.0.0',
+    // '@kivi-dev/core': '^1.0.0',
+    '@kivi-dev/core': 'workspace:*',
   },
 }
 

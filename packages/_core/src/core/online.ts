@@ -1,11 +1,11 @@
-import { handleKeliCommand } from './cmd'
-import { messageHandler, noticeHandler, requestHandler } from './log'
-import { KeliLogger } from './logger'
-import { configNotice } from './notice'
-import { PluginError, loadPlugins } from './plugin'
-import { bindSendMessage } from './send'
+import { handleKeliCommand } from './cmd/index.js'
+import { messageHandler, noticeHandler, requestHandler } from './log/index.js'
+import { KeliLogger } from './logger.js'
+import { configNotice } from './notice.js'
+import { PluginError, loadPlugins } from './plugin/index.js'
+import { bindSendMessage } from './send.js'
 
-import type { KeliConf } from './config'
+import type { KeliConf } from './config.js'
 import type { Client } from 'movo'
 
 import { colors, exitWithError, stringifyError, wait } from '@/utils'

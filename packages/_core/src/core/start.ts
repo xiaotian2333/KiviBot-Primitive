@@ -1,14 +1,14 @@
 import fs from 'fs-extra'
 import { createClient } from 'movo'
 
-import { keliConf } from './config'
-import { offlineHandler } from './log'
-import { Devices, KeliLogger, redirectLog } from './logger'
-import { bindLoginEvent, qrCodeHandler } from './login'
-import { onlineHandler } from './online'
+import { keliConf } from './config.js'
+import { offlineHandler } from './log/index.js'
+import { Devices, KeliLogger, redirectLog } from './logger.js'
+import { bindLoginEvent, qrCodeHandler } from './login/index.js'
+import { onlineHandler } from './online.js'
 
-import type { KeliConf } from './config'
-import type { Plugin } from './plugin'
+import type { KeliConf } from './config.js'
+import type { Plugin } from './plugin/index.js'
 
 import { ConfigPath, LogDir, OicqDataDir, PluginDataDir, PluginDir } from '@/path'
 import { colors, exitWithError, stringifyError, v } from '@/utils'

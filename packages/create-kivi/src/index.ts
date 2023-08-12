@@ -77,7 +77,7 @@ if (loginMode === 'password') {
     name: 'deviceMode',
     type: 'select',
     initial: 0,
-    message: 'device mode',
+    message: '请选择设备锁验证方式',
     choices: [
       { title: '💬 短信验证码', value: 'sms' },
       { title: '📱 扫描二维码', value: 'qrcode' },
@@ -92,9 +92,12 @@ fs.writeFileSync(path.join(dir, 'app.js'), appJSCode)
 fs.writeFileSync(path.join(dir, 'package.json'), pkgJSON)
 fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify([config], null, 2))
 
+const isCurrentDir = dir === process.cwd()
+const extraCmd = isCurrentDir ? '' : `cd ${path.basename(dir)}\n\n`
+
 console.log(
   [
     kleur.green(`\n✨ Kivi 初始化完成\n`),
-    kleur.dim('你可以通过以下命令启动 Kivi 👇\n\nnpm i\nnpm run start\n'),
+    kleur.dim(`你可以通过以下命令启动 Kivi 👇\n\n${extraCmd}npm i\nnpm start\n`),
   ].join('\n')
 )

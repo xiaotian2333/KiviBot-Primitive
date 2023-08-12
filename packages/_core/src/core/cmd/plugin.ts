@@ -1,4 +1,4 @@
-import type { ReplyFunc } from './config'
+import type { ReplyFunc } from './config.js'
 import type { Client } from 'movo'
 
 import {

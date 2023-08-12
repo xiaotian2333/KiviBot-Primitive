@@ -1,0 +1,10 @@
+{
+  "name": "kivi-bot",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "@kivi-dev/core": "workspace:*"
+  }
+}

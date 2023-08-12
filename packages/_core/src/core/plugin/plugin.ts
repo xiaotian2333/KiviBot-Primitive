@@ -6,7 +6,7 @@ import EventEmitter from 'node:events'
 import path from 'node:path'
 import { str2argv } from 'string2argv'
 
-import { PluginError } from './pluginError'
+import { PluginError } from './pluginError.js'
 
 import type { AdminArray, MainAdmin, KeliEventMap } from '@/core'
 import type { Logger } from 'log4js'

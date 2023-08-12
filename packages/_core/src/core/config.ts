@@ -1,9 +1,9 @@
 import fs from 'fs-extra'
 
-import { KeliLogger } from './logger'
-import { plugins } from './start'
+import { KeliLogger } from './logger.js'
+import { plugins } from './start.js'
 
-import type { Plugin } from './plugin'
+import type { Plugin } from './plugin/index.js'
 import type { Config } from 'movo'
 
 import { ConfigPath } from '@/path'

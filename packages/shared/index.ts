@@ -1,12 +1,18 @@
 import dayjs from 'dayjs'
 import { segment } from 'icqq'
 import crypto from 'node:crypto'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import type { ImageElem } from 'icqq'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
 // 导出实用的库
 export { dayjs }
+
+export function dirname(meta: ImportMeta | undefined) {
+  return meta ? path.dirname(fileURLToPath(meta.url)) : process.cwd()
+}
 
 /**
  * 异步延时函数
