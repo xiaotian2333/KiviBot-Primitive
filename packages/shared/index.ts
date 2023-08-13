@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { segment } from 'icqq'
 import crypto from 'node:crypto'
 import path from 'node:path'
+import { setTimeout } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
 
 import type { ImageElem } from 'icqq'
@@ -16,12 +17,15 @@ export function dirname(meta: ImportMeta | undefined) {
  * @param {number} ms 等待毫秒数
  * @return {Promise<void>}
  */
+// export async function wait(ms: number): Promise<void> {
+//   return new Promise<void>((resolve) => {
+//     setTimeout(() => {
+//       resolve()
+//     }, ms)
+//   })
+// }
 export async function wait(ms: number): Promise<void> {
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve()
-    }, ms)
-  })
+  return setTimeout(ms)
 }
 
 /**
