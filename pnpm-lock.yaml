@@ -102,6 +102,9 @@ importers:
       defu:
         specifier: ^6.1.2
         version: 6.1.2
+      filesize:
+        specifier: ^10.0.12
+        version: 10.0.12
       icqq:
         specifier: ^0.4.14
         version: 0.4.14
@@ -2697,6 +2700,11 @@ packages:
     dependencies:
       flat-cache: 3.0.4
     dev: true
+
+  /filesize@10.0.12:
+    resolution: {integrity: sha512-6RS9gDchbn+qWmtV2uSjo5vmKizgfCQeb5jKmqx8HyzA3MoLqqyQxN+QcjkGBJt7FjJ9qFce67Auyya5rRRbpw==}
+    engines: {node: '>= 10.4.0'}
+    dev: false
 
   /fill-range@7.0.1:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
