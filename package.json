@@ -7,7 +7,8 @@
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MPL-2.0",
   "scripts": {
-    "dev": "DEV=1 pnpm -r --parallel run dev"
+    "dev": "DEV=1 pnpm -r --parallel run dev",
+    "build": "DEV=1 pnpm -r --parallel run build"
   },
   "engines": {
     "node": "^16.3.0 || ^18.0.0 || ^20.0.0"

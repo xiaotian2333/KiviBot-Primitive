@@ -75,16 +75,16 @@ export default class KiviClient {
 
     const { display, version } = this.#oicqClient.apk
 
+    this.#pickLogger(uin).info(`开始登录 Bot ` + kleur.green(uin))
     this.#pickLogger(uin).info(`使用协议 ${kleur.green(`${display}_${version}`)}`)
-    this.#pickLogger(uin).info(`登录 Bot ` + kleur.green(uin))
-    this.#pickLogger(uin).info(`正在解析登录服务器...`)
+    this.#pickLogger(uin).info(`正在解析并登录服务器...`)
 
     await this.#oicqClient.login(uin, password)
   }
 
   async #bindLoginEvents(bot: Client) {
-    bot.on('internal.sso', (p) => this.#pickLogger(bot).info(p))
-    bot.on('internal.input', (p) => this.#pickLogger(bot).info(p))
+    bot.on('internal.sso', (p) => this.#pickLogger(bot).debug('internal.sso: ' + p))
+    bot.on('internal.input', (p) => this.#pickLogger(bot).debug('internal.input: ' + p))
 
     bot.on('system.login.error', (p) => this.#handleLoginError(bot, p))
     bot.on('system.login.device', (p) => this.#handleDeviceLogin(bot, p))
@@ -99,9 +99,12 @@ export default class KiviClient {
   }
 
   #handleOnLogin(bot: Client) {
-    this.#pickLogger(bot).info(kleur.green(`${bot.nickname || bot.uin} 上线成功`))
+    const welcome = `${bot.nickname}(${bot.uin}) 上线成功! `
+    this.#pickLogger(bot).info(kleur.green(welcome))
+    this.#pickLogger(bot).info('向 Bot 发送 .help 查看所有命令')
+
     const mainAdmin = this.#oicqClient!.pickFriend(this.#botConfig!.admins[0])
-    mainAdmin.sendMsg('✅ 上线成功，发送 .help 查看所有命令')
+    mainAdmin.sendMsg('✅ 已上线，发送 .help 查看命令')
   }
 
   #handleDeviceLogin(bot: Client, p: { url: string; phone: string }) {

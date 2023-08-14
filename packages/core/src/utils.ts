@@ -1,4 +1,3 @@
-import kleur from 'kleur'
 import { createRequire } from 'node:module'
 
 import type { Logger } from './logger.js'
@@ -7,7 +6,6 @@ export const require = createRequire(import.meta.url)
 
 export function handleException(logger: Logger) {
   const handleException = (e: any) => {
-    console.info('213123123')
     logger.error('发生了错误: ', e?.message || JSON.stringify(e) || e)
   }
 
