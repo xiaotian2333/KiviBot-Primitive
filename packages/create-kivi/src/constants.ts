@@ -4,6 +4,8 @@ import { start, dirname } from '@kivi-dev/core'
 await start(dirname(import.meta))
 `.trimStart()
 
+const isDev = !!process.env.DEV
+
 const pkg = {
   name: 'kivi-bot',
   type: 'module',
@@ -11,8 +13,7 @@ const pkg = {
     start: 'node app.js',
   },
   dependencies: {
-    // '@kivi-dev/core': '^1.0.0',
-    '@kivi-dev/core': 'workspace:*',
+    '@kivi-dev/core': isDev ? 'workspace:*' : '^1.0.0',
   },
 }
 
