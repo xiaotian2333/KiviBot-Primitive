@@ -1,9 +1,9 @@
 import { defu } from 'defu'
 import { existsSync } from 'node:fs'
-import { createRequire } from 'node:module'
 import path from 'node:path'
 
 import { CONFIG_FILE_NAME } from './constants.js'
+import { require } from './utils.js'
 
 import type { BotConfig } from '@kivi-dev/types'
 
@@ -14,8 +14,5 @@ export function resolveConfig(root: string) {
     throw new Error('kivi.json 不存在，请先使用 npm create kivi 创建。')
   }
 
-  const require = createRequire(import.meta.url)
-  const botConfigs = (require(configPath) as BotConfig[]) || []
-
-  return botConfigs.map((c) => defu(c, {}))
+  return require(configPath) as BotConfig
 }

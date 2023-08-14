@@ -2,6 +2,7 @@
 /// <reference types="node" resolution-mode="require"/>
 import type { ImageElem } from 'icqq';
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto';
+export declare function showLogo(): void;
 export declare function dirname(meta: ImportMeta | undefined): string;
 /**
  * 异步延时函数

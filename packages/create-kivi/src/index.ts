@@ -2,7 +2,7 @@
 
 'use strict'
 
-import { md5 } from '@kivi-dev/shared'
+import { md5, showLogo } from '@kivi-dev/shared'
 import kleur from 'kleur'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -13,7 +13,7 @@ import { getProjectDir } from './get-project-dir.js'
 
 import type { BotConfig } from '@kivi-dev/types'
 
-console.log(`\n${kleur.bgGreen().dim(` KiviBot v1.0 `)}\n`)
+showLogo()
 
 const dir = await getProjectDir()
 
@@ -46,7 +46,7 @@ const { admins = [] } = await prompts({
   validate: (admins) => (!admins.length ? '管理员不能为空' : true),
 })
 
-const [mainAdmin, ...subAdmins] = admins
+const [mainAdmin, ...subAdmins] = admins as [number, ...number[]]
 
 const { loginMode } = await prompts({
   name: 'loginMode',
@@ -92,7 +92,7 @@ if (loginMode === 'password') {
 
 fs.writeFileSync(path.join(dir, 'app.js'), appJSCode)
 fs.writeFileSync(path.join(dir, 'package.json'), pkgJSON)
-fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify([config], null, 2))
+fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify(config, null, 2))
 
 const isCurrentDir = dir === process.cwd()
 const extraCmd = isCurrentDir ? '' : `cd ${path.basename(dir)}\n\n`

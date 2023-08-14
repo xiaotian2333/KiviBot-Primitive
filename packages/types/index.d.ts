@@ -14,7 +14,7 @@ export interface BotConfig {
   uin: number
   prefix: '/'
   platform: Platform
-  admins: number[]
+  admins: [mainAdmin: number, ...subAdmins: number[]]
   loginMode: LoginMode
   deviceMode?: DeviceMode
   password?: string

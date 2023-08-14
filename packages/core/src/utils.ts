@@ -1,19 +1,9 @@
 import kleur from 'kleur'
+import { createRequire } from 'node:module'
 
 import type { Logger } from './logger.js'
 
-export function showLogo() {
-  const tip = `   KiviBot v1.0   `
-  const infos = [
-    '',
-    `${kleur.bgBlack().black(tip)}`,
-    `${kleur.bgBlack().green().bold(tip)}`,
-    `${kleur.bgBlack().black(tip)}`,
-    '',
-  ]
-
-  console.info(infos.join('\n'))
-}
+export const require = createRequire(import.meta.url)
 
 export function handleException(logger: Logger) {
   const handleException = (e: any) => {

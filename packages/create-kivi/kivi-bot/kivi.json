@@ -1,12 +1,11 @@
-[
-  {
-    "uin": 847283413,
-    "platform": 1,
-    "admins": [
-      12312123
-    ],
-    "loginMode": "password",
-    "deviceMode": "sms",
-    "password": "2bbfa55dc58149cbdc795d293e8a5f7a"
-  }
-]
+{
+  "uin": 536596616,
+  "platform": 1,
+  "prefix": "/",
+  "admins": [
+    1141284758
+  ],
+  "loginMode": "password",
+  "deviceMode": "sms",
+  "password": "4b894350da0e40ea061c4a0090cab0a4"
+}

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { segment } from 'icqq'
+import kleur from 'kleur'
 import crypto from 'node:crypto'
 import path from 'node:path'
 import { setTimeout } from 'node:timers/promises'
@@ -7,6 +8,19 @@ import { fileURLToPath } from 'node:url'
 
 import type { ImageElem } from 'icqq'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
+
+export function showLogo() {
+  const tip = `   KiviBot v1.0   `
+  const infos = [
+    '',
+    `${kleur.bgBlue().blue(tip)}`,
+    `${kleur.bgBlue().white().bold(tip)}`,
+    `${kleur.bgBlue().blue(tip)}`,
+    '',
+  ]
+
+  console.info(infos.join('\n'))
+}
 
 export function dirname(meta: ImportMeta | undefined) {
   return meta ? path.dirname(fileURLToPath(meta.url)) : process.cwd()
