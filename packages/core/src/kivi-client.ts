@@ -106,7 +106,7 @@ export default class KiviClient {
 
     bot.on('system.login.error', (p) => this.#handleLoginError(bot, p))
     bot.on('system.login.device', (p) => this.#handleDeviceLogin(bot, p))
-    bot.on('system.login.slider', (p) => this.#handleSlider(bot, p.url))
+    bot.on('system.login.slider', (p) => this.#handleSliderVerify(bot, p.url))
 
     bot.once('system.online', (p) => this.#handleOnLogin(bot))
   }
@@ -117,7 +117,7 @@ export default class KiviClient {
   }
 
   #handleOnLogin(bot: Client) {
-    this.#pickLogger(bot).info('登录成功')
+    this.#pickLogger(bot).info(kleur.green(`${bot.nickname || bot.uin} 上线成功`))
   }
 
   #handleDeviceLogin(bot: Client, p: { url: string; phone: string }) {
@@ -130,13 +130,13 @@ export default class KiviClient {
     }
   }
 
-  #handleSlider(bot: Client, url: string) {
+  #handleSliderVerify(bot: Client, url: string) {
     const infos = ['请复制链接到浏览器进行滑块认证:', kleur.cyan(url), '请输入获取到的 ticket:\n']
     this.#pickLogger(bot).info(infos.join('\n\n'))
-    this.#inputTicket(bot)
+    this.#inputAndSubmitTicket(bot)
   }
 
-  #inputTicket(bot: Client) {
+  #inputAndSubmitTicket(bot: Client) {
     const inputTicket = () => {
       process.stdin.once('data', async (data: Buffer) => {
         const ticket = String(data).trim()

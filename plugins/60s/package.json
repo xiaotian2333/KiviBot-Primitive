@@ -1,6 +1,7 @@
 {
   "name": "kivibot",
   "version": "0.0.0",
+  "type": "module",
   "description": "CLI for KiviBot",
   "main": "index.js",
   "scripts": {
