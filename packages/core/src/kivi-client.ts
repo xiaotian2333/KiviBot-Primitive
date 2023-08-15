@@ -1,23 +1,34 @@
-import { showLogo } from '@kivi-dev/shared'
+import { ensureArray, showLogo } from '@kivi-dev/shared'
 import dayjs from 'dayjs'
 import { createClient } from 'icqq'
 import kleur from 'kleur'
+import mri from 'mri'
 import path from 'node:path'
 import prompts from 'prompts'
+import { str2argv } from 'string2argv'
 
+import command from './commands.js'
 import { resolveConfig } from './config.js'
 import { SIGN_API_ADDR } from './constants.js'
 import { Logger } from './logger.js'
 import { handleException } from './utils.js'
 
-import type { BotConfig, Platform as KiviPlatform } from '@kivi-dev/types'
-import type { Client, Platform as IcqqPlatform } from 'icqq'
+import type { AllMessageEvent, BotConfig, Platform as KiviPlatform } from '@kivi-dev/types'
+import type {
+  Client,
+  Friend,
+  Group,
+  Platform as IcqqPlatform,
+  MessageElem,
+  Quotable,
+  Sendable,
+} from 'icqq'
 
 export default class KiviClient {
   #rootDir = process.cwd()
   #mainLogger: Logger = new Logger('KiviClient')
-  #loggers: Map<number, Logger> = new Map()
-  #oicqClient?: Client
+  #loggers: Map<string, Logger> = new Map()
+  #bot?: Client
   #botConfig?: BotConfig
 
   constructor(config?: BotConfig) {
@@ -58,10 +69,10 @@ export default class KiviClient {
     const botDataDir = path.join(this.#rootDir, 'data', String(uin))
     const relativeBotDataDir = `./${path.relative(process.cwd(), botDataDir)}`
 
-    this.#pickLogger(uin).info('Bot 数据目录:', kleur.green(relativeBotDataDir))
-    this.#pickLogger(uin).debug(`初始化 oicq Client `)
+    this.#mainLogger.info('Bot 数据目录:', kleur.green(relativeBotDataDir))
+    this.#mainLogger.debug(`初始化 oicq Client `)
 
-    this.#oicqClient = createClient({
+    this.#bot = createClient({
       ...(oicq_config || {}),
       data_dir: botDataDir,
       auto_server: true,
@@ -70,62 +81,172 @@ export default class KiviClient {
       log_config: this.#getLogConfig(uin),
     })
 
-    this.#pickLogger(uin).debug(`监听并处理 Bot 登录事件`)
-    this.#bindLoginEvents(this.#oicqClient)
+    this.#mainLogger.debug(`监听并处理 Bot 登录事件`)
+    this.#bindLoginEvents(this.#bot)
 
-    const { display, version } = this.#oicqClient.apk
+    const { display, version } = this.#bot.apk
 
-    this.#pickLogger(uin).info(`开始登录 Bot ` + kleur.green(uin))
-    this.#pickLogger(uin).info(`使用协议 ${kleur.green(`${display}_${version}`)}`)
-    this.#pickLogger(uin).info(`正在解析并登录服务器...`)
+    this.#mainLogger.info(`开始登录 Bot ` + kleur.green(uin))
+    this.#mainLogger.info(`使用协议 ${kleur.green(`${display}_${version}`)}`)
+    this.#mainLogger.info(`正在解析并登录服务器...`)
 
-    await this.#oicqClient.login(uin, password)
+    await this.#bot.login(uin, password)
   }
 
   async #bindLoginEvents(bot: Client) {
-    bot.on('internal.sso', (p) => this.#pickLogger(bot).debug('internal.sso: ' + p))
-    bot.on('internal.input', (p) => this.#pickLogger(bot).debug('internal.input: ' + p))
+    // bot.on('internal.sso', (p) => this.#mainLogger.debug('internal.sso: ' + p))
+    // bot.on('internal.input', (p) => this.#mainLogger.debug('internal.input: ' + p))
 
-    bot.on('system.login.error', (p) => this.#handleLoginError(bot, p))
-    bot.on('system.login.device', (p) => this.#handleDeviceLogin(bot, p))
-    bot.on('system.login.slider', (p) => this.#handleSliderVerify(bot, p.url))
+    bot.on('system.login.error', (p) => this.#handleLoginError(p))
+    bot.on('system.login.device', (p) => this.#handleDeviceLogin(p))
+    bot.on('system.login.slider', (p) => this.#handleSliderVerify(p.url))
 
-    bot.once('system.online', (p) => this.#handleOnLogin(bot))
+    bot.once('system.online', () => this.#handleOnLogin())
   }
 
-  #handleLoginError(bot: Client, p: { message: string }) {
-    this.#pickLogger(bot).fatal(p.message)
+  #handleLoginError(p: { message: string }) {
+    this.#mainLogger.fatal(p.message)
     process.exit(-1)
   }
 
-  #handleOnLogin(bot: Client) {
-    const welcome = `${bot.nickname}(${bot.uin}) 上线成功! `
-    this.#pickLogger(bot).info(kleur.green(welcome))
-    this.#pickLogger(bot).info('向 Bot 发送 .help 查看所有命令')
+  #handleOnLogin() {
+    const welcome = `${this.#bot!.nickname}(${this.#bot!.uin}) 上线成功! `
+    this.#mainLogger.info(kleur.green(welcome))
+    this.#mainLogger.info('向 Bot 发送 .help 查看所有命令')
 
-    const mainAdmin = this.#oicqClient!.pickFriend(this.#botConfig!.admins[0])
+    const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
     mainAdmin.sendMsg('✅ 已上线，发送 .help 查看命令')
+
+    this.#bindSendMsg()
+    this.#handleMessageForFramework()
   }
 
-  #handleDeviceLogin(bot: Client, p: { url: string; phone: string }) {
-    const useSms = this.#botConfig?.deviceMode !== 'qrcode'
+  #handleMessageForFramework() {
+    this.#bot!.on('message', (event: AllMessageEvent) => {
+      this.#handleLogOutput(event)
+      this.#handleFrameworkCommand(event)
+    })
+  }
 
-    if (useSms) {
-      this.#handleSmsDeviceLogin(bot, p.phone)
+  #handleLogOutput(event: AllMessageEvent) {
+    const { sender, message_type } = event
+
+    const TypeMap = {
+      private: 'P',
+      group: 'G',
+      discuss: 'D',
+    } as const
+
+    const type = TypeMap[event.message_type]
+    const nick = `${sender.nickname}(${sender.user_id})`
+
+    let head: string
+
+    if (message_type === 'private') {
+      // 私聊消息
+      head = `↓ [${type}:${nick}]`
+    } else if (message_type === 'discuss') {
+      // 讨论组消息
+      const discuss = `${event.discuss_name}(${event.discuss_id})`
+      head = `↓ [${type}:${discuss}:${nick}]`
     } else {
-      this.#handleQrcodeDeviceLogin(bot, p.url)
+      // 群聊消息
+      const group = `${event.group_name}(${event.group_id})`
+      head = `↓ [${type}:${group}-${nick}]`
+    }
+
+    const message = event.toString()
+
+    this.#mainLogger.info(`${kleur.gray(head)} ${message}`)
+  }
+
+  #handleFrameworkCommand(event: AllMessageEvent) {
+    const msg = event.toString().trim()
+
+    // 过滤非 . 开头的消息
+    if (!/^\s*\.\w+/i.test(msg)) return
+
+    const { _: params, ...options } = mri(str2argv(msg))
+    const cmd = params.shift()?.replace(/^\s*\./, '') ?? ''
+
+    // 是否是管理员
+    const isAdmin = this.#botConfig!.admins.includes(event.sender.user_id)
+    // 是否是主管理员
+    const isMainAdmin = this.#botConfig!.admins[0] === event.sender.user_id
+
+    // 过滤非管理员消息
+    if (!isAdmin) return
+
+    command.bindEvent(event)
+    command.parse(cmd, params, options, isMainAdmin)
+  }
+
+  #bindSendMsg() {
+    for (const [gid, { group_name = 'unknown' }] of this.#bot!.gl) {
+      const group = this.#bot!.pickGroup(gid)
+      const head = `↑ [G:${group_name}(${gid})]`
+      this.#bindSend(group, head)
+    }
+
+    for (const [qq, { nickname = 'unknown' }] of this.#bot!.fl) {
+      const friend = this.#bot!.pickFriend(qq)
+      const head = `↑ [P:${nickname}(${qq})]`
+      this.#bindSend(friend, head)
+    }
+
+    this.#bot!.on('notice.group.increase', ({ group, user_id }) => {
+      if (user_id !== this.#bot!.uin) return
+      const { group_id, name = 'unknown' } = group
+      const head = `↑ [G:${name}(${group_id})]`
+      this.#bindSend(group, head)
+    })
+
+    this.#bot!.on('notice.friend.increase', ({ friend }) => {
+      const { user_id, nickname = 'unknown' } = friend
+      const head = `↑ [P:${nickname}(${user_id})]`
+      this.#bindSend(friend, head)
+    })
+  }
+
+  #bindSend(target: Group | Friend, head: string) {
+    const sendMsg = target.sendMsg.bind(target)
+
+    function stringifySendable(content: Sendable) {
+      return ensureArray(content)
+        .map((message) => (typeof message === 'string' ? message : JSON.stringify(message)))
+        .join('')
+    }
+
+    const showKeliLog = (content: Sendable) => {
+      return this.#mainLogger.info(kleur.gray(`${head} ${stringifySendable(content)}`))
+    }
+
+    target.sendMsg = async function (content: Sendable, source?: Quotable | undefined) {
+      showKeliLog(content)
+
+      return sendMsg(content, source)
     }
   }
 
-  #handleSliderVerify(bot: Client, url: string) {
+  #handleDeviceLogin(p: { url: string; phone: string }) {
+    const useSms = this.#botConfig?.deviceMode !== 'qrcode'
+
+    if (useSms) {
+      this.#handleSmsDeviceLogin(this.#bot!, p.phone)
+    } else {
+      this.#handleQrcodeDeviceLogin(this.#bot!, p.url)
+    }
+  }
+
+  #handleSliderVerify(url: string) {
     const infos = [
       kleur.yellow('请复制下面的链接到浏览器进行滑块认证'),
       kleur.cyan(url),
       kleur.white('请输入获取到的 ticket，并按回车键确认:\n'),
     ]
 
-    this.#pickLogger(bot).info(infos.join('\n\n'))
-    this.#inputAndSubmitTicket(bot)
+    this.#mainLogger.info(infos.join('\n\n'))
+    this.#inputAndSubmitTicket(this.#bot!)
   }
 
   #inputAndSubmitTicket(bot: Client) {
@@ -134,7 +255,7 @@ export default class KiviClient {
         const ticket = String(data).trim()
         if (!ticket) return inputTicket()
         console.log()
-        this.#pickLogger(bot).info('ticket 已提交，等待响应...')
+        this.#mainLogger.info('ticket 已提交，等待响应...')
         await bot.submitSlider(ticket)
       })
     }
@@ -161,7 +282,7 @@ export default class KiviClient {
   }
 
   async #handleQrcodeDeviceLogin(bot: Client, url: string) {
-    this.#pickLogger(bot).info(`请复制下面的链接到浏览器进行设备锁验证\n\n${kleur.cyan(url)}\n`)
+    this.#mainLogger.info(`请复制下面的链接到浏览器进行设备锁验证\n\n${kleur.cyan(url)}\n`)
 
     await prompts({
       type: 'confirm',
@@ -180,16 +301,12 @@ export default class KiviClient {
     return [null, 2, 1, 4, 3, 6][platform] as IcqqPlatform
   }
 
-  #pickLogger(uin: number | string | Client) {
-    if (typeof uin !== 'number') {
-      uin = Number(typeof uin === 'string' ? uin : uin.uin)
-    }
-
-    if (this.#loggers.has(uin)) {
-      return this.#loggers.get(uin) as Logger
+  #pickLogger(pluginName: string) {
+    if (this.#loggers.has(pluginName)) {
+      return this.#loggers.get(pluginName) as Logger
     } else {
-      const logger = new Logger(String(uin))
-      this.#loggers.set(uin, logger)
+      const logger = new Logger(String(pluginName))
+      this.#loggers.set(pluginName, logger)
       return logger
     }
   }

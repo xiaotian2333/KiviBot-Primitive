@@ -1,0 +1,18 @@
+{
+  "name": "@kivi-dev/plugin",
+  "version": "0.0.0",
+  "description": "plugin for kivibot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
+  "license": "MIT",
+  "dependencies": {
+    "@kivi-dev/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "icqq": "^0.4.14"
+  }
+}

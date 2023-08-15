@@ -3,5 +3,8 @@
   "version": "0.0.0",
   "types": "index.d.ts",
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "icqq": "^0.4.14"
+  }
 }
