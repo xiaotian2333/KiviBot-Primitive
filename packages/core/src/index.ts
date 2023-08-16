@@ -10,3 +10,5 @@ export const start = async (dir?: string) => {
 export function dirname(meta: ImportMeta) {
   return path.dirname(fileURLToPath(meta.url))
 }
+
+export { Logger } from './logger.js'

@@ -13,7 +13,12 @@ import { SIGN_API_ADDR } from './constants.js'
 import { Logger } from './logger.js'
 import { handleException } from './utils.js'
 
-import type { AllMessageEvent, BotConfig, Platform as KiviPlatform } from '@kivi-dev/types'
+import type {
+  AllMessageEvent,
+  BotConfig,
+  ClientWithApis,
+  Platform as KiviPlatform,
+} from '@kivi-dev/types'
 import type {
   Client,
   Friend,
@@ -28,7 +33,7 @@ export default class KiviClient {
   #rootDir = process.cwd()
   #mainLogger: Logger = new Logger('KiviClient')
   #loggers: Map<string, Logger> = new Map()
-  #bot?: Client
+  #bot?: ClientWithApis
   #botConfig?: BotConfig
 
   constructor(config?: BotConfig) {
@@ -72,7 +77,7 @@ export default class KiviClient {
     this.#mainLogger.info('Bot 数据目录:', kleur.green(relativeBotDataDir))
     this.#mainLogger.debug(`初始化 oicq Client `)
 
-    this.#bot = createClient({
+    const bot = createClient({
       ...(oicq_config || {}),
       data_dir: botDataDir,
       auto_server: true,
@@ -80,6 +85,8 @@ export default class KiviClient {
       sign_api_addr: SIGN_API_ADDR,
       log_config: this.#getLogConfig(uin),
     })
+
+    this.#bot = Object.assign(bot, { apis: {} })
 
     this.#mainLogger.debug(`监听并处理 Bot 登录事件`)
     this.#bindLoginEvents(this.#bot)
@@ -93,7 +100,7 @@ export default class KiviClient {
     await this.#bot.login(uin, password)
   }
 
-  async #bindLoginEvents(bot: Client) {
+  async #bindLoginEvents(bot: ClientWithApis) {
     // bot.on('internal.sso', (p) => this.#mainLogger.debug('internal.sso: ' + p))
     // bot.on('internal.input', (p) => this.#mainLogger.debug('internal.input: ' + p))
 

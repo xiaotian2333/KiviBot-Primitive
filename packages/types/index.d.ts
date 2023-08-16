@@ -1,4 +1,10 @@
-import type { Config, PrivateMessageEvent, GroupMessageEvent, DiscussMessageEvent } from 'icqq'
+import type {
+  Client,
+  Config,
+  PrivateMessageEvent,
+  GroupMessageEvent,
+  DiscussMessageEvent,
+} from 'icqq'
 
 export type DeviceMode = 'sms' | 'qrcode'
 export type LoginMode = 'password' | 'qrcode'
@@ -12,6 +18,7 @@ export type Platform = Pad | Phone | PC | Watch
 
 export type AnyFunc = (...args: any[]) => any
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
+export type AdminArray = [mainAdmin: number, ...subAdmins: number[]]
 
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
 export type OicqMessageHandler = (event: AllMessageEvent) => any
@@ -21,7 +28,7 @@ export type GroupMessageHandler = (event: GroupMessageEvent, bot: Client) => any
 
 export interface ClientWithApis extends Client {
   apis: {
-    [x: string]: AnyFunc[]
+    [x: string]: AnyFunc
   }
 }
 
@@ -57,12 +64,10 @@ export interface BotConfig {
   uin: number
   prefix: '/'
   platform: Platform
-  admins: [mainAdmin: number, ...subAdmins: number[]]
+  admins: AdminArray
   loginMode: LoginMode
   deviceMode?: DeviceMode
   password?: string
   plugins?: string[]
   oicq_config?: Config
 }
-
-export type InitConfig = BotConfig[]

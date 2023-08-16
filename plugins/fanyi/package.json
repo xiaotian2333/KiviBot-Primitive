@@ -1,5 +1,5 @@
 {
-  "name": "plugin-60s",
+  "name": "plugin-fanyi",
   "version": "0.0.0",
   "type": "module",
   "description": "CLI for KiviBot",
@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "repository": {
-    "directory": "plugins/60s"
+    "directory": "plugins/fanyi"
   },
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT"

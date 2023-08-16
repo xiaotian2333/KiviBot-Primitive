@@ -1,18 +1,26 @@
 {
   "name": "@kivi-dev/plugin",
   "version": "0.0.0",
+  "type": "module",
   "description": "plugin for kivibot",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsc -w",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT",
   "dependencies": {
-    "@kivi-dev/types": "workspace:*"
+    "@kivi-dev/types": "workspace:*",
+    "node-cron": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.8",
+    "typescript": "^5.1.6"
   },
   "peerDependencies": {
-    "icqq": "^0.4.14"
+    "icqq": "^0.4.14",
+    "@kivi-dev/core": "workspace:*"
   }
 }

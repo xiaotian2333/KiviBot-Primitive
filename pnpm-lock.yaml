@@ -154,12 +154,25 @@ importers:
 
   packages/plugin:
     dependencies:
+      '@kivi-dev/core':
+        specifier: workspace:*
+        version: link:../core
       '@kivi-dev/types':
         specifier: workspace:*
         version: link:../types
       icqq:
         specifier: ^0.4.14
         version: 0.4.14
+      node-cron:
+        specifier: ^3.0.2
+        version: 3.0.2
+    devDependencies:
+      '@types/node-cron':
+        specifier: ^3.0.8
+        version: 3.0.8
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
 
   packages/shared:
     dependencies:
@@ -182,7 +195,23 @@ importers:
         specifier: ^0.4.14
         version: 0.4.14
 
-  plugins/60s: {}
+  plugins/60s:
+    dependencies:
+      '@kivi-dev/plugin':
+        specifier: workspace:*
+        version: link:../../packages/plugin
+
+  plugins/demo:
+    dependencies:
+      '@kivi-dev/plugin':
+        specifier: workspace:*
+        version: link:../../packages/plugin
+
+  plugins/fanyi:
+    dependencies:
+      '@kivi-dev/plugin':
+        specifier: workspace:*
+        version: link:../../packages/plugin
 
 packages:
 

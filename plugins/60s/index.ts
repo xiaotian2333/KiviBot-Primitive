@@ -1,15 +1,33 @@
-// import { register } from '@kivi-dev/core'
-import { bot, on, setup, useEnable, useConfig } from '@kivi-dev/plugin'
+import {
+  useBot,
+  registerApi,
+  useCommand,
+  useOn,
+  useSetup,
+  useMatch,
+  useConfig,
+  useMount,
+} from '@kivi-dev/plugin'
 
-// await setup(import.meta)
+useSetup('60s', '0.0.1')
 
-const { config, mutate } = useConfig() // plugin, bot, client
+const bot = useBot()
 
-// register('generateHtml', (...args: any[]) => {
-//   console.log('generateHtml', args)
-// })
+const config = useConfig('kivi')
 
-useEnable(() => {
+useOn('message.discuss', (event) => {
+  event.reply('hello')
+})
+
+useCommand((ctx) => {}, { role: 'admin', type: 'private' })
+
+useOn('message', (ctx) => {})
+
+registerApi('generateHtml', (...args: any[]) => {
+  console.log('generateHtml', args)
+})
+
+useMount(() => {
   console.log('plugin enabled!')
 
   return () => {
@@ -17,4 +35,4 @@ useEnable(() => {
   }
 })
 
-export { plugin as default } from '@kivi-dev/plugin'
+export { plugin } from '@kivi-dev/plugin'

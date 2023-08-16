@@ -1,4 +1,4 @@
-import type { Client, EventMap } from 'icqq'
+import type { EventMap } from 'icqq'
 
 export const SystemEvents = [
   'system.login.qrcode',
@@ -68,14 +68,14 @@ export const OicqEvents = [
   'internal.sso',
   'internal.input',
   'guild.message',
-] as (keyof EventMap<Client>)[]
+] as (keyof EventMap)[]
 
-/** keli 标准事件列表 */
-export const KeliEvents = ['keli.admins'] as const
+/** kivi 标准事件列表 */
+export const KiviEvents = ['kivi.admins'] as const
 
-export interface KeliEventMap<T = any> {
-  /** keli 管理员变动事件 */
-  'keli.admin': (
+export interface KiviEventMap<T = any> {
+  /** kivi 管理员变动事件 */
+  'kivi.admins': (
     this: T,
     event: {
       admins: number[]
