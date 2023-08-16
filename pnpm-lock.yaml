@@ -12,8 +12,8 @@ importers:
         specifier: ^0.5.0
         version: 0.5.0(@typescript-eslint/parser@5.62.0)(eslint@8.47.0)(prettier@3.0.2)(typescript@5.1.6)
       '@vmoe/prettier-config':
-        specifier: ^1.1.0
-        version: 1.1.0(prettier@3.0.2)
+        specifier: ^1.1.1
+        version: 1.1.1(prettier@3.0.2)
       bumpp:
         specifier: ^9.1.1
         version: 9.1.1
@@ -914,8 +914,8 @@ packages:
       prettier: 2.8.8
     dev: true
 
-  /@vmoe/prettier-config@1.1.0(prettier@3.0.2):
-    resolution: {integrity: sha512-0TfMApH1ijjZFilv4RlOkhUiVMSbIeU34PhwOo5eMaRcT9rY7mJhwfX2m8VOzIKraCMWoy8Hr6zs6XyuR2ePqw==}
+  /@vmoe/prettier-config@1.1.1(prettier@3.0.2):
+    resolution: {integrity: sha512-ruHMmKwGIMI/hcDwxv3YWexoCUOfmoW8dsOQy1n/Ew5x77NFizPvkqfEan3AGky5n43LQbbjPMPqYIz+hBIKeg==}
     peerDependencies:
       prettier: ^2 || ^3
     dependencies:
