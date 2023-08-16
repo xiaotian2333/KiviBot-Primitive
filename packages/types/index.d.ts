@@ -19,10 +19,16 @@ export type MessageHandler = (event: AllMessageEvent, bot: Client) => any
 export type PrivateMessageHandler = (event: PrivateMessageEvent, bot: Client) => any
 export type GroupMessageHandler = (event: GroupMessageEvent, bot: Client) => any
 
+export interface ClientWithApis extends Client {
+  apis: {
+    [x: string]: AnyFunc[]
+  }
+}
+
 /**
  * 处理函数
  *
- * @param {Client} bot Bot 实例
+ * @param {ClientWithApis} bot Bot 实例
  * @param {AdminArray} admins 管理员列表
  */
 export type BotHandler = (bot: Client, admins: AdminArray) => any
@@ -38,7 +44,7 @@ export type MessageCmdHandler = (
   params: string[],
   options: {
     [arg: string]: any
-  }
+  },
 ) => any
 
 export interface PluginConf {

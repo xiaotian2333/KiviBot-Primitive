@@ -1,13 +1,13 @@
-import { register } from '@kivi-dev/core'
-import { bots, apis, setup, useEnable, useConfig } from '@kivi-dev/plugin'
+// import { register } from '@kivi-dev/core'
+import { bot, on, setup, useEnable, useConfig } from '@kivi-dev/plugin'
 
 // await setup(import.meta)
 
 const { config, mutate } = useConfig() // plugin, bot, client
 
-register('generateHtml', (...args: any[]) => {
-  console.log('generateHtml', args)
-})
+// register('generateHtml', (...args: any[]) => {
+//   console.log('generateHtml', args)
+// })
 
 useEnable(() => {
   console.log('plugin enabled!')
@@ -17,4 +17,4 @@ useEnable(() => {
   }
 })
 
-export { plugin } from '@kivi-dev/plugin'
+export { plugin as default } from '@kivi-dev/plugin'

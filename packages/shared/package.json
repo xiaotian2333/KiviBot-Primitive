@@ -10,7 +10,7 @@
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT",
   "dependencies": {
-    "dayjs": "^1.11.7"
+    "dayjs": "^1.11.9"
   },
   "peerDependencies": {
     "icqq": "^0.4.14",
