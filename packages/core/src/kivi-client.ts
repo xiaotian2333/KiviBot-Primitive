@@ -117,15 +117,15 @@ export default class KiviClient {
   }
 
   #handleOnLogin() {
+    this.#bindSendMsg()
+    this.#handleMessageForFramework()
+
     const welcome = `${this.#bot!.nickname}(${this.#bot!.uin}) 上线成功! `
     this.#mainLogger.info(kleur.green(welcome))
     this.#mainLogger.info('向 Bot 发送 .help 查看所有命令')
 
     const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
     mainAdmin.sendMsg('✅ 已上线，发送 .help 查看命令')
-
-    this.#bindSendMsg()
-    this.#handleMessageForFramework()
   }
 
   #handleMessageForFramework() {

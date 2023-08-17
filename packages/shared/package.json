@@ -2,7 +2,7 @@
   "name": "@kivi-dev/shared",
   "version": "0.0.0-alpha.1",
   "type": "module",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc"
@@ -10,7 +10,9 @@
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT",
   "dependencies": {
-    "dayjs": "^1.11.9"
+    "dayjs": "^1.11.9",
+    "globby": "^13.2.2",
+    "load-json-file": "^7.0.1"
   },
   "peerDependencies": {
     "icqq": "^0.4.14",

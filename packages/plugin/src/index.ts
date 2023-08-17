@@ -90,10 +90,12 @@ class Plugin extends EventEmitter {
   }
 
   destroy() {
-    this.#unmountFns.forEach(async (fn) => {
-      const res = typeof fn === 'function' && fn()
-      if (res instanceof Promise) await res
-    })
+    Promise.all(
+      this.#unmountFns.map(async (fn) => {
+        const res = typeof fn === 'function' && fn()
+        if (res instanceof Promise) return await res
+      }),
+    )
 
     this.#clearCronTasks()
     this.#removeAllHandler()

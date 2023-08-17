@@ -12,7 +12,6 @@ import {
 useSetup('60s', '0.0.1')
 
 const bot = useBot()
-
 const config = useConfig('kivi')
 
 useOn('message.discuss', (event) => {
