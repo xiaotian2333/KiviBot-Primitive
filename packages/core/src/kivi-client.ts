@@ -1,4 +1,4 @@
-import { searchAllPlugins, showLogo } from '@kivi-dev/shared'
+import { b, searchAllPlugins, showLogo } from '@kivi-dev/shared'
 import dayjs from 'dayjs'
 import { createClient } from 'icqq'
 import kleur from 'kleur'
@@ -87,12 +87,12 @@ export default class KiviClient {
     const { uin, platform, password, oicq_config, log_level = 'debug' } = config
 
     this.#mainLogger.setLevel(log_level)
-    this.#mainLogger.info('准备登录 Bot ' + kleur.cyan(uin))
+    this.#mainLogger.info('准备登录 Bot ' + b(uin))
 
     const botDataDir = path.join(this.#cwd, 'data/oicq')
     const relativeBotDataDir = `./${path.relative(process.cwd(), botDataDir)}`
 
-    this.#mainLogger.info('Bot 数据目录:', kleur.cyan(relativeBotDataDir))
+    this.#mainLogger.info('Bot 数据目录:', b(relativeBotDataDir))
     this.#mainLogger.debug(`初始化 oicq Client `)
 
     const bot = createClient({
@@ -111,8 +111,8 @@ export default class KiviClient {
 
     const { display, version } = this.#bot.apk
 
-    this.#mainLogger.info(`开始登录 Bot ` + kleur.cyan(uin))
-    this.#mainLogger.info(`使用协议 ${kleur.cyan(`${display}_${version}`)}`)
+    this.#mainLogger.info(`开始登录 Bot ` + b(uin))
+    this.#mainLogger.info(`使用协议 ${b(`${display}_${version}`)}`)
     this.#mainLogger.info(`正在解析并登录服务器...`)
 
     await this.#bot.login(uin, password)
@@ -142,7 +142,7 @@ export default class KiviClient {
 
     const welcome = `${this.#bot!.nickname}(${this.#bot!.uin}) 上线成功! `
     this.#mainLogger.info(kleur.green(welcome))
-    this.#mainLogger.info(`向 ${kleur.cyan(`Bot`)} 发送 ${kleur.cyan(`.help`)} 查看所有命令`)
+    this.#mainLogger.info(`向 ${b(`Bot`)} 发送 ${b(`.help`)} 查看所有命令`)
 
     const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
     mainAdmin.sendMsg('✅ 已上线，发送 .help 查看命令')
@@ -158,7 +158,7 @@ export default class KiviClient {
           const pluginInstance = await this.enablePlugin(plugin)
 
           if (!pluginInstance) {
-            this.#mainLogger.error(`插件 ${kleur.cyan(plugin.name)} 启用失败`)
+            this.#mainLogger.error(`插件 ${b(plugin.name)} 启用失败`)
           } else {
             this.#plugins?.set(plugin.name, pluginInstance)
           }
@@ -188,7 +188,7 @@ export default class KiviClient {
           res = loadModule(path.join(pluginInfo.path, entry))
         } catch (e: any) {
           const err = e?.message || JSON.stringify(e)
-          this.#mainLogger.error(`插件 ${kleur.cyan(pluginInfo.name)} 启用失败，报错信息：` + err)
+          this.#mainLogger.error(`插件 ${b(pluginInfo.name)} 启用失败，报错信息：` + err)
           return false
         }
       }
@@ -205,7 +205,7 @@ export default class KiviClient {
         this.#plugins?.set(pluginInfo.name, plugin)
       } catch (e: any) {
         const err = e?.message || JSON.stringify(e)
-        this.#mainLogger.error(`插件 ${kleur.cyan(pluginInfo.name)} 启用失败，报错信息：` + err)
+        this.#mainLogger.error(`插件 ${b(pluginInfo.name)} 启用失败，报错信息：` + err)
         return false
       }
     }
@@ -217,7 +217,7 @@ export default class KiviClient {
     const plugin = this.#plugins?.get(pluginName)
 
     if (!plugin) {
-      return this.#mainLogger.info(`插件 ${kleur.cyan(pluginName)} 未启用`)
+      return this.#mainLogger.info(`插件 ${b(pluginName)} 未启用`)
     }
 
     const isOK = await plugin.destroy()
@@ -237,7 +237,7 @@ export default class KiviClient {
     const plugin = plugins.find((p) => p.name === pluginName)
 
     if (!plugin) {
-      return this.#mainLogger.info(`插件 ${kleur.cyan(pluginName)} 不存在`)
+      return this.#mainLogger.info(`插件 ${b(pluginName)} 不存在`)
     }
 
     const isOnOK = await this.enablePlugin(plugin)
@@ -359,7 +359,7 @@ export default class KiviClient {
   #handleSliderVerify(url: string) {
     const infos = [
       kleur.yellow('请复制下面的链接到浏览器进行滑块认证'),
-      kleur.cyan(url),
+      b(url),
       kleur.white('请输入获取到的 ticket，并按回车键确认:\n'),
     ]
 
@@ -389,7 +389,7 @@ export default class KiviClient {
       type: 'confirm',
       name: 'confirm',
       initial: true,
-      message: `需要验证设备锁，按回车键向 ${kleur.cyan(phone)} 发送短信验证码`,
+      message: `需要验证设备锁，按回车键向 ${b(phone)} 发送短信验证码`,
     })
 
     await bot.sendSmsCode()
@@ -398,7 +398,7 @@ export default class KiviClient {
       name: 'code',
       type: 'text',
       validate: (code) => (code ? true : '验证码不为空'),
-      message: `验证码已发送至 ${kleur.cyan(phone)}，请输入验证码`,
+      message: `验证码已发送至 ${b(phone)}，请输入验证码`,
     })
 
     this.#mainLogger.info('\n短信验证码已提交，等待响应...')
@@ -407,7 +407,7 @@ export default class KiviClient {
   }
 
   async #handleQrcodeDeviceLogin(bot: Client, url: string) {
-    this.#mainLogger.info(`请复制下面的链接到浏览器进行设备锁验证\n\n${kleur.cyan(url)}\n`)
+    this.#mainLogger.info(`请复制下面的链接到浏览器进行设备锁验证\n\n${b(url)}\n`)
 
     await prompts({
       type: 'confirm',

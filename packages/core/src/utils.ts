@@ -1,4 +1,4 @@
-import { ensureArray } from '@kivi-dev/shared'
+import { b, ensureArray } from '@kivi-dev/shared'
 import createJiti from 'jiti'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
@@ -23,7 +23,7 @@ export const require = createRequire(import.meta.url)
 
 export function handleException(logger: Logger) {
   function handleMessage(msg: string) {
-    return msg.replace('签名api异常', '签名 API 返回异常，请重试')
+    return msg.replace('签名api异常', `签名 ${b('API')} 返回异常，请重试`)
   }
 
   const handleException = (e: any) => {

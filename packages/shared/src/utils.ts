@@ -10,6 +10,10 @@ import { fileURLToPath } from 'node:url'
 import type { ImageElem } from 'icqq'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
+export function b(text?: string | number) {
+  return kleur.cyan(text || '')
+}
+
 export function showLogo(v: string) {
   const infos = ['', kleur.cyan(`KiviBot v${v}`), '']
   console.info(infos.join('\n'))

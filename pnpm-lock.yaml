@@ -169,6 +169,9 @@ importers:
       '@kivi-dev/core':
         specifier: workspace:*
         version: link:../core
+      '@kivi-dev/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@kivi-dev/types':
         specifier: workspace:*
         version: link:../types

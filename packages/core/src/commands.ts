@@ -1,5 +1,4 @@
-import { searchAllPlugins } from '@kivi-dev/shared'
-import kleur from 'kleur'
+import { b, searchAllPlugins } from '@kivi-dev/shared'
 
 import { fetchStatus } from './status.js'
 
@@ -75,7 +74,7 @@ class Command {
     }
 
     if (!isMainAdmin(this.#event?.sender.user_id)) {
-      this.#event!.reply('〓 你没有权限 〓')
+      this.#event!.reply('〓 权限不足 〓')
       return
     }
 
@@ -84,10 +83,9 @@ class Command {
     switch (secondCmd) {
       case 'list': {
         const ps = await searchAllPlugins(this.#config?.cwd)
-
         const infos = ps.map((p) => `${this.isPluginEnable(p.name) ? '✅' : '❌'} ${p.name}`)
 
-        this.#event?.reply(infos.length ? infos.join('\n') : '〓 没有插件 〓')
+        this.#event?.reply(infos.length ? infos.join('\n') : '〓 本地没有插件 〓')
         break
       }
 
@@ -209,12 +207,13 @@ class Command {
     }
 
     if (!isMainAdmin(this.#event?.sender.user_id)) {
-      this.#event!.reply('〓 你没有权限 〓')
+      this.#event!.reply('〓 权限不足 〓')
       return
     }
 
     await this.#event!.reply('〓 进程已停止 〓')
-    this.#config?.mainLogger.fatal(kleur.red('已由管理员通过消息命令退出'))
+
+    this.#config?.mainLogger.fatal(b('KiviBot 已由管理员通过消息指令退出'))
     process.exit(0)
   }
 }
