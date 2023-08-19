@@ -14,6 +14,11 @@ export function b(text?: string | number) {
   return kleur.cyan(text || '')
 }
 
+export function escapeColor(colorText: string) {
+  // eslint-disable-next-line no-control-regex
+  return colorText.replace(/\u001b\[\d+m/gu, '')
+}
+
 export function showLogo(v: string) {
   const infos = ['', kleur.cyan(`KiviBot v${v}`), '']
   console.info(infos.join('\n'))
