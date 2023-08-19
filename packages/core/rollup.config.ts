@@ -5,9 +5,9 @@ import { dts } from 'rollup-plugin-dts'
 
 export default defineConfig([
   {
-    input: 'src/index.ts',
+    input: './src/index.ts',
     output: {
-      file: 'lib/index.js',
+      file: './lib/index.js',
       format: 'esm',
       sourcemap: true,
     },
@@ -22,10 +22,15 @@ export default defineConfig([
   },
   {
     input: './src/index.ts',
-    output: [{ file: 'lib/index.d.ts', format: 'es' }],
+    output: [{ file: './lib/index.d.ts' }],
     plugins: [
       dts({
         tsconfig: './tsconfig.json',
+        compilerOptions: {
+          declaration: true,
+          declarationDir: './lib',
+          emitDeclarationOnly: true,
+        },
       }),
     ],
   },
