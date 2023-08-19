@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import { segment } from 'icqq'
 import kleur from 'kleur'
 import crypto from 'node:crypto'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { setTimeout } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
@@ -9,8 +10,8 @@ import { fileURLToPath } from 'node:url'
 import type { ImageElem } from 'icqq'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
-export function showLogo() {
-  const infos = ['', kleur.cyan(`KiviBot v1.0`), '']
+export function showLogo(v: string) {
+  const infos = ['', kleur.cyan(`KiviBot v${v}`), '']
   console.info(infos.join('\n'))
 }
 

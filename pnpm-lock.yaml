@@ -166,6 +166,9 @@ importers:
       '@kivi-dev/types':
         specifier: workspace:*
         version: link:../types
+      '@types/node-cron':
+        specifier: ^3.0.8
+        version: 3.0.8
       icqq:
         specifier: ^0.4.14
         version: 0.4.14
@@ -173,9 +176,6 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
-      '@types/node-cron':
-        specifier: ^3.0.8
-        version: 3.0.8
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
@@ -677,7 +677,6 @@ packages:
 
   /@types/node-cron@3.0.8:
     resolution: {integrity: sha512-+z5VrCvLwiJUohbRSgHdyZnHzAaLuD/E2bBANw+NQ1l05Crj8dIxb/kKK+OEqRitV2Wr/LYLuEBenGDsHZVV5Q==}
-    dev: true
 
   /@types/node@18.17.5:
     resolution: {integrity: sha512-xNbS75FxH6P4UXTPUJp/zNPq6/xsfdJKussCWNOnz4aULWIRwMgP1LgaB5RiBnMX1DPCYenuqGZfnIAx5mbFLA==}

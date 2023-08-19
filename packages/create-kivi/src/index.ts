@@ -5,6 +5,7 @@
 import { md5, showLogo } from '@kivi-dev/shared'
 import kleur from 'kleur'
 import fs from 'node:fs'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import prompts from 'prompts'
 
@@ -13,7 +14,7 @@ import { getProjectDir } from './get-project-dir.js'
 
 import type { BotConfig } from '@kivi-dev/types'
 
-showLogo()
+showLogo(createRequire(import.meta.url)('../package.json').version)
 
 const dir = await getProjectDir()
 
@@ -31,10 +32,12 @@ const { platform } = await prompts({
   message: '请选择登录协议',
   initial: 0,
   choices: [
-    { title: '平板 Pad', value: 1 },
-    { title: '手机 Phone', value: 2 },
-    { title: '电脑 PC', value: 3 },
-    { title: '手表 Watch', value: 4 },
+    // oicq 登录协议：1 为安卓手机, 2 为安卓平板, 3 为安卓手表, 4 为 MacOS, 5 为 iPad
+    { title: '平板 Pad', value: 2 },
+    { title: '手机 Phone', value: 1 },
+    { title: '电脑 PC', value: 4 },
+    { title: '手表 Watch', value: 3 },
+    { title: '备选协议（6）', value: 6 },
   ],
 })
 

@@ -6,7 +6,7 @@
     "strict": true,
     "resolveJsonModule": true,
     "allowJs": false,
-    "declaration": false,
+    "declaration": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,

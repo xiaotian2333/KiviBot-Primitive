@@ -11,16 +11,11 @@ import command from './commands.js'
 import { resolveConfig } from './config.js'
 import { SIGN_API_ADDR } from './constants.js'
 import { Logger } from './logger.js'
-import { handleException, loadModule } from './utils.js'
+import { handleException, loadModule, require } from './utils.js'
 
 import type { Plugin } from '@kivi-dev/plugin'
-import type {
-  AllMessageEvent,
-  BotConfig,
-  ClientWithApis,
-  Platform as KiviPlatform,
-} from '@kivi-dev/types'
-import type { Client, Friend, Group, Platform as IcqqPlatform, Quotable, Sendable } from 'icqq'
+import type { AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/types'
+import type { Client, Friend, Group, Quotable, Sendable } from 'icqq'
 
 export default class KiviClient {
   #cwd = process.cwd()
@@ -31,7 +26,7 @@ export default class KiviClient {
   #plugins: Map<string, Plugin> = new Map()
 
   constructor(config?: BotConfig) {
-    showLogo()
+    showLogo(require('../package.json')?.version)
 
     this.#mainLogger.setLevel('info')
     this.#mainLogger.debug('初始化 Kivi Client 实例')
@@ -63,6 +58,10 @@ export default class KiviClient {
     return this.#plugins
   }
 
+  get bot() {
+    return this.#bot
+  }
+
   async #initKivi(dir?: string) {
     this.#mainLogger.debug('读取 Kivi 配置目录')
 
@@ -87,9 +86,9 @@ export default class KiviClient {
 
     const bot = createClient({
       ...(oicq_config || {}),
+      platform: platform || oicq_config?.platform || 2,
       data_dir: botDataDir,
       auto_server: true,
-      platform: this.#mapPlatformToOicq(platform || 1),
       sign_api_addr: SIGN_API_ADDR,
       log_config: this.#getLogConfig(uin),
     })
@@ -206,6 +205,22 @@ export default class KiviClient {
     }
 
     return isOK
+  }
+
+  async reloadPlugin(pluginName: string) {
+    const isOffOK = await this.disablePlugin(pluginName)
+
+    const plugins = await searchAllPlugins(this.#cwd)
+
+    const plugin = plugins.find((p) => p.name === pluginName)
+
+    if (!plugin) {
+      return this.#mainLogger.info(`插件 ${kleur.cyan(pluginName)} 不存在`)
+    }
+
+    const isOnOK = await this.enablePlugin(plugin)
+
+    return isOffOK && isOnOK
   }
 
   #handleMessageForFramework() {
@@ -388,12 +403,12 @@ export default class KiviClient {
     await bot.login()
   }
 
-  // kivi to oicq/icqq 的 platform 映射
-  #mapPlatformToOicq(platform: KiviPlatform) {
-    // oicq 登录协议：1 为安卓手机, 2 为安卓平板, 3 为安卓手表, 4 为 MacOS, 5 为 iPad
-    // kivi 登录协议：1 为平板，2 为手机，3 为 PC，4 为手表，5 为备选，Tim 或者旧安卓，对应 oicq 的协议 6
-    return [null, 2, 1, 4, 3, 6][platform] as IcqqPlatform
-  }
+  // // kivi to oicq/icqq 的 platform 映射
+  // #mapPlatformToOicq(platform: KiviPlatform) {
+  //   // oicq 登录协议：1 为安卓手机, 2 为安卓平板, 3 为安卓手表, 4 为 MacOS, 5 为 iPad
+  //   // kivi 登录协议：1 为平板，2 为手机，3 为 PC，4 为手表，5 为备选，Tim 或者旧安卓，对应 oicq 的协议 6
+  //   return [null, 2, 1, 4, 3, 6][platform] as IcqqPlatform
+  // }
 
   #pickLogger(pluginName: string) {
     if (this.#loggers.has(pluginName)) {
