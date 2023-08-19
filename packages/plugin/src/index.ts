@@ -247,11 +247,13 @@ export interface Plugin extends EventEmitter {
 }
 
 export const plugin = new Plugin()
+export const setup = plugin.__useSetup.bind(plugin)
+
 export const useOn = plugin.on.bind(plugin)
 export const useBot = () => plugin.bot
+
+export const useCmd = plugin.__useCommand.bind(plugin)
 export const useMount = plugin.__useMount.bind(plugin)
-export const useSetup = plugin.__useSetup.bind(plugin)
 export const useMatch = plugin.__useMatch.bind(plugin)
 export const useConfig = plugin.__useConfig.bind(plugin)
-export const useCommand = plugin.__useCommand.bind(plugin)
 export const registerApi = plugin.__registerApi.bind(plugin)

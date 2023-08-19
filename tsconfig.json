@@ -6,7 +6,7 @@
     "strict": true,
     "resolveJsonModule": true,
     "allowJs": false,
-    "declaration": true,
+    "declaration": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -17,7 +17,8 @@
     "packages/*/node_modules",
     "packages/*/dist",
     "packages/*/build",
-    "_core"
+    "_core",
+    "rollup.config.ts"
   ],
   "references": [
     {

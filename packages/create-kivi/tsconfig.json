@@ -4,5 +4,6 @@
     "baseUrl": ".",
     "outDir": "bin",
     "declaration": false
-  }
+  },
+  "include": ["src/**/*"]
 }
