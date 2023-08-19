@@ -13,10 +13,10 @@
   "license": "MIT",
   "dependencies": {
     "@kivi-dev/types": "workspace:*",
+    "@types/node-cron": "^3.0.8",
     "node-cron": "^3.0.2"
   },
   "devDependencies": {
-    "@types/node-cron": "^3.0.8",
     "typescript": "^5.1.6"
   },
   "peerDependencies": {

@@ -17,7 +17,7 @@
     "packages/*/node_modules",
     "packages/*/dist",
     "packages/*/build",
-    "_core",
+    "backup",
     "rollup.config.ts"
   ],
   "references": [
