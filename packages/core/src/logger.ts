@@ -1,8 +1,7 @@
 import dayjs from 'dayjs'
 import kleur from 'kleur'
 
-export type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
-
+import type { Level } from '@kivi-dev/types'
 export class Logger {
   #level = 0
   #name = ''

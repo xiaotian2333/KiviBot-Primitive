@@ -84,8 +84,9 @@ export default class KiviClient {
   }
 
   async #createBotClient(config: BotConfig) {
-    const { uin, platform, password, oicq_config } = config
+    const { uin, platform, password, oicq_config, log_level = 'debug' } = config
 
+    this.#mainLogger.setLevel(log_level)
     this.#mainLogger.info('准备登录 Bot ' + kleur.cyan(uin))
 
     const botDataDir = path.join(this.#cwd, 'data', String(uin))

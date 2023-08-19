@@ -9,6 +9,8 @@ import type {
 export type DeviceMode = 'sms' | 'qrcode'
 export type LoginMode = 'password' | 'qrcode'
 
+export type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
+
 export type Pad = 1
 export type Phone = 2
 export type PC = 3
@@ -67,6 +69,7 @@ export interface BotConfig {
   admins: AdminArray
   login_mode: LoginMode
   device_mode?: DeviceMode
+  log_level?: Level
   password?: string
   plugins?: string[]
   oicq_config?: Config
