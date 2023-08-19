@@ -13,7 +13,6 @@ import command from './commands.js'
 import { resolveConfig } from './config.js'
 import { CONFIG_FILE_NAME, DEFAULT_SIGN_API } from './constants.js'
 import { Logger } from './logger.js'
-import { createObservable } from './proxy.js'
 import { handleException, loadModule, require, stringifySendable } from './utils.js'
 
 import type { Plugin } from '@kivi-dev/plugin'
@@ -45,7 +44,6 @@ export default class KiviClient {
 
   #handleConfigChange(config: BotConfig) {
     const filePath = path.join(this.#cwd, CONFIG_FILE_NAME)
-    this.#mainLogger.debug('config changed:', JSON.stringify(config, null, 2))
     fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
     this.#mainLogger.debug('检测到 config 变更，已自动保存')
   }
@@ -344,7 +342,7 @@ export default class KiviClient {
   }
 
   #handleDeviceLogin(p: { url: string; phone: string }) {
-    const useSms = this.#botConfig?.deviceMode !== 'qrcode'
+    const useSms = this.#botConfig?.device_mode !== 'qrcode'
 
     if (useSms) {
       this.#handleSmsDeviceLogin(this.#bot!, p.phone)

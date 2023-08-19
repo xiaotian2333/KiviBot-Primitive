@@ -3,6 +3,7 @@ import { filesize } from 'filesize'
 import os from 'node:os'
 
 import { DEVICE_MAP } from './constants.js'
+import { require } from './utils.js'
 
 import type { ClientWithApis } from '@kivi-dev/types'
 
@@ -45,7 +46,7 @@ export async function fetchStatus(bot: ClientWithApis) {
 当前: ${msg_cnt_per_min} 条/分钟
 启动: ${runTime}
 框架: v${require('../package.json')?.version}-${filesize(rss)}-${per(rss)}%
-协议: movo-v${require('icqq/package.json')?.version}-${DEVICE_MAP[bot.config.platform]}
+协议: icqq-v${require('icqq/package.json')?.version}-${DEVICE_MAP[bot.config.platform]}
 系统: ${SystemMap[os.type()] || os.type()}-${arch}-node${nodeVersion}
 内存: ${filesize(used)}/${filesize(total)}-${per(used)}%
 `.trim()

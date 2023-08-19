@@ -32,8 +32,8 @@
     "@kivi-dev/shared": "workspace:*",
     "dayjs": "^1.11.9",
     "filesize": "^10.0.12",
-    "icqq": "^0.4.14",
-    "jiti": "^1.19.1",
+    "icqq": "^0.5.0",
+    "jiti": "^1.19.3",
     "kleur": "^4.1.5",
     "mri": "^1.2.0",
     "node-cron": "^3.0.2",
@@ -47,11 +47,11 @@
     "@kivi-dev/types": "workspace:*",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
-    "@types/node": "^18.17.5",
+    "@types/node": "^18.17.6",
     "@types/node-cron": "^3.0.8",
     "@types/prompts": "^2.4.4",
     "@vmoe/eslint-config": "^0.4.1",
-    "@vmoe/prettier-config": "^1.1.0",
+    "@vmoe/prettier-config": "^1.1.1",
     "axios": "^1.4.0",
     "bumpp": "^9.1.1",
     "eslint": "^8.47.0",
@@ -60,7 +60,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^3.28.0",
     "rollup-plugin-dts": "^5.3.1",
-    "tslib": "^2.6.1",
+    "tslib": "^2.6.2",
     "typescript": "^5.1.6"
   }
 }

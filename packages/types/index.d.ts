@@ -65,8 +65,8 @@ export interface BotConfig {
   prefix: string
   platform: Platform
   admins: AdminArray
-  loginMode: LoginMode
-  deviceMode?: DeviceMode
+  login_mode: LoginMode
+  device_mode?: DeviceMode
   password?: string
   plugins?: string[]
   oicq_config?: Config
