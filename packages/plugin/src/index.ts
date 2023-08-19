@@ -406,12 +406,13 @@ export interface Plugin extends EventEmitter {
   ): this
 }
 
+export * from 'icqq'
+
 export const plugin = new Plugin()
 export const setup = plugin.__setup.bind(plugin)
 
 export const useOn = plugin.on.bind(plugin)
 export const useBot = () => plugin.bot
-
 export const useApi = plugin.__useApi.bind(plugin)
 export const useMount = plugin.__useMount.bind(plugin)
 export const useMessage = plugin.__useMessage.bind(plugin)

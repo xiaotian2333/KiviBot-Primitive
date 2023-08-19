@@ -179,8 +179,6 @@ export default class KiviClient {
   async enablePlugin(pluginInfo: { name: string; path: string; pkg: Record<string, any> }) {
     let res
 
-    console.log(pluginInfo)
-
     try {
       res = loadModule(`${pluginInfo.path}/index`)
     } catch (e: any) {

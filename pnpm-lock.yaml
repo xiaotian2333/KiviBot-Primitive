@@ -53,9 +53,6 @@ importers:
       mri:
         specifier: ^1.2.0
         version: 1.2.0
-      node-cron:
-        specifier: ^3.0.2
-        version: 3.0.2
       obj-observer:
         specifier: ^1.0.4
         version: 1.0.4

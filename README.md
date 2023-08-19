@@ -32,16 +32,37 @@ send `.h` to bot to get more help info.
 create a TS file in `plugins/demo/index.ts`
 
 ```typescript
-import { setup, useBot, useOn, useConfig, useLogger, useMount } from '@kivi-dev/plugin'
+import {
+  //
+  setup,
+  //
+  useBot,
+  useInfo,
+  useConfig,
+  //
+  useOn,
+  useCron,
+  useMatch,
+  useMount,
+  useLogger,
+  useMessage,
+  useCommand,
+  //
+  registerApi,
+  useApi,
+  //
+  segment,
+  axios,
+} from '@kivi-dev/plugin'
 
 setup('Plugin Fot Test', '1.0.0')
 
 const logger = useLogger()
 
 useMount(async () => {
-  logger.info('plugin mount')
+  logger.info('plugin mount: ' + useInfo().botConfig)
 
-  const { mainAdmin, config } = useConfig()
+  const config = useConfig()
   const bot = useBot()
 
   logger.log(config)
@@ -49,13 +70,28 @@ useMount(async () => {
   config.value = [1, 2, 3]
   config.value.push(4)
 
-  await bot.sendPrivateMsg(mainAdmin, 'hi')
-})
+  await bot.sendPrivateMsg(useInfo().mainAdmin, 'hi')
 
-useOn('message.group', async (event) => {
-  if (event.raw_message === 'hi') {
-    await event.reply('hi! ' + event.sender.nickname)
-  }
+  useCommand('/test', async (event) => {
+    await event.reply('test command')
+  })
+
+  useMatch([/hi/], (e) => {
+    logger.info('match hi')
+  })
+
+  useCron('*/3 * * * * *', () => {
+    logger.info('cron trigger')
+    bot.sendPrivateMsg(useInfo().mainAdmin, 'cron trigger')
+  })
+
+  useMessage((e) => e.reply('hi'), { type: 'private' })
+
+  useOn('message.group', async (event) => {
+    if (event.raw_message === 'hi') {
+      await event.reply('hi! ' + event.sender.nickname)
+    }
+  })
 })
 
 export { plugin } from '@kivi-dev/plugin'
