@@ -83,9 +83,15 @@ class Command {
     switch (secondCmd) {
       case 'list': {
         const ps = await searchAllPlugins(this.#config?.cwd)
-        const infos = ps.map((p) => `${this.isPluginEnable(p.name) ? '✅' : '❌'} ${p.name}`)
+        const infos = ps.map((p) => `${this.isPluginEnable(p.name) ? '●' : '○'} ${p.name}`)
 
-        this.#event?.reply(infos.length ? infos.join('\n') : '〓 本地没有插件 〓')
+        const message = [
+          '〓 keli 插件列表 〓',
+          infos.join('\n'),
+          `共 ${infos.length} 个，启用 ${ps.filter((p) => this.isPluginEnable(p.name)).length} 个`,
+        ]
+
+        this.#event?.reply(infos.length ? message.join('\n') : '〓 本地没有插件 〓')
         break
       }
 
@@ -110,13 +116,12 @@ class Command {
 
         const isOK = await this.#kiviClient?.enablePlugin(plugin)
 
-        if (!isOK) {
-          this.#event!.reply('〓 插件启用失败 〓')
+        if (isOK !== true) {
+          this.#event!.reply('〓 插件启用失败 〓\n报错信息如下: ' + isOK)
           return
         }
 
         this.#config?.botConfig?.plugins?.push(pname)
-
         this.#event?.reply('〓 插件启用成功 〓')
 
         break
@@ -135,8 +140,8 @@ class Command {
 
         const isOK = await this.#kiviClient?.disablePlugin(pname)
 
-        if (!isOK) {
-          this.#event!.reply('〓 插件禁用失败 〓')
+        if (isOK !== true) {
+          this.#event!.reply('〓 插件禁用失败 〓\n报错信息如下: ' + isOK)
           return
         } else {
           const idx = this.#config?.botConfig?.plugins?.indexOf(pname)
@@ -157,8 +162,12 @@ class Command {
 
         const isOK = await this.#kiviClient?.reloadPlugin(pname)
 
-        if (!isOK) {
-          this.#event!.reply('〓 插件重载失败 〓')
+        if (isOK !== true) {
+          this.#event!.reply('〓 插件重载失败 〓\n报错信息如下: ' + isOK)
+
+          const idx = this.#config?.botConfig?.plugins?.indexOf(pname)
+          this.#config?.botConfig?.plugins?.splice(Number(idx), 1)
+
           return
         }
 

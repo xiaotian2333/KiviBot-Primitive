@@ -171,10 +171,10 @@ export default class KiviClient {
 
     try {
       res = loadModule(`${pluginInfo.path}/index`)
-    } catch {
+    } catch (e) {
       try {
         res = loadModule(`${pluginInfo.path}/src/index`)
-      } catch {
+      } catch (e) {
         const exports =
           pluginInfo.pkg?.exports ||
           pluginInfo.pkg?.exports['.'] ||
@@ -186,10 +186,10 @@ export default class KiviClient {
 
         try {
           res = loadModule(path.join(pluginInfo.path, entry))
-        } catch (e: any) {
-          const err = e?.message || JSON.stringify(e)
-          this.#mainLogger.error(`插件 ${b(pluginInfo.name)} 启用失败，报错信息：` + err)
-          return false
+        } catch {
+          const info = `未找到插件 ${b(pluginInfo.name)} 入口，启用失败`
+          this.#mainLogger.error(info)
+          return info
         }
       }
     }
@@ -197,52 +197,59 @@ export default class KiviClient {
     const plugin = res?.plugin || res?.default?.plugin
 
     if (!plugin || !plugin.init) {
-      throw new Error('插件未导出 `plugin`')
+      const info = `插件 ${b(pluginInfo.name)} 未导出 ${b('`plugin`')} 实例，启用失败`
+      this.#mainLogger.error(info)
+      return info
     } else {
       try {
         await plugin.init(this.#bot!, deepClone(this.#botConfig), this.#cwd)
 
         this.#plugins?.set(pluginInfo.name, plugin)
+        return plugin
       } catch (e: any) {
         const err = e?.message || JSON.stringify(e)
-        this.#mainLogger.error(`插件 ${b(pluginInfo.name)} 启用失败，报错信息：` + err)
-        return false
+        const info = `插件 ${b(pluginInfo.name)} 启用失败，错误信息：` + err
+        this.#mainLogger.error(info)
+        return info
       }
     }
-
-    return plugin
   }
 
   async disablePlugin(pluginName: string) {
     const plugin = this.#plugins?.get(pluginName)
 
     if (!plugin) {
-      return this.#mainLogger.info(`插件 ${b(pluginName)} 未启用`)
+      const err = `插件 ${b(pluginName)} 未启用`
+      this.#mainLogger.warn(err)
+      return err
     }
 
-    const isOK = await plugin.destroy()
+    try {
+      await plugin.destroy()
 
-    if (isOK) {
       this.#plugins?.delete(pluginName)
-    }
 
-    return isOK
+      return true
+    } catch (e: any) {
+      return e.message || JSON.stringify(e)
+    }
   }
 
   async reloadPlugin(pluginName: string) {
     const isOffOK = await this.disablePlugin(pluginName)
-
     const plugins = await searchAllPlugins(this.#cwd)
-
     const plugin = plugins.find((p) => p.name === pluginName)
 
     if (!plugin) {
-      return this.#mainLogger.info(`插件 ${b(pluginName)} 不存在`)
+      const info = `插件 ${b(pluginName)} 不存在`
+      this.#mainLogger.info(info)
+      return info
     }
 
     const isOnOK = await this.enablePlugin(plugin)
+    const isOK = isOffOK === true && isOnOK && typeof isOnOK !== 'string'
 
-    return isOffOK && isOnOK
+    return isOK && isOffOK && isOnOK
   }
 
   #handleMessageForFramework() {
@@ -376,7 +383,7 @@ export default class KiviClient {
           return inputTicket()
         }
 
-        this.#mainLogger.info('\nticket 已提交，等待响应...')
+        this.#mainLogger.info(`\n${b('ticket')} 已提交，等待响应...`)
         await bot.submitSlider(ticket)
       })
     }
@@ -417,23 +424,6 @@ export default class KiviClient {
     })
 
     await bot.login()
-  }
-
-  // // kivi to oicq/icqq 的 platform 映射
-  // #mapPlatformToOicq(platform: KiviPlatform) {
-  //   // oicq 登录协议：1 为安卓手机, 2 为安卓平板, 3 为安卓手表, 4 为 MacOS, 5 为 iPad
-  //   // kivi 登录协议：1 为平板，2 为手机，3 为 PC，4 为手表，5 为备选，Tim 或者旧安卓，对应 oicq 的协议 6
-  //   return [null, 2, 1, 4, 3, 6][platform] as IcqqPlatform
-  // }
-
-  #pickLogger(pluginName: string) {
-    if (this.#loggers.has(pluginName)) {
-      return this.#loggers.get(pluginName) as Logger
-    } else {
-      const logger = new Logger(String(pluginName))
-      this.#loggers.set(pluginName, logger)
-      return logger
-    }
   }
 
   #getLogConfig(uin: number) {

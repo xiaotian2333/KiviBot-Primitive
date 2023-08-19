@@ -46,21 +46,15 @@ export class Plugin extends EventEmitter {
     const unsubscribe = bot.on('kivi.admins', this.#adminChangeHandler)
     this.#addHandler('kivi.admins', unsubscribe)
 
-    try {
-      this.#mountFns.forEach(async (fn) => {
-        const unmountFn = fn()
+    this.#mountFns.forEach(async (fn) => {
+      const unmountFn = fn()
 
-        if (unmountFn instanceof Promise) {
-          this.#unmountFns.push(await unmountFn)
-        } else {
-          this.#unmountFns.push(unmountFn)
-        }
-      })
-    } catch (e: any) {
-      this.logger.debug(e)
-      const err = e?.message || JSON.stringify(e)
-      this.#throwPluginError(`${b('onMounted')} 发生错误: ` + err)
-    }
+      if (unmountFn instanceof Promise) {
+        this.#unmountFns.push(await unmountFn)
+      } else {
+        this.#unmountFns.push(unmountFn)
+      }
+    })
 
     KiviEvents.forEach((eventName) => {
       const handler = (eventPayload: FirstParam<KiviEventMap<Client>[typeof eventName]>) => {
@@ -93,29 +87,22 @@ export class Plugin extends EventEmitter {
   }
 
   async destroy() {
-    try {
-      await Promise.all(
-        this.#unmountFns.map(async (fn) => {
-          const res = typeof fn === 'function' && fn()
-          if (res instanceof Promise) return await res
-        }),
-      )
+    await Promise.all(
+      this.#unmountFns.map(async (fn) => {
+        const res = typeof fn === 'function' && fn()
+        if (res instanceof Promise) return await res
+      }),
+    )
 
-      this.#clearCronTasks()
-      this.#removeAllHandler()
-      this.#unregisterAllApi()
+    this.#clearCronTasks()
+    this.#removeAllHandler()
+    this.#unregisterAllApi()
 
-      this.#bot = undefined
-
-      return true
-    } catch (e: any) {
-      this.logger.fatal(e?.message || JSON.stringify(e))
-      return false
-    }
+    this.#bot = undefined
   }
 
   #throwPluginError(message: string) {
-    throw new Error(`[${this.#name}] ` + message)
+    this.#throwPluginError(`[${this.#name}] ` + message)
   }
 
   __useSetup(name: string, version: string) {
@@ -182,11 +169,11 @@ export class Plugin extends EventEmitter {
 
   __registerApi<T extends AnyFunc = AnyFunc>(method: string, fn: T) {
     if (!this.#bot) {
-      throw new Error(`请在 ${b(method)} 方法中调用 ${b('registerApi')}`)
+      this.#throwPluginError(`请在 ${b(method)} 方法中调用 ${b('registerApi')}`)
     }
 
     if (this.#apiNames.has(method) || method in plugin.#bot!.apis) {
-      throw new Error(`api ${b(method)} 已经被注册，请尝试使用其它名称`)
+      this.#throwPluginError(`api ${b(method)} 已经被注册，请尝试使用其它名称`)
     }
 
     this.#apiNames.add(method)
@@ -196,11 +183,11 @@ export class Plugin extends EventEmitter {
 
   __useApi<T extends AnyFunc = AnyFunc>(method: string) {
     if (!this.#bot) {
-      throw new Error(`请在 ${b(method)} 方法中调用 ${b('useApi')}`)
+      this.#throwPluginError(`请在 ${b(method)} 方法中调用 ${b('useApi')}`)
     }
 
     if (!plugin.#bot!.apis[method]) {
-      throw new Error(`API ${b(method)} 不存在，请检查是否已在插件中注册`)
+      this.#throwPluginError(`API ${b(method)} 不存在，请检查是否已在插件中注册`)
     }
 
     return plugin.#bot!.apis[method] as T
