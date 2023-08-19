@@ -1,5 +1,4 @@
 import { b, escapeColor, searchAllPlugins } from '@kivi-dev/shared'
-import kleur from 'kleur'
 
 import { fetchStatus } from './status.js'
 
@@ -87,7 +86,7 @@ class Command {
         const infos = ps.map((p) => `${this.isPluginEnable(p.name) ? '●' : '○'} ${p.name}`)
 
         const message = [
-          '〓 keli 插件列表 〓',
+          '〓 Kivi 插件列表 〓',
           infos.join('\n'),
           `共 ${infos.length} 个，启用 ${ps.filter((p) => this.isPluginEnable(p.name)).length} 个`,
         ]
@@ -191,7 +190,7 @@ class Command {
 
   help() {
     const infos = [
-      '〓 KiviBot 帮助 〓',
+      '〓 Kivi 帮助 〓',
       '.p 插件操作',
       '.s 框架状态',
       '.h 显示帮助',
@@ -204,8 +203,8 @@ class Command {
 
   about() {
     const infos = [
-      '〓 关于 KiviBot 〓\n',
-      'KiviBot 是一个基于 oicq/icqq 的机器人框架，使用 TypeScript 编写。',
+      '〓 关于 Kivi 〓\n',
+      'Kivi 是一个基于 oicq/icqq 的机器人框架，使用 TypeScript 编写。',
       '开源地址：https://github.com/vikiboss/kivibot',
     ]
 
@@ -224,7 +223,7 @@ class Command {
 
     await this.#event!.reply('〓 进程已停止 〓')
 
-    this.#config?.mainLogger.fatal(b('KiviBot 已由管理员通过消息指令退出'))
+    this.#config?.mainLogger.fatal(b('Kivi 已由管理员通过消息指令退出'))
     process.exit(0)
   }
 }

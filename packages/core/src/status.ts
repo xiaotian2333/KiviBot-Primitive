@@ -42,7 +42,7 @@ export async function fetchStatus(bot: ClientWithApis, botConfig?: BotConfig) {
   const arch = ArchMap[process.arch] || process.arch
 
   return `
-〓 KiviBot 状态 〓
+〓 Kivi 状态 〓
 昵称: ${bot.nickname}
 账号: ${bot.uin}
 列表信息: ${bot.fl.size} 好友，${bot.gl.size} 群

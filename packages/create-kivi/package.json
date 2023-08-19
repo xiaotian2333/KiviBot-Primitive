@@ -2,7 +2,7 @@
   "name": "create-kivi",
   "version": "2.0.0",
   "type": "module",
-  "description": "CLI for KiviBot",
+  "description": "CLI for Kivi",
   "bin": "./bin/index.js",
   "files": [
     "bin"

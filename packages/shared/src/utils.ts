@@ -20,7 +20,7 @@ export function escapeColor(colorText: string) {
 }
 
 export function showLogo(v: string) {
-  const infos = ['', kleur.cyan(`KiviBot v${v}`), '']
+  const infos = ['', kleur.cyan(`Kivi v${v}`), '']
   console.info(infos.join('\n'))
 }
 

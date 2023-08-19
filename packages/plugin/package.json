@@ -2,7 +2,7 @@
   "name": "@kivi-dev/plugin",
   "version": "2.0.0",
   "type": "module",
-  "description": "plugin for kivibot",
+  "description": "plugin for Kivi",
   "main": "lib/index.js",
   "scripts": {
     "dev": "tsc -w",
