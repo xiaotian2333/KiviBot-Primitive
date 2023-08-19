@@ -21,7 +21,7 @@ import type { Client, Friend, Group, Quotable, Sendable } from 'icqq'
 
 export default class KiviClient {
   #cwd = process.cwd()
-  #mainLogger: Logger = new Logger('KiviClient')
+  #mainLogger: Logger = new Logger('Client')
   #loggers: Map<string, Logger> = new Map()
   #bot?: ClientWithApis
   #botConfig?: BotConfig
@@ -249,7 +249,7 @@ export default class KiviClient {
     const isOnOK = await this.enablePlugin(plugin)
     const isOK = isOffOK === true && isOnOK && typeof isOnOK !== 'string'
 
-    return isOK && isOffOK && isOnOK
+    return isOK ? true : isOffOK && isOnOK
   }
 
   #handleMessageForFramework() {

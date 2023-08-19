@@ -31,7 +31,7 @@ export class Plugin extends EventEmitter {
   #handlers: Map<string, AnyFunc[]> = new Map()
   #cronTasks: ScheduledTask[] = []
 
-  logger = new Logger('plugin')
+  logger = new Logger('Plugin')
 
   get bot() {
     return this.#bot!
@@ -102,7 +102,7 @@ export class Plugin extends EventEmitter {
   }
 
   #throwPluginError(message: string) {
-    this.#throwPluginError(`[${this.#name}] ` + message)
+    this.logger.error(`[${b(this.#name || '未知插件')}] ` + message)
   }
 
   __useSetup(name: string, version: string) {

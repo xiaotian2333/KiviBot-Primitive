@@ -1,4 +1,5 @@
 import { b, searchAllPlugins } from '@kivi-dev/shared'
+import kleur from 'kleur'
 
 import { fetchStatus } from './status.js'
 
@@ -117,7 +118,7 @@ class Command {
         const isOK = await this.#kiviClient?.enablePlugin(plugin)
 
         if (isOK !== true) {
-          this.#event!.reply('〓 插件启用失败 〓\n报错信息如下: ' + isOK)
+          this.#event!.reply('〓 插件启用失败 〓\n报错信息如下: ' + kleur.reset(isOK))
           return
         }
 
@@ -141,7 +142,7 @@ class Command {
         const isOK = await this.#kiviClient?.disablePlugin(pname)
 
         if (isOK !== true) {
-          this.#event!.reply('〓 插件禁用失败 〓\n报错信息如下: ' + isOK)
+          this.#event!.reply('〓 插件禁用失败 〓\n报错信息如下: ' + kleur.reset(isOK))
           return
         } else {
           const idx = this.#config?.botConfig?.plugins?.indexOf(pname)
@@ -163,7 +164,7 @@ class Command {
         const isOK = await this.#kiviClient?.reloadPlugin(pname)
 
         if (isOK !== true) {
-          this.#event!.reply('〓 插件重载失败 〓\n报错信息如下: ' + isOK)
+          this.#event!.reply('〓 插件重载失败 〓\n报错信息如下: ' + kleur.reset(isOK))
 
           const idx = this.#config?.botConfig?.plugins?.indexOf(pname)
           this.#config?.botConfig?.plugins?.splice(Number(idx), 1)
