@@ -151,7 +151,7 @@ export class Plugin extends EventEmitter {
       dataDir: this.#dataDir || '',
       admins: this.admins || [],
       config: this.#pluginConfig,
-      botConfig: this.#botConfig,
+      botConfig: this.#botConfig!,
       mainAdmin: (this.admins ?? [])[0]!,
       subAdmins: [...(this.admins ?? [])].slice(1),
     }
