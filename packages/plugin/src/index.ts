@@ -44,7 +44,7 @@ export class Plugin extends EventEmitter {
 
   init(bot: ClientWithApis, config: BotConfig, cwd: string) {
     if (!this.#name) {
-      this.#throwPluginError(`请在插件中调用 ${b('setup')} 函数设置插件名称`)
+      return this.#throwPluginError(`请在插件中调用 ${b('setup')} 函数设置插件名称`)
     }
 
     this.#bot = bot
@@ -135,7 +135,7 @@ export class Plugin extends EventEmitter {
   }
 
   #throwPluginError(message: string) {
-    this.#logger.error(`[${b(this.#name || '未知插件')}] ` + message)
+    this.#logger.error(message)
   }
 
   __setup(name: string, version: string) {

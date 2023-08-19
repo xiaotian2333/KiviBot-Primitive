@@ -18,9 +18,13 @@ export class Logger {
     if (name) this.#name = String(name)
   }
 
-  get prefix() {
-    const time = kleur.green(`[${dayjs().format('MM/DD HH:mm:ss')}]`)
-    return time + (this.#name ? kleur.yellow(` [${this.#name}]`) : '')
+  get time() {
+    return kleur.green(`[${dayjs().format('MM/DD HH:mm:ss')}]`)
+  }
+
+  get tag() {
+    const color = this.#name === 'Client' ? 'yellow' : 'cyan'
+    return this.#name ? kleur[color](` [${this.#name}]`) : ''
   }
 
   setLevel(level: Level) {
@@ -39,19 +43,19 @@ export class Logger {
 
   trace(...args: any[]) {
     if (this.#level <= this.#levels.trace) {
-      console.log(this.prefix + kleur.gray(' [TRACE]'), ...args)
+      console.log(this.time + kleur.gray(' [TRACE]') + this.tag, ...args)
     }
   }
 
   debug(...args: any[]) {
     if (this.#level <= this.#levels.debug) {
-      console.log(this.prefix + kleur.cyan(' [DEBUG]'), ...args)
+      console.log(this.time + kleur.cyan(' [DEBUG]') + this.tag, ...args)
     }
   }
 
   info(...args: any[]) {
     if (this.#level <= this.#levels.info) {
-      console.log(this.prefix + kleur.green(' [INFO]'), ...args)
+      console.log(this.time + kleur.green(' [INFO]') + this.tag, ...args)
     }
   }
 
@@ -61,19 +65,19 @@ export class Logger {
 
   warn(...args: any[]) {
     if (this.#level <= this.#levels.warn) {
-      console.log(this.prefix + kleur.yellow(' [WARN]'), ...args)
+      console.log(this.time + kleur.yellow(' [WARN]') + this.tag, ...args)
     }
   }
 
   error(...args: any[]) {
     if (this.#level <= this.#levels.error) {
-      console.log(this.prefix + kleur.red(' [ERROR]'), ...args)
+      console.log(this.time + kleur.red(' [ERROR]') + this.tag, ...args)
     }
   }
 
   fatal(...args: any[]) {
     if (this.#level <= this.#levels.fatal) {
-      console.log(this.prefix + kleur.magenta(' [FATAL]'), ...args)
+      console.log(this.time + kleur.magenta(' [FATAL]') + this.tag, ...args)
     }
   }
 }

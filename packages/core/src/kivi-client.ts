@@ -163,7 +163,7 @@ export default class KiviClient {
         .filter((p) => this.#botConfig?.plugins?.includes(p.name))
         .map(async (plugin) => {
           const relativePath = './' + path.relative(this.#cwd, plugin.path)
-          this.#mainLogger.info(`启用插件 ${b(plugin.name)}: ${relativePath}`)
+          this.#mainLogger.info(b(`启用插件 ${plugin.name} -> ${relativePath}`))
 
           const pluginInstance = await this.enablePlugin(plugin)
 
