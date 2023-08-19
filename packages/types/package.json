@@ -5,6 +5,6 @@
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT",
   "peerDependencies": {
-    "icqq": "^0.4.14"
+    "icqq": "^0.5.0"
   }
 }

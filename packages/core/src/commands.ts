@@ -1,4 +1,5 @@
 import { searchAllPlugins } from '@kivi-dev/shared'
+import kleur from 'kleur'
 
 import { fetchStatus } from './status.js'
 
@@ -36,10 +37,9 @@ class Command {
     const cmds = [
       ['plugin', 'p'],
       ['status', 's'],
-      ['config', 'conf', 'c'],
       ['help', 'h'],
-      'about',
-      'exit',
+      ['about', 'a'],
+      ['exit', 'e'],
     ]
 
     // 映射 alias 到 cmd
@@ -66,7 +66,8 @@ class Command {
         '.p reload <name>',
       ]
 
-      return this.#event!.reply(infos.join('\n'))
+      this.#event!.reply(infos.join('\n'))
+      return
     }
 
     const isMainAdmin = (qq?: number) => {
@@ -74,7 +75,8 @@ class Command {
     }
 
     if (!isMainAdmin(this.#event?.sender.user_id)) {
-      return this.#event!.reply('〓 你没有权限 〓')
+      this.#event!.reply('〓 你没有权限 〓')
+      return
     }
 
     const [secondCmd, pname] = this.#params
@@ -91,24 +93,28 @@ class Command {
 
       case 'on': {
         if (!pname) {
-          return this.#event!.reply('〓 请指定插件名称 〓')
+          this.#event!.reply('〓 请指定插件名称 〓')
+          return
         }
 
         if (this.isPluginEnable(pname)) {
-          return this.#event!.reply('〓 插件已启用 〓')
+          this.#event!.reply('〓 插件已启用 〓')
+          return
         }
 
         const ps = await searchAllPlugins(this.#config?.cwd)
         const plugin = ps.find((p) => p.name === pname)
 
         if (!plugin) {
-          return this.#event!.reply('〓 插件不存在 〓')
+          this.#event!.reply('〓 插件不存在 〓')
+          return
         }
 
         const isOK = await this.#kiviClient?.enablePlugin(plugin)
 
         if (!isOK) {
-          return this.#event!.reply('〓 插件启用失败 〓')
+          this.#event!.reply('〓 插件启用失败 〓')
+          return
         }
 
         this.#config?.botConfig?.plugins?.push(pname)
@@ -120,17 +126,20 @@ class Command {
 
       case 'off': {
         if (!pname) {
-          return this.#event!.reply('〓 请指定插件名称 〓')
+          this.#event!.reply('〓 请指定插件名称 〓')
+          return
         }
 
         if (!this.isPluginEnable(pname)) {
-          return this.#event!.reply('〓 插件未启用 〓')
+          this.#event!.reply('〓 插件未启用 〓')
+          return
         }
 
         const isOK = await this.#kiviClient?.disablePlugin(pname)
 
         if (!isOK) {
-          return this.#event!.reply('〓 插件禁用失败 〓')
+          this.#event!.reply('〓 插件禁用失败 〓')
+          return
         } else {
           const idx = this.#config?.botConfig?.plugins?.indexOf(pname)
           this.#config?.botConfig?.plugins?.splice(Number(idx), 1)
@@ -144,13 +153,15 @@ class Command {
       case 'reload':
       case 'rl': {
         if (!pname) {
-          return this.#event!.reply('〓 请指定插件名称 〓')
+          this.#event!.reply('〓 请指定插件名称 〓')
+          return
         }
 
         const isOK = await this.#kiviClient?.reloadPlugin(pname)
 
         if (!isOK) {
-          return this.#event!.reply('〓 插件重载失败 〓')
+          this.#event!.reply('〓 插件重载失败 〓')
+          return
         }
 
         this.#event!.reply('〓 重载成功 〓')
@@ -162,18 +173,50 @@ class Command {
 
   async status() {
     const bot = this.#kiviClient?.bot as ClientWithApis
-    const status = await fetchStatus(bot)
+    const status = await fetchStatus(bot, this.#config?.botConfig)
 
-    return this.#event!.reply(status)
+    this.#event!.reply(status)
   }
 
   async config() {}
 
-  help() {}
+  help() {
+    const infos = [
+      '〓 KiviBot 帮助 〓',
+      '.p 插件操作',
+      '.s 框架状态',
+      '.h 显示帮助',
+      '.a 关于框架',
+      '.e 退出进程',
+    ]
 
-  about() {}
+    this.#event!.reply(infos.join('\n'))
+  }
 
-  async exit() {}
+  about() {
+    const infos = [
+      '〓 关于 KiviBot 〓\n',
+      'KiviBot 是一个基于 oicq/icqq 的机器人框架，使用 TypeScript 编写。',
+      '开源地址：https://github.com/vikiboss/kivibot',
+    ]
+
+    this.#event!.reply(infos.join(''))
+  }
+
+  async exit() {
+    const isMainAdmin = (qq?: number) => {
+      return qq && this.#config?.botConfig?.admins[0] === qq
+    }
+
+    if (!isMainAdmin(this.#event?.sender.user_id)) {
+      this.#event!.reply('〓 你没有权限 〓')
+      return
+    }
+
+    await this.#event!.reply('〓 进程已停止 〓')
+    this.#config?.mainLogger.fatal(kleur.red('已由管理员通过消息命令退出'))
+    process.exit(0)
+  }
 }
 
 export default new Command()

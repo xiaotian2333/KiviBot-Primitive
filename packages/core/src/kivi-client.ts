@@ -13,7 +13,7 @@ import command from './commands.js'
 import { resolveConfig } from './config.js'
 import { CONFIG_FILE_NAME, DEFAULT_SIGN_API } from './constants.js'
 import { Logger } from './logger.js'
-import { handleException, loadModule, require, stringifySendable } from './utils.js'
+import { deepClone, handleException, loadModule, require, stringifySendable } from './utils.js'
 
 import type { Plugin } from '@kivi-dev/plugin'
 import type { AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/types'
@@ -103,7 +103,7 @@ export default class KiviClient {
       data_dir: botDataDir,
     })
 
-    this.#bot = Object.assign(bot, { apis: {} })
+    this.#bot = Object.assign(bot, { apis: {} }) as unknown as ClientWithApis
 
     this.#mainLogger.debug(`监听并处理 Bot 登录事件`)
     this.#bindLoginEvents(this.#bot)
@@ -193,7 +193,7 @@ export default class KiviClient {
       throw new Error('插件未导出 `plugin`')
     } else {
       try {
-        await plugin.init(this.#bot!, { ...this.#botConfig }, this.#cwd)
+        await plugin.init(this.#bot!, deepClone(this.#botConfig), this.#cwd)
 
         this.#plugins?.set(pluginInfo.name, plugin)
       } catch (e: any) {

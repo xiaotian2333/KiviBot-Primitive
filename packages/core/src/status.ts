@@ -1,15 +1,16 @@
-import { formatDateDiff, searchAllPlugins } from '@kivi-dev/shared'
+import { searchAllPlugins } from '@kivi-dev/shared'
 import { filesize } from 'filesize'
 import os from 'node:os'
+import prettyMilliseconds from 'pretty-ms'
 
 import { DEVICE_MAP } from './constants.js'
 import { require } from './utils.js'
 
-import type { ClientWithApis } from '@kivi-dev/types'
+import type { BotConfig, ClientWithApis } from '@kivi-dev/types'
 
 export const SystemMap: Record<string, string> = {
   Linux: 'Linux',
-  Darwin: 'OSX',
+  Darwin: 'macOS',
   Windows_NT: 'Win',
 }
 
@@ -21,33 +22,37 @@ export const ArchMap: Record<string, string> = {
 }
 
 /** 运行状态指令处理函数 */
-export async function fetchStatus(bot: ClientWithApis) {
-  const plugins = await searchAllPlugins()
+export async function fetchStatus(bot: ClientWithApis, botConfig?: BotConfig) {
+  const localPluginCount = (await searchAllPlugins()).length
+  const enablePluginCount = botConfig?.plugins?.length || 0
 
-  const runTime = formatDateDiff(process.uptime() * 1000)
   const total = os.totalmem()
   const used = total - os.freemem()
   const rss = process.memoryUsage.rss()
+  const runTime = prettyMilliseconds(process.uptime() * 1000, { compact: true })
 
   const per = (param: number) => ((param / total) * 100).toFixed(1)
 
   const { recv_msg_cnt, msg_cnt_per_min, sent_msg_cnt } = bot.stat
 
-  const nodeVersion = process.versions.node.split('.')[0]
+  const nv = process.versions.node.split('.')[0]
+  const kv = require('../package.json')?.version
+  const iv = require('icqq/package.json')?.version || 'unknown'
+
   const arch = ArchMap[process.arch] || process.arch
 
   return `
-〓 Bot 状态 〓
+〓 KiviBot 状态 〓
 昵称: ${bot.nickname}
 账号: ${bot.uin}
-列表: ${bot.fl.size} 好友，${bot.gl.size} 群
-插件: 启用 ${plugins.length} 个，共 ${plugins.length} 个
-消息: 收 ${recv_msg_cnt}，发 ${sent_msg_cnt}
-当前: ${msg_cnt_per_min} 条/分钟
-启动: ${runTime}
-框架: v${require('../package.json')?.version}-${filesize(rss)}-${per(rss)}%
-协议: icqq-v${require('icqq/package.json')?.version}-${DEVICE_MAP[bot.config.platform]}
-系统: ${SystemMap[os.type()] || os.type()}-${arch}-node${nodeVersion}
-内存: ${filesize(used)}/${filesize(total)}-${per(used)}%
+列表信息: ${bot.fl.size} 好友，${bot.gl.size} 群
+插件信息: 启用 ${enablePluginCount} 个，共 ${localPluginCount} 个
+消息收发: 收 ${recv_msg_cnt}，发 ${sent_msg_cnt}
+当前速率: ${msg_cnt_per_min} 条/分钟
+运行时长: ${runTime}
+框架状态: v${kv}-${filesize(rss)}-${per(rss)}%
+协议信息: icqq-v${iv}-${DEVICE_MAP[bot.config.platform]}
+系统信息: ${SystemMap[os.type()] || os.type()}-${arch}-node${nv}
+系统内存: ${filesize(used)}/${filesize(total)}-${per(used)}%
 `.trim()
 }

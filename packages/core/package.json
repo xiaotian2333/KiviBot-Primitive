@@ -38,6 +38,7 @@
     "mri": "^1.2.0",
     "node-cron": "^3.0.2",
     "obj-observer": "^1.0.4",
+    "pretty-ms": "^8.0.0",
     "prompts": "^2.4.2",
     "rfdc": "^1.3.0",
     "string2argv": "^1.0.2"

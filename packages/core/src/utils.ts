@@ -2,9 +2,12 @@ import { ensureArray } from '@kivi-dev/shared'
 import createJiti from 'jiti'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
+import rfdc from 'rfdc'
 
 import type { Logger } from './logger.js'
 import type { Sendable } from 'icqq'
+
+export const deepClone = rfdc({ proto: false, circles: false })
 
 // @ts-expect-error fix type
 export const loadModule = createJiti(fileURLToPath(import.meta.url), {
