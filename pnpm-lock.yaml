@@ -151,6 +151,9 @@ importers:
       '@kivi-dev/core':
         specifier: workspace:*
         version: link:../../core
+      '@kivi-dev/plugin':
+        specifier: workspace:*
+        version: link:../../plugin
 
   packages/plugin:
     dependencies:

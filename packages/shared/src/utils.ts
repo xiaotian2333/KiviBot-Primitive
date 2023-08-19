@@ -10,15 +10,7 @@ import type { ImageElem } from 'icqq'
 import type { BinaryLike, BinaryToTextEncoding } from 'node:crypto'
 
 export function showLogo() {
-  const tip = `   KiviBot v1.0   `
-  const infos = [
-    '',
-    `${kleur.bgBlue().blue(tip)}`,
-    `${kleur.bgBlue().white().bold(tip)}`,
-    `${kleur.bgBlue().blue(tip)}`,
-    '',
-  ]
-
+  const infos = ['', kleur.green(`KiviBot v1.0`), '']
   console.info(infos.join('\n'))
 }
 

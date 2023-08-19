@@ -5,6 +5,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "@kivi-dev/core": "workspace:*"
+    "@kivi-dev/core": "workspace:*",
+    "@kivi-dev/plugin": "workspace:*"
   }
 }

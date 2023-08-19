@@ -1,4 +1,4 @@
-import { ensureArray, showLogo } from '@kivi-dev/shared'
+import { ensureArray, searchAllPlugins, showLogo } from '@kivi-dev/shared'
 import dayjs from 'dayjs'
 import { createClient } from 'icqq'
 import kleur from 'kleur'
@@ -11,7 +11,7 @@ import command from './commands.js'
 import { resolveConfig } from './config.js'
 import { SIGN_API_ADDR } from './constants.js'
 import { Logger } from './logger.js'
-import { handleException } from './utils.js'
+import { handleException, loadModule } from './utils.js'
 
 import type {
   AllMessageEvent,
@@ -111,14 +111,16 @@ export default class KiviClient {
     bot.once('system.online', () => this.#handleOnLogin())
   }
 
-  #handleLoginError(p: { message: string }) {
-    this.#mainLogger.fatal(p.message)
+  #handleLoginError(p: { message: string; code: number }) {
+    this.#mainLogger.fatal(`[错误码 ${p.code}] ${p.message}`)
     process.exit(-1)
   }
 
-  #handleOnLogin() {
+  async #handleOnLogin() {
     this.#bindSendMsg()
     this.#handleMessageForFramework()
+
+    await this.#loadPlugins()
 
     const welcome = `${this.#bot!.nickname}(${this.#bot!.uin}) 上线成功! `
     this.#mainLogger.info(kleur.green(welcome))
@@ -126,6 +128,51 @@ export default class KiviClient {
 
     const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
     mainAdmin.sendMsg('✅ 已上线，发送 .help 查看命令')
+  }
+
+  async #loadPlugins() {
+    const plugins = await searchAllPlugins(this.#rootDir)
+
+    return Promise.all(
+      plugins
+        .filter((p) => this.#botConfig?.plugins?.includes(p))
+        .map((plugin) => this.#enablePlugin(plugin)),
+    )
+  }
+
+  async #enablePlugin(pluginInfo: { path: string; pkg: Record<string, any> }) {
+    let res
+
+    try {
+      res = loadModule(`${pluginInfo.path}/index`)
+    } catch {
+      try {
+        res = loadModule(`${pluginInfo.path}/src/index`)
+      } catch {
+        const exports =
+          pluginInfo.pkg?.exports ||
+          pluginInfo.pkg?.exports['.'] ||
+          pluginInfo.pkg?.exports['.']?.import ||
+          pluginInfo.pkg?.exports['.']?.require ||
+          pluginInfo.pkg?.exports['.']?.default
+
+        res = loadModule(
+          path.join(pluginInfo.path, pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports),
+        )
+      }
+    }
+
+    const plugin = res?.plugin || res?.default?.plugin
+
+    if (!plugin || !plugin.init) {
+      throw new Error('插件未导出 `plugin`')
+    } else {
+      try {
+        plugin.init(this.#bot!, structuredClone(this.#botConfig), this.#rootDir)
+      } catch (e: any) {
+        this.#mainLogger.error('插件启用失败，报错信息：' + e?.message || JSON.stringify(e))
+      }
+    }
   }
 
   #handleMessageForFramework() {
@@ -260,9 +307,12 @@ export default class KiviClient {
     const inputTicket = () => {
       process.stdin.once('data', async (data: Buffer) => {
         const ticket = String(data).trim()
-        if (!ticket) return inputTicket()
-        console.log()
-        this.#mainLogger.info('ticket 已提交，等待响应...')
+
+        if (!ticket) {
+          return inputTicket()
+        }
+
+        this.#mainLogger.info('\nticket 已提交，等待响应...')
         await bot.submitSlider(ticket)
       })
     }
@@ -278,12 +328,16 @@ export default class KiviClient {
       message: `需要验证设备锁，按回车键向 ${kleur.cyan(phone)} 发送短信验证码`,
     })
 
+    await bot.sendSmsCode()
+
     const { code } = await prompts({
       name: 'code',
       type: 'text',
       validate: (code) => (code ? true : '验证码不为空'),
       message: `验证码已发送至 ${kleur.cyan(phone)}，请输入验证码`,
     })
+
+    this.#mainLogger.info('\n短信验证码已提交，等待响应...')
 
     await bot.submitSmsCode(code)
   }

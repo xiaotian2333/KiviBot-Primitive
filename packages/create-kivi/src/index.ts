@@ -101,5 +101,5 @@ console.log(
   [
     kleur.green(`\n✨ Kivi 初始化完成\n`),
     kleur.dim(`你可以通过以下命令启动 Kivi 👇\n\n${extraCmd}npm i\nnpm start\n`),
-  ].join('\n')
+  ].join('\n'),
 )

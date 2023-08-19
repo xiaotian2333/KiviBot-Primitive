@@ -1,4 +1,4 @@
-import { Logger, dirname } from '@kivi-dev/core'
+import { Logger } from '@kivi-dev/core'
 import EventEmitter from 'node:events'
 import path from 'node:path'
 
@@ -36,10 +36,10 @@ class Plugin extends EventEmitter {
     return this.#bot!
   }
 
-  init(bot: ClientWithApis, config: BotConfig, meta: ImportMeta) {
+  init(bot: ClientWithApis, config: BotConfig, cwd: string) {
     this.#bot = bot
     this.#botConfig = config
-    this.#dataDir = path.join(dirname(meta), `data/plugins/${this.#name}`)
+    this.#dataDir = path.join(cwd, `data/plugins/${this.#name}`)
 
     // 监听框架管理变动
     const unsubscribe = bot.on('kivi.admins', this.#adminChangeHandler)

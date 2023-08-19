@@ -1,6 +1,18 @@
+import createJiti from 'jiti'
 import { createRequire } from 'node:module'
+import { fileURLToPath } from 'node:url'
 
 import type { Logger } from './logger.js'
+
+// @ts-expect-error fix type
+export const loadModule = createJiti(fileURLToPath(import.meta.url), {
+  extensions: ['.ts', '.mts', '.js', '.mjs'],
+  cache: false,
+  esmResolve: true,
+  requireCache: false,
+  v8cache: false,
+  sourceMaps: false,
+})
 
 export const require = createRequire(import.meta.url)
 
