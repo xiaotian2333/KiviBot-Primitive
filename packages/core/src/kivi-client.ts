@@ -89,7 +89,7 @@ export default class KiviClient {
     this.#mainLogger.setLevel(log_level)
     this.#mainLogger.info('准备登录 Bot ' + kleur.cyan(uin))
 
-    const botDataDir = path.join(this.#cwd, 'data', String(uin))
+    const botDataDir = path.join(this.#cwd, 'data/oicq')
     const relativeBotDataDir = `./${path.relative(process.cwd(), botDataDir)}`
 
     this.#mainLogger.info('Bot 数据目录:', kleur.cyan(relativeBotDataDir))
