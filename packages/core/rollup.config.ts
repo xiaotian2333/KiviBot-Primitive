@@ -9,15 +9,14 @@ export default defineConfig([
     output: {
       file: 'lib/index.js',
       format: 'esm',
+      sourcemap: true,
     },
     treeshake: 'smallest',
     plugins: [
-      // @ts-expect-error fix type error
       typescript({
         tsconfig: './tsconfig.json',
         declaration: false,
       }),
-      // @ts-expect-error fix type error
       terser(),
     ],
   },

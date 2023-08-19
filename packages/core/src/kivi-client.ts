@@ -1,17 +1,20 @@
-import { ensureArray, searchAllPlugins, showLogo } from '@kivi-dev/shared'
+import { searchAllPlugins, showLogo } from '@kivi-dev/shared'
 import dayjs from 'dayjs'
 import { createClient } from 'icqq'
 import kleur from 'kleur'
 import mri from 'mri'
+import fs from 'node:fs'
 import path from 'node:path'
+import { watch, ref } from 'obj-observer'
 import prompts from 'prompts'
 import { str2argv } from 'string2argv'
 
 import command from './commands.js'
 import { resolveConfig } from './config.js'
-import { SIGN_API_ADDR } from './constants.js'
+import { CONFIG_FILE_NAME, DEFAULT_SIGN_API } from './constants.js'
 import { Logger } from './logger.js'
-import { handleException, loadModule, require } from './utils.js'
+import { createObservable } from './proxy.js'
+import { handleException, loadModule, require, stringifySendable } from './utils.js'
 
 import type { Plugin } from '@kivi-dev/plugin'
 import type { AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/types'
@@ -28,15 +31,23 @@ export default class KiviClient {
   constructor(config?: BotConfig) {
     showLogo(require('../package.json')?.version)
 
-    this.#mainLogger.setLevel('info')
+    this.#mainLogger.setLevel('debug')
     this.#mainLogger.debug('初始化 Kivi Client 实例')
 
     if (config) {
       this.#mainLogger.debug('检测到 config，将使用传入的 config 作为配置启动')
-      this.#botConfig = config
+      this.#botConfig = ref<BotConfig>(config)
+      watch(this.#botConfig, (config) => this.#handleConfigChange(config))
     }
 
     handleException(this.#mainLogger)
+  }
+
+  #handleConfigChange(config: BotConfig) {
+    const filePath = path.join(this.#cwd, CONFIG_FILE_NAME)
+    this.#mainLogger.debug('config changed:', JSON.stringify(config, null, 2))
+    fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
+    this.#mainLogger.debug('检测到 config 变更，已自动保存')
   }
 
   async start(dir?: string) {
@@ -69,7 +80,8 @@ export default class KiviClient {
 
     if (!this.#botConfig) {
       this.#mainLogger.debug('解析 Bot 配置文件')
-      this.#botConfig = resolveConfig(this.#cwd)
+      this.#botConfig = ref<BotConfig>(resolveConfig(this.#cwd))
+      watch(this.#botConfig, (config) => this.#handleConfigChange(config))
     }
   }
 
@@ -85,12 +97,12 @@ export default class KiviClient {
     this.#mainLogger.debug(`初始化 oicq Client `)
 
     const bot = createClient({
-      ...(oicq_config || {}),
-      platform: platform || oicq_config?.platform || 2,
-      data_dir: botDataDir,
+      platform: platform || 2,
       auto_server: true,
-      sign_api_addr: SIGN_API_ADDR,
+      sign_api_addr: oicq_config?.sign_api_addr || DEFAULT_SIGN_API,
+      ...(oicq_config || {}),
       log_config: this.#getLogConfig(uin),
+      data_dir: botDataDir,
     })
 
     this.#bot = Object.assign(bot, { apis: {} })
@@ -145,7 +157,12 @@ export default class KiviClient {
         .filter((p) => this.#botConfig?.plugins?.includes(p.name))
         .map(async (plugin) => {
           const pluginInstance = await this.enablePlugin(plugin)
-          this.#plugins?.set(plugin.name, pluginInstance)
+
+          if (!pluginInstance) {
+            this.#mainLogger.error(`插件 ${kleur.cyan(plugin.name)} 启用失败`)
+          } else {
+            this.#plugins?.set(plugin.name, pluginInstance)
+          }
         }),
     )
   }
@@ -166,9 +183,9 @@ export default class KiviClient {
           pluginInfo.pkg?.exports['.']?.require ||
           pluginInfo.pkg?.exports['.']?.default
 
-        res = loadModule(
-          path.join(pluginInfo.path, pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports),
-        )
+        const entry = pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
+
+        res = loadModule(path.join(pluginInfo.path, entry))
       }
     }
 
@@ -178,11 +195,13 @@ export default class KiviClient {
       throw new Error('插件未导出 `plugin`')
     } else {
       try {
-        this.#plugins?.set(pluginInfo.name, plugin)
+        await plugin.init(this.#bot!, { ...this.#botConfig }, this.#cwd)
 
-        await plugin.init(this.#bot!, structuredClone(this.#botConfig), this.#cwd)
+        this.#plugins?.set(pluginInfo.name, plugin)
       } catch (e: any) {
         this.#mainLogger.error('插件启用失败，报错信息：' + e?.message || JSON.stringify(e))
+
+        return false
       }
     }
 
@@ -310,12 +329,6 @@ export default class KiviClient {
 
   #bindSend(target: Group | Friend, head: string) {
     const sendMsg = target.sendMsg.bind(target)
-
-    function stringifySendable(content: Sendable) {
-      return ensureArray(content)
-        .map((message) => (typeof message === 'string' ? message : JSON.stringify(message)))
-        .join('')
-    }
 
     const showKeliLog = (content: Sendable) => {
       return this.#mainLogger.info(kleur.dim(`${head} ${kleur.reset(stringifySendable(content))}`))

@@ -62,7 +62,7 @@ export interface PluginConf {
 
 export interface BotConfig {
   uin: number
-  prefix: '/'
+  prefix: string
   platform: Platform
   admins: AdminArray
   loginMode: LoginMode

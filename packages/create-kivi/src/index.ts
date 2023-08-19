@@ -65,9 +65,13 @@ const { loginMode } = await prompts({
 const config: BotConfig = {
   uin,
   platform,
-  prefix: '/',
+  prefix: '.',
   admins: [mainAdmin, ...subAdmins],
   loginMode,
+  plugins: [],
+  oicq_config: {
+    sign_api_addr: '',
+  },
 }
 
 if (loginMode === 'password') {

@@ -56,6 +56,9 @@ importers:
       node-cron:
         specifier: ^3.0.2
         version: 3.0.2
+      obj-observer:
+        specifier: ^1.0.4
+        version: 1.0.4
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
@@ -2739,6 +2742,10 @@ packages:
     dependencies:
       path-key: 4.0.0
     dev: true
+
+  /obj-observer@1.0.4:
+    resolution: {integrity: sha512-Ov8zIptwr2O42e5MoLl43nMciDT1rV2h/sHIWVyepkyyC67qztmY8TyRXKF4RRm54PcRRvp/Xo/aSuRk04LpdQ==}
+    dev: false
 
   /object-inspect@1.12.3:
     resolution: {integrity: sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==}

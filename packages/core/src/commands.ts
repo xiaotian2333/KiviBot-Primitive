@@ -24,7 +24,7 @@ class Command {
   }
 
   isPluginEnable(pluginName: string) {
-    return this.#config?.botConfig?.plugins?.includes(pluginName)
+    return this.#kiviClient?.plugins?.get(pluginName)
   }
 
   async parse(cmd: string, params: string[], options: Record<string, any>, client: KiviClient) {
@@ -101,13 +101,15 @@ class Command {
         const ps = await searchAllPlugins(this.#config?.cwd)
         const plugin = ps.find((p) => p.name === pname)
 
-        console.log(ps)
-
         if (!plugin) {
           return this.#event!.reply('〓 插件不存在 〓')
         }
 
-        await this.#kiviClient?.enablePlugin(plugin)
+        const isOK = await this.#kiviClient?.enablePlugin(plugin)
+
+        if (!isOK) {
+          return this.#event!.reply('〓 插件启用失败 〓')
+        }
 
         this.#config?.botConfig?.plugins?.push(pname)
 

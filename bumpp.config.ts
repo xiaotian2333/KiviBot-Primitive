@@ -3,5 +3,5 @@ import type { VersionBumpOptions } from 'bumpp'
 export default {
   confirm: true,
   preid: 'alpha',
-  recursive: true
+  recursive: true,
 } satisfies VersionBumpOptions
