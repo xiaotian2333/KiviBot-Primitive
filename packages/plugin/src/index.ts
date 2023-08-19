@@ -192,6 +192,26 @@ export class Plugin extends EventEmitter {
     this.#mountFns.push(fn)
   }
 
+  __useMessage(
+    handler: AnyFunc,
+    option?: {
+      type?: 'all' | 'private' | 'group'
+      role?: 'admin' | 'all'
+    },
+  ) {
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (option?.type === 'private' && e.message_type !== 'private') return
+      if (option?.type === 'group' && e.message_type !== 'group') return
+      const isAdmin = this.admins.includes(e.sender.user_id)
+      if (option?.role === 'admin' && !isAdmin) return
+
+      handler(e, this.bot!)
+    }
+
+    const unsubscribe = this.#bot!.on('message', oicqHandler)
+    this.#addHandler('message', unsubscribe)
+  }
+
   __useMatch(
     matches: string | RegExp | (string | RegExp)[],
     handler: AnyFunc,
@@ -363,6 +383,7 @@ export const useBot = () => plugin.bot
 
 export const useApi = plugin.__useApi.bind(plugin)
 export const useMount = plugin.__useMount.bind(plugin)
+export const useMessage = plugin.__useMessage.bind(plugin)
 export const useMatch = plugin.__useMatch.bind(plugin)
 export const useInfo = plugin.__useInfo.bind(plugin)
 export const useConfig = plugin.__useConfig.bind(plugin)
