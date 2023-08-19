@@ -13,8 +13,8 @@ const pkg = {
     start: 'node app.js',
   },
   dependencies: {
-    '@kivi-dev/core': isDev ? 'workspace:*' : '^1.0.0',
-    '@kivi-dev/plugin': isDev ? 'workspace:*' : '^1.0.0',
+    '@kivi-dev/core': isDev ? 'workspace:*' : 'latest',
+    '@kivi-dev/plugin': isDev ? 'workspace:*' : 'latest',
   },
 }
 

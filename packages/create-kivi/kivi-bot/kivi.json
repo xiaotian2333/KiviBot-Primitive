@@ -2,10 +2,11 @@
   "uin": 715785945,
   "platform": 1,
   "prefix": "/",
-  "admins": [
-    1141284758
-  ],
+  "admins": [1141284758],
   "loginMode": "password",
   "deviceMode": "sms",
-  "password": "4b894350da0e40ea061c4a0090cab0a4"
+  "password": "4b894350da0e40ea061c4a0090cab0a4",
+  "oicq_config": {
+    "sign_api_addr": "http://qq.wxfsq.com/sign"
+  }
 }

@@ -13,28 +13,22 @@ import { SIGN_API_ADDR } from './constants.js'
 import { Logger } from './logger.js'
 import { handleException, loadModule } from './utils.js'
 
+import type { Plugin } from '@kivi-dev/plugin'
 import type {
   AllMessageEvent,
   BotConfig,
   ClientWithApis,
   Platform as KiviPlatform,
 } from '@kivi-dev/types'
-import type {
-  Client,
-  Friend,
-  Group,
-  Platform as IcqqPlatform,
-  MessageElem,
-  Quotable,
-  Sendable,
-} from 'icqq'
+import type { Client, Friend, Group, Platform as IcqqPlatform, Quotable, Sendable } from 'icqq'
 
 export default class KiviClient {
-  #rootDir = process.cwd()
+  #cwd = process.cwd()
   #mainLogger: Logger = new Logger('KiviClient')
   #loggers: Map<string, Logger> = new Map()
   #bot?: ClientWithApis
   #botConfig?: BotConfig
+  #plugins: Map<string, Plugin> = new Map()
 
   constructor(config?: BotConfig) {
     showLogo()
@@ -55,26 +49,40 @@ export default class KiviClient {
     this.#createBotClient(this.#botConfig!)
   }
 
+  get KiviClientConfig() {
+    return {
+      botConfig: this.#botConfig,
+      cwd: this.#cwd,
+      bot: this.#bot,
+      mainLogger: this.#mainLogger,
+      loggers: this.#loggers,
+    }
+  }
+
+  get plugins() {
+    return this.#plugins
+  }
+
   async #initKivi(dir?: string) {
     this.#mainLogger.debug('读取 Kivi 配置目录')
 
-    this.#rootDir = dir || this.#rootDir
+    this.#cwd = dir || this.#cwd
 
     if (!this.#botConfig) {
       this.#mainLogger.debug('解析 Bot 配置文件')
-      this.#botConfig = resolveConfig(this.#rootDir)
+      this.#botConfig = resolveConfig(this.#cwd)
     }
   }
 
   async #createBotClient(config: BotConfig) {
     const { uin, platform, password, oicq_config } = config
 
-    this.#mainLogger.info('准备登录 Bot ' + kleur.green(uin))
+    this.#mainLogger.info('准备登录 Bot ' + kleur.cyan(uin))
 
-    const botDataDir = path.join(this.#rootDir, 'data', String(uin))
+    const botDataDir = path.join(this.#cwd, 'data', String(uin))
     const relativeBotDataDir = `./${path.relative(process.cwd(), botDataDir)}`
 
-    this.#mainLogger.info('Bot 数据目录:', kleur.green(relativeBotDataDir))
+    this.#mainLogger.info('Bot 数据目录:', kleur.cyan(relativeBotDataDir))
     this.#mainLogger.debug(`初始化 oicq Client `)
 
     const bot = createClient({
@@ -93,8 +101,8 @@ export default class KiviClient {
 
     const { display, version } = this.#bot.apk
 
-    this.#mainLogger.info(`开始登录 Bot ` + kleur.green(uin))
-    this.#mainLogger.info(`使用协议 ${kleur.green(`${display}_${version}`)}`)
+    this.#mainLogger.info(`开始登录 Bot ` + kleur.cyan(uin))
+    this.#mainLogger.info(`使用协议 ${kleur.cyan(`${display}_${version}`)}`)
     this.#mainLogger.info(`正在解析并登录服务器...`)
 
     await this.#bot.login(uin, password)
@@ -124,23 +132,26 @@ export default class KiviClient {
 
     const welcome = `${this.#bot!.nickname}(${this.#bot!.uin}) 上线成功! `
     this.#mainLogger.info(kleur.green(welcome))
-    this.#mainLogger.info('向 Bot 发送 .help 查看所有命令')
+    this.#mainLogger.info(`向 ${kleur.cyan(`Bot`)} 发送 ${kleur.cyan(`.help`)} 查看所有命令`)
 
     const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
     mainAdmin.sendMsg('✅ 已上线，发送 .help 查看命令')
   }
 
   async #loadPlugins() {
-    const plugins = await searchAllPlugins(this.#rootDir)
+    const plugins = await searchAllPlugins(this.#cwd)
 
     return Promise.all(
       plugins
-        .filter((p) => this.#botConfig?.plugins?.includes(p))
-        .map((plugin) => this.#enablePlugin(plugin)),
+        .filter((p) => this.#botConfig?.plugins?.includes(p.name))
+        .map(async (plugin) => {
+          const pluginInstance = await this.enablePlugin(plugin)
+          this.#plugins?.set(plugin.name, pluginInstance)
+        }),
     )
   }
 
-  async #enablePlugin(pluginInfo: { path: string; pkg: Record<string, any> }) {
+  async enablePlugin(pluginInfo: { name: string; path: string; pkg: Record<string, any> }) {
     let res
 
     try {
@@ -168,11 +179,33 @@ export default class KiviClient {
       throw new Error('插件未导出 `plugin`')
     } else {
       try {
-        plugin.init(this.#bot!, structuredClone(this.#botConfig), this.#rootDir)
+        this.#plugins?.set(pluginInfo.name, plugin)
+
+        await plugin.init(this.#bot!, structuredClone(this.#botConfig), this.#cwd)
       } catch (e: any) {
         this.#mainLogger.error('插件启用失败，报错信息：' + e?.message || JSON.stringify(e))
       }
     }
+
+    return plugin
+  }
+
+  async disablePlugin(pluginName: string) {
+    const plugin = this.#plugins?.get(pluginName)
+
+    console.log(this.#plugins, pluginName)
+
+    if (!plugin) {
+      return this.#mainLogger.info(`插件 ${kleur.cyan(pluginName)} 未启用`)
+    }
+
+    const isOK = await plugin.destroy()
+
+    if (isOK) {
+      this.#plugins?.delete(pluginName)
+    }
+
+    return isOK
   }
 
   #handleMessageForFramework() {
@@ -211,10 +244,10 @@ export default class KiviClient {
 
     const message = event.toString()
 
-    this.#mainLogger.info(`${kleur.gray(head)} ${message}`)
+    this.#mainLogger.info(`${kleur.dim(head)} ${message}`)
   }
 
-  #handleFrameworkCommand(event: AllMessageEvent) {
+  async #handleFrameworkCommand(event: AllMessageEvent) {
     const msg = event.toString().trim()
 
     // 过滤非 . 开头的消息
@@ -225,14 +258,12 @@ export default class KiviClient {
 
     // 是否是管理员
     const isAdmin = this.#botConfig!.admins.includes(event.sender.user_id)
-    // 是否是主管理员
-    const isMainAdmin = this.#botConfig!.admins[0] === event.sender.user_id
 
     // 过滤非管理员消息
     if (!isAdmin) return
 
     command.bindEvent(event)
-    command.parse(cmd, params, options, isMainAdmin)
+    await command.parse(cmd, params, options, this)
   }
 
   #bindSendMsg() {
@@ -272,13 +303,15 @@ export default class KiviClient {
     }
 
     const showKeliLog = (content: Sendable) => {
-      return this.#mainLogger.info(kleur.gray(`${head} ${stringifySendable(content)}`))
+      return this.#mainLogger.info(kleur.dim(`${head} ${kleur.reset(stringifySendable(content))}`))
     }
 
     target.sendMsg = async function (content: Sendable, source?: Quotable | undefined) {
+      const res = await sendMsg(content, source)
+
       showKeliLog(content)
 
-      return sendMsg(content, source)
+      return res
     }
   }
 
@@ -377,7 +410,7 @@ export default class KiviClient {
     // ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF
     const now = dayjs().format('YYYY-MM-DD_HH-mm-ss')
     const filename = `kivi_${uin}_${now}`
-    const botLogDir = path.join(this.#rootDir, 'logs', String(uin))
+    const botLogDir = path.join(this.#cwd, 'logs', String(uin))
     const logFilePath = path.join(botLogDir, `${filename}.log`)
 
     return {

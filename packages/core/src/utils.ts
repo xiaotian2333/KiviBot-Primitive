@@ -17,8 +17,12 @@ export const loadModule = createJiti(fileURLToPath(import.meta.url), {
 export const require = createRequire(import.meta.url)
 
 export function handleException(logger: Logger) {
+  function handleMessage(msg: string) {
+    return msg.replace('签名api异常', '签名 API 返回异常，请重试')
+  }
+
   const handleException = (e: any) => {
-    logger.error('发生了错误: ', e?.message || JSON.stringify(e) || e)
+    logger.error('出错了: ', handleMessage(e?.message || JSON.stringify(e) || e))
   }
 
   process.on('SIGINT', () => {

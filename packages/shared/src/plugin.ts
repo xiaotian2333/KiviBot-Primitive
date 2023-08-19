@@ -3,7 +3,7 @@ import { loadJsonFile } from 'load-json-file'
 import fs from 'node:fs'
 import path from 'node:path'
 
-export async function searchAllPlugins(cwd: string) {
+export async function searchAllPlugins(cwd = '') {
   const plugins = await globby('plugins/*', { cwd, onlyDirectories: true })
 
   return await Promise.all(
@@ -15,8 +15,9 @@ export async function searchAllPlugins(cwd: string) {
       const pkg = (isPkgExists ? await loadJsonFile(pkgPath) : {}) as Record<string, any>
 
       return {
-        pkg,
+        name: dir.split('/').at(-1) || dir.replace('plugins/', ''),
         path: modulePath,
+        pkg,
       }
     }),
   )

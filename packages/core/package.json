@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@kivi-dev/types": "workspace:*",
+    "@kivi-dev/plugin": "workspace:*",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/node": "^18.17.5",

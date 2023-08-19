@@ -16,7 +16,7 @@ import type {
 import type { Client, EventMap } from 'icqq'
 import type { ScheduledTask } from 'node-cron'
 
-class Plugin extends EventEmitter {
+export class Plugin extends EventEmitter {
   #name = ''
   #version = ''
   #dataDir = ''
@@ -89,19 +89,26 @@ class Plugin extends EventEmitter {
     })
   }
 
-  destroy() {
-    Promise.all(
-      this.#unmountFns.map(async (fn) => {
-        const res = typeof fn === 'function' && fn()
-        if (res instanceof Promise) return await res
-      }),
-    )
+  async destroy() {
+    try {
+      await Promise.all(
+        this.#unmountFns.map(async (fn) => {
+          const res = typeof fn === 'function' && fn()
+          if (res instanceof Promise) return await res
+        }),
+      )
 
-    this.#clearCronTasks()
-    this.#removeAllHandler()
-    this.#unregisterAllApi()
+      this.#clearCronTasks()
+      this.#removeAllHandler()
+      this.#unregisterAllApi()
 
-    this.#bot = undefined
+      this.#bot = undefined
+
+      return true
+    } catch (e: any) {
+      this.logger.fatal(e?.message || JSON.stringify(e))
+      return false
+    }
   }
 
   #throwPluginError(message: string) {
@@ -134,8 +141,8 @@ class Plugin extends EventEmitter {
   }
 
   #removeAllHandler() {
-    for (const [eventName, handlers] of this.#handlers) {
-      handlers.forEach(() => this.bot!.off(eventName))
+    for (const [_, handlers] of this.#handlers) {
+      handlers.forEach((unsubscribe) => unsubscribe())
     }
   }
 
@@ -187,7 +194,7 @@ class Plugin extends EventEmitter {
   }
 }
 
-interface Plugin extends EventEmitter {
+export interface Plugin extends EventEmitter {
   /** @deprecated 请使用 on 进行事件监听 */
   addListener: never
   /** @deprecated 请使用 off 取消事件监听 */
