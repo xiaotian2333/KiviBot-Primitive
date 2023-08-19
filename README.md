@@ -19,7 +19,7 @@ npm install
 
 > you might need to config `sign_api_addr` in: `kivi.json` > `oicq_config` > `sign_api_addr`
 
-3. run
+3. run Kivi
 
 ```bash
 npm start
@@ -61,8 +61,8 @@ useOn('message.group', async (event) => {
 export { plugin } from '@kivi-dev/plugin'
 ```
 
-then send `.p on test` to bot.
+then send `.p on test` to bot to enable this plugin.
 
 ## License
 
-GPL-3.0
+MPL-2.0

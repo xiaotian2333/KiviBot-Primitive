@@ -62,7 +62,8 @@ export class Plugin extends EventEmitter {
 
       try {
         const config = JSON.parse(configContent)
-        this.#pluginConfig = watch(ref(config), (config) => this.#handleConfigChange(config))
+        this.#pluginConfig = ref(config)
+        watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
       } catch (e) {
         this.#logger.error(e)
         this.#throwPluginError('插件配置文件格式错误，请检查')
@@ -70,9 +71,8 @@ export class Plugin extends EventEmitter {
     } else {
       fs.writeFileSync(configPath, '{}', { encoding: 'utf-8' })
 
-      this.#pluginConfig = watch(ref(this.#pluginConfig), (config) => {
-        return this.#handleConfigChange(config)
-      })
+      this.#pluginConfig = ref(config)
+      watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
     }
 
     // 监听框架管理变动
