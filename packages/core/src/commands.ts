@@ -204,7 +204,7 @@ class Command {
   about() {
     const infos = [
       '〓 关于 Kivi 〓\n',
-      'Kivi 是一个基于 oicq/icqq 的机器人框架，使用 TypeScript 编写。',
+      'Kivi 是一个基于 oicq/icqq 与 Node.js 的机器人框架，使用 TypeScript 语言编写。',
       '开源地址：https://github.com/vikiboss/kivibot',
     ]
 

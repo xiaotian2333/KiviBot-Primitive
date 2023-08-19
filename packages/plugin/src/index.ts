@@ -1,7 +1,9 @@
 import { Logger } from '@kivi-dev/core'
 import { b } from '@kivi-dev/shared'
 import EventEmitter from 'node:events'
+import fs from 'node:fs'
 import path from 'node:path'
+import { watch, ref } from 'obj-observer'
 
 import { KiviEvents, MessageEvents, OicqEvents } from './events.js'
 
@@ -17,6 +19,8 @@ import type {
 import type { Client, EventMap } from 'icqq'
 import type { ScheduledTask } from 'node-cron'
 
+export { ref, watch }
+
 export class Plugin extends EventEmitter {
   #name = ''
   #version = ''
@@ -24,6 +28,7 @@ export class Plugin extends EventEmitter {
 
   #bot?: ClientWithApis
   #botConfig?: BotConfig
+  #pluginConfig: Record<string, any> = {}
 
   #apiNames: Set<string> = new Set()
   #mountFns: AnyFunc[] = []
@@ -42,18 +47,37 @@ export class Plugin extends EventEmitter {
     this.#botConfig = config
     this.#dataDir = path.join(cwd, `data/plugins/${this.#name}`)
 
+    if (!fs.existsSync(this.#dataDir)) {
+      fs.mkdirSync(this.#dataDir, { recursive: true })
+    }
+
+    const configPath = path.join(this.#dataDir, 'config.json')
+
+    if (fs.existsSync(configPath)) {
+      const configContent = fs.readFileSync(configPath, { encoding: 'utf-8' })
+
+      try {
+        const config = JSON.parse(configContent)
+        this.#pluginConfig = watch(ref(config), (config) => this.#handleConfigChange(config))
+      } catch (e) {
+        this.logger.error(e)
+        this.#throwPluginError('插件配置文件格式错误，请检查')
+      }
+    } else {
+      fs.writeFileSync(configPath, '{}', { encoding: 'utf-8' })
+
+      this.#pluginConfig = watch(ref(this.#pluginConfig), (config) => {
+        return this.#handleConfigChange(config)
+      })
+    }
+
     // 监听框架管理变动
     const unsubscribe = bot.on('kivi.admins', this.#adminChangeHandler)
     this.#addHandler('kivi.admins', unsubscribe)
 
     this.#mountFns.forEach(async (fn) => {
-      const unmountFn = fn()
-
-      if (unmountFn instanceof Promise) {
-        this.#unmountFns.push(await unmountFn)
-      } else {
-        this.#unmountFns.push(unmountFn)
-      }
+      const un = fn()
+      this.#unmountFns.push(un instanceof Promise ? await un : un)
     })
 
     KiviEvents.forEach((eventName) => {
@@ -86,6 +110,12 @@ export class Plugin extends EventEmitter {
     })
   }
 
+  #handleConfigChange(config: Record<string, any>) {
+    const configPath = path.join(this.#dataDir, 'config.json')
+
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
+  }
+
   async destroy() {
     await Promise.all(
       this.#unmountFns.map(async (fn) => {
@@ -106,16 +136,18 @@ export class Plugin extends EventEmitter {
   }
 
   __useSetup(name: string, version: string) {
-    this.#name = name || ''
-    this.#version = version || ''
+    this.#name = name || '未知插件'
+    this.#version = version || '未知版本'
   }
 
-  __useConfig(type?: 'kivi' | 'plugin') {
+  __useConfig() {
     return {
       name: this.#name || '',
       version: this.#version || '',
       dataDir: this.#dataDir || '',
       admins: this.admins || [],
+      config: this.#pluginConfig,
+      botConfig: this.#botConfig,
       mainAdmin: (this.admins ?? [])[0]!,
       subAdmins: [...(this.admins ?? [])].slice(1),
     }

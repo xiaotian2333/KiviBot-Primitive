@@ -15,7 +15,8 @@
     "@kivi-dev/types": "workspace:*",
     "@types/node-cron": "^3.0.8",
     "kleur": "^4.1.5",
-    "node-cron": "^3.0.2"
+    "node-cron": "^3.0.2",
+    "obj-observer": "^1.0.4"
   },
   "devDependencies": {
     "typescript": "^5.1.6"

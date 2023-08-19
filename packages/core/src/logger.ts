@@ -20,7 +20,7 @@ export class Logger {
 
   get prefix() {
     const time = kleur.green(`[${dayjs().format('MM/DD HH:mm:ss')}]`)
-    return time + (this.#name ? kleur.dim(` [${this.#name}]`) : '')
+    return time + (this.#name ? kleur.yellow(` [${this.#name}]`) : '')
   }
 
   setLevel(level: Level) {
