@@ -409,14 +409,12 @@ export default class KiviClient {
 
         const { data } = await axios.post(link, { submit: this.bot?.uin })
 
-        this.#mainLogger.debug(data?.message || data?.data || data)
-
         if (data?.data?.ticket) {
           clearInterval(timer)
           return await this.bot?.submitSlider(data?.data?.ticket)
         }
 
-        if (count >= 200) {
+        if (count >= 180) {
           clearInterval(timer)
           this.#mainLogger.error('自动提交 ticket 超时，请重试')
 
@@ -432,8 +430,6 @@ export default class KiviClient {
 
       this.#mainLogger.info(infos.join('\n\n'))
       this.#inputAndSubmitTicket(this.#bot!)
-    } else {
-      this.#mainLogger.log('else')
     }
   }
 

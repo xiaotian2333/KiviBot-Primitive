@@ -1,9 +1,11 @@
 import { Logger } from '@kivi-dev/core'
-import { b } from '@kivi-dev/shared'
+import { b, ensureArray } from '@kivi-dev/shared'
+import mri from 'mri'
 import EventEmitter from 'node:events'
 import fs from 'node:fs'
 import path from 'node:path'
 import { watch, ref } from 'obj-observer'
+import { str2argv } from 'string2argv'
 
 import { KiviEvents, MessageEvents, OicqEvents } from './events.js'
 
@@ -144,21 +146,24 @@ export class Plugin extends EventEmitter {
     this.#logger.setName(this.#name)
   }
 
-  __useConfig() {
+  __useInfo() {
     return {
       name: this.#name || '',
       version: this.#version || '',
       dataDir: this.#dataDir || '',
       admins: this.admins || [],
-      config: this.#pluginConfig,
       botConfig: this.#botConfig!,
       mainAdmin: (this.admins ?? [])[0]!,
       subAdmins: [...(this.admins ?? [])].slice(1),
     }
   }
 
+  __useConfig() {
+    return this.#pluginConfig
+  }
+
   get admins() {
-    return this.#botConfig?.admins ?? []
+    return this.#botConfig!.admins
   }
 
   #addHandler(eventName: string, handler: AnyFunc) {
@@ -188,20 +193,78 @@ export class Plugin extends EventEmitter {
   }
 
   __useMatch(
-    fn: AnyFunc,
+    matches: string | RegExp | (string | RegExp)[],
+    handler: AnyFunc,
     option?: {
       type?: 'all' | 'private' | 'group'
       role?: 'admin' | 'all'
     },
-  ) {}
+  ) {
+    const matchList = ensureArray(matches)
+
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (option?.type === 'private' && e.message_type !== 'private') return
+      if (option?.type === 'group' && e.message_type !== 'group') return
+
+      const isAdmin = this.admins.includes(e.sender.user_id)
+
+      if (option?.role === 'admin' && !isAdmin) return
+
+      const msg = e.toString()
+
+      for (const match of matchList) {
+        const isReg = match instanceof RegExp
+
+        const hitReg = isReg && match.test(msg)
+        const hitString = !isReg && match === msg
+
+        if (hitReg || hitString) {
+          handler(e, this.bot!)
+          break
+        }
+      }
+    }
+
+    const unsubscribe = this.#bot!.on('message', oicqHandler)
+    this.#addHandler('message', unsubscribe)
+  }
 
   __useCommand(
-    fn: AnyFunc,
+    cmds: string | RegExp | (string | RegExp)[],
+    handler: AnyFunc,
     option?: {
       type?: 'all' | 'private' | 'group'
       role?: 'admin' | 'all'
     },
-  ) {}
+  ) {
+    const oicqHandler = (e: AllMessageEvent) => {
+      if (option?.type === 'private' && e.message_type !== 'private') return
+      if (option?.type === 'group' && e.message_type !== 'group') return
+
+      const isAdmin = this.admins.includes(e.sender.user_id)
+
+      if (option?.role === 'admin' && !isAdmin) return
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { _: params, '--': __, ...options } = mri(str2argv(e.toString().trim()))
+      const inputCmd = params.shift() ?? ''
+      const cmdList = ensureArray(cmds)
+
+      for (const cmd of cmdList) {
+        const isReg = cmd instanceof RegExp
+        const hitReg = isReg && cmd.test(inputCmd)
+        const hitString = !isReg && cmd === inputCmd
+
+        if (hitReg || hitString) {
+          handler(e, params, options)
+          break
+        }
+      }
+    }
+
+    const unsubscribe = this.bot!.on('message', oicqHandler)
+    this.#addHandler('message', unsubscribe)
+  }
 
   __registerApi<T extends AnyFunc = AnyFunc>(method: string, fn: T) {
     if (!this.#bot) {
@@ -301,6 +364,7 @@ export const useBot = () => plugin.bot
 export const useApi = plugin.__useApi.bind(plugin)
 export const useMount = plugin.__useMount.bind(plugin)
 export const useMatch = plugin.__useMatch.bind(plugin)
+export const useInfo = plugin.__useInfo.bind(plugin)
 export const useConfig = plugin.__useConfig.bind(plugin)
 export const useLogger = plugin.__useLogger.bind(plugin)
 export const useCommand = plugin.__useCommand.bind(plugin)
