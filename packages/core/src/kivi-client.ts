@@ -1,6 +1,6 @@
 import { b, searchAllPlugins, showLogo } from '@kivi-dev/shared'
 import dayjs from 'dayjs'
-import { createClient } from 'icqq'
+import { axios, createClient } from 'icqq'
 import kleur from 'kleur'
 import mri from 'mri'
 import fs from 'node:fs'
@@ -373,29 +373,86 @@ export default class KiviClient {
     }
   }
 
-  #handleSliderVerify(url: string) {
-    const infos = [
-      kleur.yellow('请复制下面的链接到浏览器进行滑块认证'),
-      b(url),
-      kleur.white('请输入获取到的 ticket，并按回车键确认:\n'),
-    ]
+  async #handleSliderVerify(url: string) {
+    const { type } = await prompts({
+      type: 'select',
+      name: 'type',
+      message: '请选择 ticket 验证方式',
+      choices: [
+        { title: '自动提交 ticket (推荐)', value: 'auto' },
+        { title: '手动抓取 ticket 并提交', value: 'slider' },
+      ],
+    })
 
-    this.#mainLogger.info(infos.join('\n\n'))
-    this.#inputAndSubmitTicket(this.#bot!)
+    if (type === 'auto') {
+      const link = `https://hlhs-nb.cn/captcha/slider?key=${this.#botConfig?.uin}`
+      const { status } = await axios.post(link, { url })
+
+      if (status !== 200) {
+        this.#mainLogger.error('自动提交 ticket 失败，请手动抓取 ticket 并提交验证')
+        await this.#handleSliderVerify(url)
+        return
+      }
+
+      const infos = [
+        '',
+        b(link),
+        kleur.yellow('请手动打开上面的链接进行滑块认证，滑动后，框架将自动提交 ticket\n'),
+      ]
+
+      this.#mainLogger.info(infos.join('\n\n'))
+
+      let count = 1
+
+      const timer = setInterval(async () => {
+        count++
+
+        const { data } = await axios.post(link, { submit: this.bot?.uin })
+
+        this.#mainLogger.debug(data?.message || data?.data || data)
+
+        if (data?.data?.ticket) {
+          clearInterval(timer)
+          return await this.bot?.submitSlider(data?.data?.ticket)
+        }
+
+        if (count >= 200) {
+          clearInterval(timer)
+          this.#mainLogger.error('自动提交 ticket 超时，请重试')
+
+          await this.#handleSliderVerify(url)
+        }
+      }, 600)
+    } else if (type === 'slider') {
+      const infos = [
+        '',
+        b(url),
+        kleur.yellow('请复制上面的链接到浏览器手动滑动滑块，抓取 ticket 并输入：\n'),
+      ]
+
+      this.#mainLogger.info(infos.join('\n\n'))
+      this.#inputAndSubmitTicket(this.#bot!)
+    } else {
+      this.#mainLogger.log('else')
+    }
   }
 
   #inputAndSubmitTicket(bot: Client) {
-    const inputTicket = () => {
-      process.stdin.once('data', async (data: Buffer) => {
-        const ticket = String(data).trim()
-
-        if (!ticket) {
-          return inputTicket()
-        }
-
-        this.#mainLogger.info(`\n${b('ticket')} 已提交，等待响应...`)
-        await bot.submitSlider(ticket)
+    const inputTicket = async (): Promise<void> => {
+      const { ticket } = await prompts({
+        type: 'text',
+        name: 'ticket',
+        message: '请输入 ticket',
+        validate: (ticket) => (ticket ? true : 'ticket 不为空'),
       })
+
+      if (!ticket) {
+        return await inputTicket()
+      }
+
+      console.log('\n')
+      this.#mainLogger.info(`${b('ticket')} 已提交，等待响应...`)
+      await bot.submitSlider(ticket)
     }
 
     inputTicket()

@@ -164,6 +164,15 @@ importers:
         specifier: workspace:*
         version: link:../../plugin
 
+  packages/create-kivi/test:
+    dependencies:
+      '@kivi-dev/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@kivi-dev/plugin':
+        specifier: workspace:*
+        version: link:../../plugin
+
   packages/plugin:
     dependencies:
       '@kivi-dev/core':
@@ -221,24 +230,6 @@ importers:
       icqq:
         specifier: ^0.5.0
         version: 0.5.0
-
-  plugins/60s:
-    dependencies:
-      '@kivi-dev/plugin':
-        specifier: workspace:*
-        version: link:../../packages/plugin
-
-  plugins/demo:
-    dependencies:
-      '@kivi-dev/plugin':
-        specifier: workspace:*
-        version: link:../../packages/plugin
-
-  plugins/fanyi:
-    dependencies:
-      '@kivi-dev/plugin':
-        specifier: workspace:*
-        version: link:../../packages/plugin
 
 packages:
 

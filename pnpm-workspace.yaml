@@ -1,4 +1,5 @@
 packages:
   - 'packages/*'
   - 'packages/create-kivi/kivi-bot'
+  - 'packages/create-kivi/test'
   - 'plugins/*'

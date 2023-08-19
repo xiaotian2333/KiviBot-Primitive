@@ -104,7 +104,7 @@ fs.writeFileSync(path.join(dir, 'package.json'), pkgJSON)
 fs.writeFileSync(path.join(dir, 'kivi.json'), JSON.stringify(config, null, 2))
 
 const isCurrentDir = dir === process.cwd()
-const extraCmd = isCurrentDir ? '' : `cd ${path.basename(dir)}\n\n`
+const extraCmd = isCurrentDir ? '' : b(`cd ${path.basename(dir)}\n\n`)
 
 console.log(
   [
