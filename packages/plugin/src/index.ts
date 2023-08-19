@@ -36,13 +36,17 @@ export class Plugin extends EventEmitter {
   #handlers: Map<string, AnyFunc[]> = new Map()
   #cronTasks: ScheduledTask[] = []
 
-  logger = new Logger('Plugin')
+  #logger: Logger = new Logger('Plugin')
 
   get bot() {
     return this.#bot!
   }
 
   init(bot: ClientWithApis, config: BotConfig, cwd: string) {
+    if (!this.#name) {
+      this.#throwPluginError(`请在插件中调用 ${b('setup')} 函数设置插件名称`)
+    }
+
     this.#bot = bot
     this.#botConfig = config
     this.#dataDir = path.join(cwd, `data/plugins/${this.#name}`)
@@ -60,7 +64,7 @@ export class Plugin extends EventEmitter {
         const config = JSON.parse(configContent)
         this.#pluginConfig = watch(ref(config), (config) => this.#handleConfigChange(config))
       } catch (e) {
-        this.logger.error(e)
+        this.#logger.error(e)
         this.#throwPluginError('插件配置文件格式错误，请检查')
       }
     } else {
@@ -112,7 +116,6 @@ export class Plugin extends EventEmitter {
 
   #handleConfigChange(config: Record<string, any>) {
     const configPath = path.join(this.#dataDir, 'config.json')
-
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
   }
 
@@ -132,12 +135,13 @@ export class Plugin extends EventEmitter {
   }
 
   #throwPluginError(message: string) {
-    this.logger.error(`[${b(this.#name || '未知插件')}] ` + message)
+    this.#logger.error(`[${b(this.#name || '未知插件')}] ` + message)
   }
 
-  __useSetup(name: string, version: string) {
+  __setup(name: string, version: string) {
     this.#name = name || '未知插件'
     this.#version = version || '未知版本'
+    this.#logger.setName(this.#name)
   }
 
   __useConfig() {
@@ -225,6 +229,10 @@ export class Plugin extends EventEmitter {
     return plugin.#bot!.apis[method] as T
   }
 
+  __useLogger() {
+    return this.#logger
+  }
+
   #unregisterAllApi() {
     this.#apiNames.forEach((name) => {
       delete plugin.#bot!.apis[name]
@@ -285,14 +293,15 @@ export interface Plugin extends EventEmitter {
 }
 
 export const plugin = new Plugin()
-export const setup = plugin.__useSetup.bind(plugin)
+export const setup = plugin.__setup.bind(plugin)
 
 export const useOn = plugin.on.bind(plugin)
 export const useBot = () => plugin.bot
 
 export const useApi = plugin.__useApi.bind(plugin)
-export const useCmd = plugin.__useCommand.bind(plugin)
 export const useMount = plugin.__useMount.bind(plugin)
 export const useMatch = plugin.__useMatch.bind(plugin)
 export const useConfig = plugin.__useConfig.bind(plugin)
+export const useLogger = plugin.__useLogger.bind(plugin)
+export const useCommand = plugin.__useCommand.bind(plugin)
 export const registerApi = plugin.__registerApi.bind(plugin)

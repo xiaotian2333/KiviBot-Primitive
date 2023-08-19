@@ -138,6 +138,7 @@ export default class KiviClient {
     this.#bindSendMsg()
     this.#handleMessageForFramework()
 
+    this.#mainLogger.info(`开始加载插件...`)
     await this.#loadPlugins()
 
     const welcome = `${this.#bot!.nickname}(${this.#bot!.uin}) 上线成功! `
@@ -145,16 +146,25 @@ export default class KiviClient {
     this.#mainLogger.info(`向 ${b(`Bot`)} 发送 ${b(`.help`)} 查看所有命令`)
 
     const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
-    mainAdmin.sendMsg('✅ 已上线，发送 .help 查看命令')
+    mainAdmin.sendMsg('✅ 上线成功，发送 .h 查看帮助')
   }
 
   async #loadPlugins() {
     const plugins = await searchAllPlugins(this.#cwd)
+    const size = plugins.length
+    const onSize = this.#botConfig?.plugins?.length || 0
+
+    this.#mainLogger.info(
+      size ? `检测到 ${b(String(size))} 个插件，${b(String(onSize))} 个已开启` : '未检测到任何插件',
+    )
 
     return Promise.all(
       plugins
         .filter((p) => this.#botConfig?.plugins?.includes(p.name))
         .map(async (plugin) => {
+          const relativePath = './' + path.relative(this.#cwd, plugin.path)
+          this.#mainLogger.info(`启用插件 ${b(plugin.name)}: ${relativePath}`)
+
           const pluginInstance = await this.enablePlugin(plugin)
 
           if (!pluginInstance) {
