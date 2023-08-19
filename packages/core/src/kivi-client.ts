@@ -184,7 +184,13 @@ export default class KiviClient {
 
         const entry = pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
 
-        res = loadModule(path.join(pluginInfo.path, entry))
+        try {
+          res = loadModule(path.join(pluginInfo.path, entry))
+        } catch (e: any) {
+          const err = e?.message || JSON.stringify(e)
+          this.#mainLogger.error(`插件 ${kleur.cyan(pluginInfo.name)} 启用失败，报错信息：` + err)
+          return false
+        }
       }
     }
 
@@ -198,8 +204,8 @@ export default class KiviClient {
 
         this.#plugins?.set(pluginInfo.name, plugin)
       } catch (e: any) {
-        this.#mainLogger.error('插件启用失败，报错信息：' + e?.message || JSON.stringify(e))
-
+        const err = e?.message || JSON.stringify(e)
+        this.#mainLogger.error(`插件 ${kleur.cyan(pluginInfo.name)} 启用失败，报错信息：` + err)
         return false
       }
     }
@@ -209,8 +215,6 @@ export default class KiviClient {
 
   async disablePlugin(pluginName: string) {
     const plugin = this.#plugins?.get(pluginName)
-
-    console.log(this.#plugins, pluginName)
 
     if (!plugin) {
       return this.#mainLogger.info(`插件 ${kleur.cyan(pluginName)} 未启用`)

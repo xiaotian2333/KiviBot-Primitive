@@ -14,13 +14,14 @@
   "dependencies": {
     "@kivi-dev/types": "workspace:*",
     "@types/node-cron": "^3.0.8",
+    "kleur": "^4.1.5",
     "node-cron": "^3.0.2"
   },
   "devDependencies": {
     "typescript": "^5.1.6"
   },
   "peerDependencies": {
-    "icqq": "^0.5.0",
-    "@kivi-dev/core": "workspace:*"
+    "@kivi-dev/core": "workspace:*",
+    "icqq": "^0.5.0"
   }
 }

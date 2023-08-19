@@ -1,4 +1,5 @@
 import { Logger } from '@kivi-dev/core'
+import kleur from 'kleur'
 import EventEmitter from 'node:events'
 import path from 'node:path'
 
@@ -55,8 +56,10 @@ export class Plugin extends EventEmitter {
           this.#unmountFns.push(unmountFn)
         }
       })
-    } catch (e) {
-      this.#throwPluginError('error occurred in onMounted:\n' + JSON.stringify(e))
+    } catch (e: any) {
+      this.logger.debug(e)
+      const err = e?.message || JSON.stringify(e)
+      this.#throwPluginError(`${kleur.cyan('onMounted')} 发生错误: ` + err)
     }
 
     KiviEvents.forEach((eventName) => {
@@ -177,14 +180,30 @@ export class Plugin extends EventEmitter {
     },
   ) {}
 
-  __registerApi(method: string, fn: AnyFunc) {
-    if (this.#apiNames.has(method)) {
-      throw new Error(`api ${method} already exists`)
+  __registerApi<T extends AnyFunc = AnyFunc>(method: string, fn: T) {
+    if (!this.#bot) {
+      throw new Error(`请在 ${kleur.cyan(method)} 方法中调用 ${kleur.cyan('registerApi')}`)
+    }
+
+    if (this.#apiNames.has(method) || method in plugin.#bot!.apis) {
+      throw new Error(`api ${kleur.cyan(method)} 已经被注册，请尝试使用其它名称`)
     }
 
     this.#apiNames.add(method)
 
-    plugin.#bot!.apis[method] = (...args: any[]) => fn(...args)
+    plugin.#bot!.apis[method] = fn
+  }
+
+  __useApi<T extends AnyFunc = AnyFunc>(method: string) {
+    if (!this.#bot) {
+      throw new Error(`请在 ${kleur.cyan(method)} 方法中调用 ${kleur.cyan('useApi')}`)
+    }
+
+    if (!plugin.#bot!.apis[method]) {
+      throw new Error(`API ${kleur.cyan(method)} 不存在，请检查是否已在插件中注册`)
+    }
+
+    return plugin.#bot!.apis[method] as T
   }
 
   #unregisterAllApi() {
@@ -252,6 +271,7 @@ export const setup = plugin.__useSetup.bind(plugin)
 export const useOn = plugin.on.bind(plugin)
 export const useBot = () => plugin.bot
 
+export const useApi = plugin.__useApi.bind(plugin)
 export const useCmd = plugin.__useCommand.bind(plugin)
 export const useMount = plugin.__useMount.bind(plugin)
 export const useMatch = plugin.__useMatch.bind(plugin)
