@@ -1,6 +1,7 @@
 import { Logger } from '@kivi-dev/core'
 import { b, ensureArray } from '@kivi-dev/shared'
 import mri from 'mri'
+import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -116,6 +117,12 @@ export class Plugin extends EventEmitter {
     })
   }
 
+  #checkInit() {
+    if (!this.#bot) {
+      this.#throwPluginError(`此时插件还未初始化！请在 ${b('useMount')} 中执行`)
+    }
+  }
+
   #handleConfigChange(config: Record<string, any>) {
     const configPath = path.join(this.#dataDir, 'config.json')
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
@@ -147,6 +154,8 @@ export class Plugin extends EventEmitter {
   }
 
   __useInfo() {
+    this.#checkInit()
+
     return {
       name: this.#name || '',
       version: this.#version || '',
@@ -159,6 +168,8 @@ export class Plugin extends EventEmitter {
   }
 
   __useConfig() {
+    this.#checkInit()
+
     return this.#pluginConfig
   }
 
@@ -199,6 +210,8 @@ export class Plugin extends EventEmitter {
       role?: 'admin' | 'all'
     },
   ) {
+    this.#checkInit()
+
     const oicqHandler = (e: AllMessageEvent) => {
       if (option?.type === 'private' && e.message_type !== 'private') return
       if (option?.type === 'group' && e.message_type !== 'group') return
@@ -220,6 +233,8 @@ export class Plugin extends EventEmitter {
       role?: 'admin' | 'all'
     },
   ) {
+    this.#checkInit()
+
     const matchList = ensureArray(matches)
 
     const oicqHandler = (e: AllMessageEvent) => {
@@ -257,6 +272,8 @@ export class Plugin extends EventEmitter {
       role?: 'admin' | 'all'
     },
   ) {
+    this.#checkInit()
+
     const oicqHandler = (e: AllMessageEvent) => {
       if (option?.type === 'private' && e.message_type !== 'private') return
       if (option?.type === 'group' && e.message_type !== 'group') return
@@ -287,9 +304,7 @@ export class Plugin extends EventEmitter {
   }
 
   __registerApi<T extends AnyFunc = AnyFunc>(method: string, fn: T) {
-    if (!this.#bot) {
-      this.#throwPluginError(`请在 ${b(method)} 方法中调用 ${b('registerApi')}`)
-    }
+    this.#checkInit()
 
     if (this.#apiNames.has(method) || method in plugin.#bot!.apis) {
       this.#throwPluginError(`api ${b(method)} 已经被注册，请尝试使用其它名称`)
@@ -301,9 +316,7 @@ export class Plugin extends EventEmitter {
   }
 
   __useApi<T extends AnyFunc = AnyFunc>(method: string) {
-    if (!this.#bot) {
-      this.#throwPluginError(`请在 ${b(method)} 方法中调用 ${b('useApi')}`)
-    }
+    this.#checkInit()
 
     if (!plugin.#bot!.apis[method]) {
       this.#throwPluginError(`API ${b(method)} 不存在，请检查是否已在插件中注册`)
@@ -314,6 +327,24 @@ export class Plugin extends EventEmitter {
 
   __useLogger() {
     return this.#logger
+  }
+
+  __useCron(cronExpression: string, handler: AnyFunc) {
+    this.#checkInit()
+
+    // 检验 cron 表达式有效性
+    const isSyntaxOK = nodeCron.validate(cronExpression)
+
+    if (!isSyntaxOK) {
+      this.#throwPluginError(`无效的 ${b('crontab')} 表达式`)
+    }
+
+    // 创建 cron 任务
+    const task = nodeCron.schedule(cronExpression, () => handler(this.bot!))
+
+    this.#cronTasks.push(task)
+
+    return task
   }
 
   #unregisterAllApi() {
@@ -387,6 +418,7 @@ export const useMessage = plugin.__useMessage.bind(plugin)
 export const useMatch = plugin.__useMatch.bind(plugin)
 export const useInfo = plugin.__useInfo.bind(plugin)
 export const useConfig = plugin.__useConfig.bind(plugin)
+export const useCron = plugin.__useCron.bind(plugin)
 export const useLogger = plugin.__useLogger.bind(plugin)
 export const useCommand = plugin.__useCommand.bind(plugin)
 export const registerApi = plugin.__registerApi.bind(plugin)

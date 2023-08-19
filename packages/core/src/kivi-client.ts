@@ -179,18 +179,32 @@ export default class KiviClient {
   async enablePlugin(pluginInfo: { name: string; path: string; pkg: Record<string, any> }) {
     let res
 
+    console.log(pluginInfo)
+
     try {
       res = loadModule(`${pluginInfo.path}/index`)
-    } catch (e) {
+    } catch (e: any) {
+      const info = e?.message || JSON.stringify(e)
+
+      if (!info.includes('Cannot find module')) {
+        this.#mainLogger.debug('插件加载失败：', e)
+      }
+
       try {
         res = loadModule(`${pluginInfo.path}/src/index`)
-      } catch (e) {
+      } catch (e: any) {
+        const info = e?.message || JSON.stringify(e)
+
+        if (!info.includes('Cannot find module')) {
+          this.#mainLogger.debug('插件加载失败：', e)
+        }
+
         const exports =
           pluginInfo.pkg?.exports ||
-          pluginInfo.pkg?.exports['.'] ||
-          pluginInfo.pkg?.exports['.']?.import ||
-          pluginInfo.pkg?.exports['.']?.require ||
-          pluginInfo.pkg?.exports['.']?.default
+          pluginInfo.pkg?.exports?.['.'] ||
+          pluginInfo.pkg?.exports?.['.']?.import ||
+          pluginInfo.pkg?.exports?.['.']?.require ||
+          pluginInfo.pkg?.exports?.['.']?.default
 
         const entry = pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
 
@@ -198,6 +212,10 @@ export default class KiviClient {
           res = loadModule(path.join(pluginInfo.path, entry))
         } catch {
           const info = `未找到插件 ${b(pluginInfo.name)} 入口，启用失败`
+
+          const index = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
+          index && this.#botConfig?.plugins?.splice(index, 1)
+
           this.#mainLogger.error(info)
           return info
         }
@@ -208,6 +226,10 @@ export default class KiviClient {
 
     if (!plugin || !plugin.init) {
       const info = `插件 ${b(pluginInfo.name)} 未导出 ${b('`plugin`')} 实例，启用失败`
+
+      const index = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
+      index && this.#botConfig?.plugins?.splice(index, 1)
+
       this.#mainLogger.error(info)
       return info
     } else {
@@ -219,6 +241,10 @@ export default class KiviClient {
       } catch (e: any) {
         const err = e?.message || JSON.stringify(e)
         const info = `插件 ${b(pluginInfo.name)} 启用失败，错误信息：` + err
+
+        const index = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
+        index && this.#botConfig?.plugins?.splice(index, 1)
+
         this.#mainLogger.error(info)
         return info
       }

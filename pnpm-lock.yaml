@@ -164,15 +164,6 @@ importers:
         specifier: workspace:*
         version: link:../../plugin
 
-  packages/create-kivi/test:
-    dependencies:
-      '@kivi-dev/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@kivi-dev/plugin':
-        specifier: workspace:*
-        version: link:../../plugin
-
   packages/plugin:
     dependencies:
       '@kivi-dev/core':

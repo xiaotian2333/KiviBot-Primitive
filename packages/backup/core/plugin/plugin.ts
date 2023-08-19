@@ -15,7 +15,7 @@ import type {
   DiscussMessageEvent,
   EventMap,
   GroupMessageEvent,
-  PrivateMessageEvent
+  PrivateMessageEvent,
 } from 'movo'
 import type { ScheduledTask } from 'node-cron'
 
@@ -50,7 +50,7 @@ export type MessageCmdHandler = (
   params: string[],
   options: {
     [arg: string]: any
-  }
+  },
 ) => any
 
 export interface PluginConf {
@@ -248,7 +248,7 @@ export class Plugin extends EventEmitter {
   loadConfig(
     filepath: string = path.join(this.dataDir, 'config.json'),
     defaultValue: any = {},
-    options: fs.ReadOptions | undefined = {}
+    options: fs.ReadOptions | undefined = {},
   ): any {
     this.debug('loadConfig')
 
@@ -273,7 +273,7 @@ export class Plugin extends EventEmitter {
   saveConfig(
     data: any,
     filepath: string = path.join(this.dataDir, 'config.json'),
-    options: fs.WriteOptions | undefined = {}
+    options: fs.WriteOptions | undefined = {},
   ): boolean {
     this.debug('saveConfig')
 
@@ -607,7 +607,7 @@ export class Plugin extends EventEmitter {
   private checkMountStatus() {
     if (!this.bot) {
       this.throwPluginError(
-        'Bot (Client) has not been mounted in this time, please ensure that only call bot in onMounted and onUnmounted'
+        'Bot (Client) has not been mounted in this time, please ensure that only call bot in onMounted and onUnmounted',
       )
     }
   }
@@ -705,7 +705,7 @@ export interface Plugin extends EventEmitter {
   /** 监听自定义事件或其他插件触发的事件 */
   on<S extends string | symbol>(
     event: S & Exclude<S, keyof EventMap>,
-    listener: (this: this, ...args: any[]) => void
+    listener: (this: this, ...args: any[]) => void,
   ): this
 
   /** 单次监听 oicq 标准事件以及 keli 标准事件 */
@@ -714,7 +714,7 @@ export interface Plugin extends EventEmitter {
   /** 单次监听自定义事件或其他插件触发的事件 */
   once<S extends string | symbol>(
     event: S & Exclude<S, keyof EventMap>,
-    listener: (this: this, ...args: any[]) => void
+    listener: (this: this, ...args: any[]) => void,
   ): this
 
   /** 取消监听 oicq 标准事件以及 keli 标准事件 */
@@ -723,6 +723,6 @@ export interface Plugin extends EventEmitter {
   /** 取消监听自定义事件或其他插件触发的事件 */
   off<S extends string | symbol>(
     event: S & Exclude<S, keyof EventMap>,
-    listener: (this: this, ...args: any[]) => void
+    listener: (this: this, ...args: any[]) => void,
   ): this
 }
