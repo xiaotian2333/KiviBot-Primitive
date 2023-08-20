@@ -1,6 +1,6 @@
 {
   "name": "@kivi-dev/plugin",
-  "version": "0.0.0-beta.0e4abeb",
+  "version": "0.0.0",
   "type": "module",
   "description": "plugin for Kivi",
   "main": "./lib/index.js",
