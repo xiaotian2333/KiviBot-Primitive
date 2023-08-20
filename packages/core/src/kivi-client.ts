@@ -532,7 +532,7 @@ export default class KiviClient {
     // ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF
     const now = dayjs().format('YYYY-MM-DD_HH-mm-ss')
     const filename = `kivi_${uin}_${now}`
-    const botLogDir = path.join(this.#cwd, 'logs', String(uin))
+    const botLogDir = path.join(this.#cwd, 'logs')
     const logFilePath = path.join(botLogDir, `${filename}.log`)
 
     return {
