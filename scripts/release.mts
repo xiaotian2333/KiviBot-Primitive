@@ -40,13 +40,16 @@ async function handleCoreRelease() {
   const currentVersion = projects[0].pkg.version || ''
   const versions: semver.ReleaseType[] = ['prerelease', 'patch', 'minor', 'major']
 
+  const res = await $`git rev-parse --short HEAD`
+  const lastCommitHash = res.stdout.replace(/(\n|,$)/g, '')
+
   const { version } = await prompts({
     type: 'select',
     name: 'version',
     message: '请选择发布版本',
     choices: versions.map((e) => ({
-      title: semver.inc(currentVersion, e) + ` (${e}) `,
-      value: semver.inc(currentVersion, e)!,
+      title: generateNextVersion(currentVersion, e, lastCommitHash) + ` (${e}) `,
+      value: generateNextVersion(currentVersion, e, lastCommitHash)!,
     })),
   })
 
@@ -80,4 +83,20 @@ function bumpVersion(projects: { pkg: Record<string, any>; path: string }[], ver
     proj.pkg.version = version
     fs.writeFileSync(proj.path, JSON.stringify(proj.pkg, null, 2))
   })
+}
+
+// fix semver prerelease
+async function generateNextVersion(
+  version: string,
+  type: semver.ReleaseType,
+  lastCommitHash: string,
+) {
+  if (type === 'prerelease') {
+    const SemVer = semver.parse(semver.minVersion(version))
+    const { major, minor, patch } = SemVer!
+
+    return `${major}.${minor}.${patch}-beta.${lastCommitHash}`
+  } else {
+    return semver.inc(version, type)
+  }
 }
