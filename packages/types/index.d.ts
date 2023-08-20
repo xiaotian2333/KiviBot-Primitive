@@ -24,9 +24,22 @@ export type AdminArray = [mainAdmin: number, ...subAdmins: number[]]
 
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
 export type OicqMessageHandler = (event: AllMessageEvent) => any
-export type MessageHandler = (event: AllMessageEvent, bot: Client) => any
-export type PrivateMessageHandler = (event: PrivateMessageEvent, bot: Client) => any
-export type GroupMessageHandler = (event: GroupMessageEvent, bot: Client) => any
+
+export type MessageHandler<T extends 'all' | 'group' | 'private' = 'all'> = T extends 'all'
+  ? (event: AllMessageEvent) => any
+  : T extends 'group'
+  ? (event: GroupMessageEvent) => any
+  : T extends 'private'
+  ? (event: PrivateMessageEvent) => any
+  : never
+
+export type CommandHandler<T extends 'all' | 'group' | 'private' = 'all'> = T extends 'all'
+  ? (event: AllMessageEvent, params: string[], options: { [arg: string]: any }) => any
+  : T extends 'group'
+  ? (event: GroupMessageEvent, params: string[], options: { [arg: string]: any }) => any
+  : T extends 'private'
+  ? (event: PrivateMessageEvent, params: string[], options: { [arg: string]: any }) => any
+  : never
 
 export interface ClientWithApis extends Client {
   apis: {

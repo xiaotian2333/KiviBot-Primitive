@@ -17,7 +17,9 @@ import type {
   AnyFunc,
   BotConfig,
   ClientWithApis,
+  CommandHandler,
   FirstParam,
+  MessageHandler,
 } from '@kivi-dev/types'
 import type { Client, EventMap } from 'icqq'
 import type { ScheduledTask } from 'node-cron'
@@ -203,10 +205,10 @@ export class Plugin extends EventEmitter {
     this.#mountFns.push(fn)
   }
 
-  __useMessage(
-    handler: AnyFunc,
+  __useMessage<T extends 'all' | 'private' | 'group' = 'all'>(
+    handler: MessageHandler<T>,
     option?: {
-      type?: 'all' | 'private' | 'group'
+      type?: T
       role?: 'admin' | 'all'
     },
   ) {
@@ -218,18 +220,19 @@ export class Plugin extends EventEmitter {
       const isAdmin = this.admins.includes(e.sender.user_id)
       if (option?.role === 'admin' && !isAdmin) return
 
-      handler(e, this.bot!)
+      // TODO: fix type error
+      handler(e as never)
     }
 
     const unsubscribe = this.#bot!.on('message', oicqHandler)
     this.#addHandler('message', unsubscribe)
   }
 
-  __useMatch(
+  __useMatch<T extends 'all' | 'private' | 'group' = 'all'>(
     matches: string | RegExp | (string | RegExp)[],
-    handler: AnyFunc,
+    handler: MessageHandler<T>,
     option?: {
-      type?: 'all' | 'private' | 'group'
+      type?: T
       role?: 'admin' | 'all'
     },
   ) {
@@ -254,7 +257,8 @@ export class Plugin extends EventEmitter {
         const hitString = !isReg && match === msg
 
         if (hitReg || hitString) {
-          handler(e, this.bot!)
+          // TODO: fix type error
+          handler(e as never)
           break
         }
       }
@@ -264,11 +268,11 @@ export class Plugin extends EventEmitter {
     this.#addHandler('message', unsubscribe)
   }
 
-  __useCommand(
+  __useCommand<T extends 'all' | 'private' | 'group' = 'all'>(
     cmds: string | RegExp | (string | RegExp)[],
-    handler: AnyFunc,
+    handler: CommandHandler<T>,
     option?: {
-      type?: 'all' | 'private' | 'group'
+      type?: T
       role?: 'admin' | 'all'
     },
   ) {
@@ -293,7 +297,8 @@ export class Plugin extends EventEmitter {
         const hitString = !isReg && cmd === inputCmd
 
         if (hitReg || hitString) {
-          handler(e, params, options)
+          // TODO: fix type error
+          handler(e as never, params, options)
           break
         }
       }
