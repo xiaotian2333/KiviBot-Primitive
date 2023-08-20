@@ -75,7 +75,7 @@ npm start
 ```typescript
 import { setup, logger, useMount } from '@kivi-dev/plugin'
 
-setup('测试插件'， '1.0.0')
+setup('测试插件', '1.0.0')
 
 useMount(async () => {
   logger.info('插件被启用了！')
@@ -83,7 +83,7 @@ useMount(async () => {
   return () => {
     logger.info('插件被禁用了！')
   }
-)
+})
 
 export { plugin } from '@kivi-dev/plugin'
 ```
@@ -97,16 +97,19 @@ export { plugin } from '@kivi-dev/plugin'
 ```typescript
 import { setup, useMount, segment, useMessage, useMatch } from '@kivi-dev/plugin'
 
-setup('测试插件'， '1.0.0')
+setup('测试插件', '1.0.0')
 
 useMount(() => {
   useMatch('hello', (event) => {
     event.reply(['world ', segment.face(66)])
   })
 
-  useMessage('hi', (event) => {
-    event.reply(['world ', segment.face(66)])
-  }, { type: 'group' }) // 仅群聊
+  useMessage(
+    (event) => {
+      event.reply(['world ', segment.face(66)])
+    },
+    { type: 'group' },
+  ) // 仅群聊
 })
 
 export { plugin } from '@kivi-dev/plugin'
@@ -117,7 +120,7 @@ export { plugin } from '@kivi-dev/plugin'
 ```typescript
 import { setup, bot, useMount, useCron, useInfo } from '@kivi-dev/plugin'
 
-setup('测试插件'， '1.0.0')
+setup('测试插件', '1.0.0')
 
 useMount(() => {
   const { mainAdmin } = useInfo()
@@ -137,7 +140,7 @@ export { plugin } from '@kivi-dev/plugin'
 ```typescript
 import { setup, useMount, useCmd, logger } from '@kivi-dev/plugin'
 
-setup('测试插件'， '1.0.0')
+setup('测试插件', '1.0.0')
 
 useMount(() => {
   // 仅处理群聊中管理员的命令
@@ -163,12 +166,12 @@ export { plugin } from '@kivi-dev/plugin'
 ```typescript
 import { setup, useMount, useConfig } from '@kivi-dev/plugin'
 
-setup('测试插件'， '1.0.0')
+setup('测试插件', '1.0.0')
 
 useMount(() => {
   const config = useConfig()
 
-  config.value = 132; // 检测到 config 变更将自动保存，下次启用自动读取
+  config.value = 132 // 检测到 config 变更将自动保存，下次启用自动读取
 })
 
 export { plugin } from '@kivi-dev/plugin'
@@ -181,11 +184,11 @@ export { plugin } from '@kivi-dev/plugin'
 ```typescript
 import { setup, useMount, registerApi, useApi } from '@kivi-dev/plugin'
 
-setup('测试插件'， '1.0.0')
+setup('测试插件', '1.0.0')
 
 // 插件 A
 useMount(() => {
-  registerApi("testFunc", (a, b) => {
+  registerApi('testFunc', (a, b) => {
     return a + b
   })
 })
@@ -193,7 +196,7 @@ useMount(() => {
 // 插件 B
 useMount(() => {
   // 得到 3
-  const res = useApi("testFunc")(1, 2)
+  const res = useApi('testFunc')(1, 2)
 })
 
 export { plugin } from '@kivi-dev/plugin'
