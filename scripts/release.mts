@@ -66,6 +66,7 @@ async function handleCoreRelease() {
     await $`git commit -m "release: v${version}"`
     await $`git tag -a v${version} -m "v${version}"`
     await $`git push --tags`
+    await $`git push`
   }
 }
 
