@@ -174,6 +174,31 @@ useMount(() => {
 export { plugin } from '@kivi-dev/plugin'
 ```
 
+5. 注册 API （插件间通信）
+
+提供了一种多个插件间通信的机制。
+
+```typescript
+import { setup, useMount, registerApi, useApi } from '@kivi-dev/plugin'
+
+setup('测试插件'， '1.0.0')
+
+// 插件 A
+useMount(() => {
+  registerApi("testFunc", (a, b) => {
+    return a + b
+  })
+})
+
+// 插件 B
+useMount(() => {
+  // 得到 3
+  const res = useApi("testFunc")(1, 2)
+})
+
+export { plugin } from '@kivi-dev/plugin'
+```
+
 ## API
 
 > 完善中...
