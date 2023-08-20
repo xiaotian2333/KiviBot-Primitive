@@ -503,7 +503,9 @@ export default class KiviClient {
       message: `验证码已发送至 ${b(phone)}，请输入验证码`,
     })
 
-    this.#mainLogger.info('\n短信验证码已提交，等待响应...')
+    console.log('\n')
+    this.#mainLogger.info(kleur.yellow('短信验证码已提交，等待响应...'))
+    console.log('\n')
 
     await bot.submitSmsCode(code)
   }
