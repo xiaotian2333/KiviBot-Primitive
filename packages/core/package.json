@@ -1,6 +1,6 @@
 {
   "name": "@kivi-dev/core",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "packageManager": "pnpm@8.2.0",
   "update": "2023/8/10",
