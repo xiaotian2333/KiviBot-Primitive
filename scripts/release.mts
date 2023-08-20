@@ -86,16 +86,12 @@ function bumpVersion(projects: { pkg: Record<string, any>; path: string }[], ver
 }
 
 // fix semver prerelease
-async function generateNextVersion(
-  version: string,
-  type: semver.ReleaseType,
-  lastCommitHash: string,
-) {
+function generateNextVersion(version: string, type: semver.ReleaseType, hash: string) {
   if (type === 'prerelease') {
     const SemVer = semver.parse(semver.minVersion(version))
     const { major, minor, patch } = SemVer!
 
-    return `${major}.${minor}.${patch}-beta.${lastCommitHash}`
+    return `${major}.${minor}.${patch}-beta.${hash}`
   } else {
     return semver.inc(version, type)
   }
