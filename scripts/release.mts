@@ -60,7 +60,7 @@ async function handleCoreRelease() {
 
   if (confirm) {
     await $`pnpm run build`
-    await $`pnpm -r version ${version}`
+    await $`pnpm -r --filter=@kivi-dev/* --filter=create-kivi version ${version}`
 
     await $`git add . -A`
     await $`git commit -m "release: v${version}"`
