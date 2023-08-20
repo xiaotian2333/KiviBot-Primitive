@@ -62,6 +62,12 @@ async function handleCoreRelease() {
     await $`pnpm run build`
     await $`pnpm -r version ${version}`
     await $`pnpm -r publish --access public`
+
+    await $`git add . -A`
+    await $`git commit -m "release: v${version}"`
+    await $`git tag -a v${version} -m "v${version}"`
+    await $`git push`
+    await $`git push --tags`
   }
 }
 
