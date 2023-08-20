@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="180" src="https://keli.viki.moe/dimo.png" alt="Kivi logo">
+  <img width="180" src="https://keli.viki.moe/dimo.png" alt="Kivi logo"></img>
 </p>
 
 <br/>
@@ -14,6 +14,7 @@
   <a href="https://pkg-size.dev/@kivi-dev/core">
     <img src="https://pkg-size.dev/badge/install/8744705" title="Install size for @kivi-dev/core">
   </a>
+  <img src="https://img.shields.io/badge/group-868781587-527dec?logo=TencentQQ&logoColor=ffffff">
   <a href="https://github.com/vikiboss/kivibot/blob/main/LICENSE">
     <img alt="NPM" src="https://img.shields.io/npm/l/%40kivi-dev%2Fcore">
   </a>
@@ -46,7 +47,7 @@
 npm create kivi
 ```
 
-2. 进入项目目录，并安装 `node` 依赖
+2. 进入项目目录，并安装依赖
 
 ```bash
 cd kivi-bot
@@ -67,7 +68,9 @@ npm start
 
 插件全部放在 `plugins` 的子目录下，每个插件都是一个单独的 `ESM` 模块，支持 TS/JS。对应插件的数据被存放在 `data/plugins/[pluginName]` 下，`pluginName` 为 `setup` 函数设置的名称。
 
-你可以在 `plugins/demo/index.ts` 创建一个文件，写入以下 TS 代码，请注意最后需要导出 `plugin`。
+你可以在 `plugins/demo/index.ts` 创建一个文件，写入以下 TS 代码。
+
+> 请注意最后需要导出 `plugin`。
 
 ```typescript
 import { setup, logger } from '@kivi-dev/plugin'
@@ -89,17 +92,21 @@ export { plugin } from '@kivi-dev/plugin'
 
 ## 插件例子
 
-1. 收到 `hello` 消息时，回复 `world`。
+1. 收到 `hello` 和群聊的 `hi` 时，回复 `world` + 爱心。
 
 ```typescript
-import { setup,useMount, useMatch } from '@kivi-dev/plugin'
+import { setup, useMount, segment, useMessage, useMatch } from '@kivi-dev/plugin'
 
 setup('测试插件'， '1.0.0')
 
 useMount(() => {
   useMatch('hello', (event) => {
-    event.reply('world')
+    event.reply(['world ', segment.face(66)])
   })
+
+  useMessage('hi', (event) => {
+    event.reply(['world ', segment.face(66)])
+  }, { type: 'group' }) // 仅群聊
 })
 
 export { plugin } from '@kivi-dev/plugin'
@@ -115,6 +122,7 @@ setup('测试插件'， '1.0.0')
 useMount(() => {
   const { mainAdmin } = useInfo()
 
+  // 使用 crontab 表达式
   useCron('*/3 * * * *', (event) => {
     // 每 3 秒给主管理员发送一条消息
     bot.sendPrivateMsg(mainAdmin, '定时任务触发了！')
@@ -136,12 +144,13 @@ useMount(() => {
   useCmd(
     '/hello',
     (event, params, options) => {
+      // 比如 /cmd param1 param2 -a -bc -n value --option1=test -option2=hello
       logger.info(params, options)
       event.reply('world')
     },
     {
-      role: 'admin',
-      type: 'group',
+      role: 'admin', // 仅管理员
+      type: 'group', // 仅群聊
     },
   )
 })
@@ -173,9 +182,9 @@ export { plugin } from '@kivi-dev/plugin'
 
 ## 更多
 
-遇到困难？请尝试翻阅 [插件 API 源码](./packages/plugin/src/index.ts) 或者 [加入群聊](https://kivi.viki.moe) 礼貌提问。
+遇到困难？请尝试翻阅 [插件 API 源码](./packages/plugin/src/index.ts) 或者加入企鹅群 [868781587](#) 礼貌提问。
 
-<img style="max-width: 240px" src="./docs/images/group-qrcode.jpg" alt="qrcode">
+<img style="max-width: 200px" src="./docs/images/group-qrcode.png" alt="qrcode">
 
 ## License
 
