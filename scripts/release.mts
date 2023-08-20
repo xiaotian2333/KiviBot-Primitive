@@ -18,9 +18,6 @@ switch (type) {
     break
   case 'plugin':
     handlePluginRelease()
-
-    break
-  default:
     break
 }
 
@@ -41,7 +38,7 @@ async function handleCoreRelease() {
   const projects = await readProjectsFromDir('packages')
 
   const currentVersion = projects[0].version || ''
-  const versions: semver.ReleaseType[] = ['patch', 'minor', 'major']
+  const versions: semver.ReleaseType[] = ['prerelease', 'patch', 'minor', 'major']
 
   const { version } = await prompts<string>({
     type: 'select',
@@ -53,6 +50,8 @@ async function handleCoreRelease() {
     })),
   })
 
+  if (!version) return
+
   const { confirm } = await prompts({
     type: 'confirm',
     name: 'confirm',
@@ -60,11 +59,12 @@ async function handleCoreRelease() {
   })
 
   if (confirm) {
-    await $`pnpm -r --parallel --filter=@kivi-dev/* --filter=create-kivi build`
-    await $`pnpm -r --parallel --filter=@kivi-dev/* --filter=create-kivi version ${version}`
+    await $`pnpm run build`
+    await $`pnpm -r version ${version}`
+    await $`pnpm -r publish --access public`
   }
 }
 
-function handlePluginRelease() {}
-
-// pnpm -r --parallel --filter=@kivi-dev/* publish
+function handlePluginRelease() {
+  console.log('// TODO')
+}
