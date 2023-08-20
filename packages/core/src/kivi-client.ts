@@ -10,8 +10,6 @@ import prompts from 'prompts'
 import { str2argv } from 'string2argv'
 
 import command from './commands.js'
-import { resolveConfig } from './config.js'
-import { CONFIG_FILE_NAME, DEFAULT_SIGN_API } from './constants.js'
 import { Logger } from './logger.js'
 import { deepClone, handleException, loadModule, require, stringifySendable } from './utils.js'
 
@@ -43,7 +41,7 @@ export default class KiviClient {
   }
 
   #handleConfigChange(config: BotConfig) {
-    const filePath = path.join(this.#cwd, CONFIG_FILE_NAME)
+    const filePath = path.join(this.#cwd, 'kivi.json')
     fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
     this.#mainLogger.debug('检测到 config 变更，已自动保存')
   }
@@ -71,6 +69,16 @@ export default class KiviClient {
     return this.#bot
   }
 
+  #resolveConfig() {
+    const configPath = path.join(this.#cwd, 'kivi.json')
+
+    if (!fs.existsSync(configPath)) {
+      throw new Error(`${b('kivi.json')} 不存在，请先使用 ${b('npm create kivi')} 创建。`)
+    }
+
+    return require(configPath) as BotConfig
+  }
+
   async #initKivi(dir?: string) {
     this.#mainLogger.debug('读取 Kivi 配置目录')
 
@@ -78,7 +86,7 @@ export default class KiviClient {
 
     if (!this.#botConfig) {
       this.#mainLogger.debug('解析 Bot 配置文件')
-      this.#botConfig = ref<BotConfig>(resolveConfig(this.#cwd))
+      this.#botConfig = ref<BotConfig>(this.#resolveConfig())
       watch(this.#botConfig, (config) => this.#handleConfigChange(config))
     }
   }
@@ -98,7 +106,7 @@ export default class KiviClient {
     const bot = createClient({
       platform: platform || 2,
       auto_server: true,
-      sign_api_addr: oicq_config?.sign_api_addr || DEFAULT_SIGN_API,
+      sign_api_addr: oicq_config?.sign_api_addr || 'https://qsign.viki.moe/sign',
       ...(oicq_config || {}),
       log_config: this.#getLogConfig(uin),
       data_dir: botDataDir,
