@@ -73,7 +73,7 @@ npm start
 > 请注意最后需要导出 `plugin`。
 
 ```typescript
-import { setup, logger } from '@kivi-dev/plugin'
+import { setup, logger, useMount } from '@kivi-dev/plugin'
 
 setup('测试插件'， '1.0.0')
 
