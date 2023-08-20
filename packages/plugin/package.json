@@ -3,12 +3,25 @@
   "version": "2.0.0",
   "type": "module",
   "description": "plugin for Kivi",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.js",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc"
   },
-  "keywords": [],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT",
   "dependencies": {
@@ -20,12 +33,10 @@
     "obj-observer": "^1.0.4",
     "string2argv": "^1.0.2"
   },
-  "devDependencies": {
-    "typescript": "^5.1.6"
-  },
   "peerDependencies": {
     "@kivi-dev/core": "workspace:*",
     "@kivi-dev/shared": "workspace:*",
-    "icqq": "^0.5.0"
+    "typescript": "^5",
+    "icqq": ">= 0.5.0"
   }
 }

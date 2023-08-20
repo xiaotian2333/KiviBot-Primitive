@@ -2,24 +2,30 @@
   "name": "kivi-monorepo",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@8.6.11",
+  "packageManager": "pnpm@8.6.12",
   "prettier": "@vmoe/prettier-config",
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MPL-2.0",
   "scripts": {
-    "dev": "DEV=1 pnpm -r --parallel run dev",
-    "build": "pnpm -r --parallel run build"
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r --parallel --filter=@kivi-dev/* --filter=create-kivi run build",
+    "release": "esno ./scripts/release.mts"
   },
   "engines": {
     "node": "^16.3.0 || ^18.0.0 || ^20.0.0"
   },
   "devDependencies": {
+    "@types/prompts": "^2.4.4",
+    "@types/semver": "^7.5.0",
     "@vmoe/eslint-config": "^0.5.0",
     "@vmoe/prettier-config": "^1.1.1",
     "bumpp": "^9.1.1",
     "eslint": "^8.47.0",
     "esno": "^0.17.0",
     "kleur": "^4.1.5",
-    "prettier": "^3.0.2"
+    "prettier": "^3.0.2",
+    "prompts": "^2.4.2",
+    "semver": "^7.5.4",
+    "zx": "^7.2.3"
   }
 }

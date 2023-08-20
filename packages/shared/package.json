@@ -3,6 +3,20 @@
   "version": "2.0.0",
   "type": "module",
   "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.js",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc"
@@ -15,7 +29,7 @@
     "load-json-file": "^7.0.1"
   },
   "peerDependencies": {
-    "icqq": "^0.5.0",
+    "icqq": ">= 0.5.0",
     "kleur": "^4",
     "typescript": "^5"
   }

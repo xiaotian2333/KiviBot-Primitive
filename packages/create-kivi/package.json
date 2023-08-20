@@ -3,7 +3,9 @@
   "version": "2.0.0",
   "type": "module",
   "description": "CLI for Kivi",
-  "bin": "./bin/index.js",
+  "bin": {
+    "kivi": "./bin/index.js"
+  },
   "files": [
     "bin"
   ],
@@ -15,8 +17,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsc -w",
-    "build": "tsc",
-    "release": "npm publish --access public"
+    "build": "tsc"
   },
   "dependencies": {
     "@kivi-dev/shared": "workspace:*",
