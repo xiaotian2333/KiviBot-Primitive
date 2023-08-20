@@ -14,7 +14,7 @@
     "kivibot"
   ],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "scripts": {
     "predev": "rm -rf bin",
     "prebuild": "rm -rf bin",

@@ -25,7 +25,7 @@
     "build": "tsc"
   },
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "dependencies": {
     "@kivi-dev/types": "workspace:*",
     "@types/node-cron": "^3.0.8",

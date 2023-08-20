@@ -24,7 +24,7 @@
     "build": "tsc"
   },
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "dependencies": {
     "dayjs": "^1.11.9",
     "globby": "^13.2.2",

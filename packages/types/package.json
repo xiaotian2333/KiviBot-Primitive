@@ -5,7 +5,7 @@
   "type": "module",
   "types": "index.d.ts",
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "files": [
     "index.d.ts"
   ],

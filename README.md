@@ -1,126 +1,182 @@
 <p align="center">
   <img width="180" src="https://keli.viki.moe/dimo.png" alt="Kivi logo">
 </p>
+
 <br/>
+
 <p align="center">
   <a href="https://npmjs.com/package/@kivi-dev/core">
-  <img src="https://img.shields.io/npm/v/@kivi-dev/core.svg" alt="npm package">
+    <img src="https://img.shields.io/npm/v/@kivi-dev/core.svg" alt="npm package">
   </a>
-  <a href="https://pkg-size.dev/@kivi-dev/shared"><img src="https://pkg-size.dev/badge/install/46512092" title="Install size for @kivi-dev/shared"></a>
   <a href="https://nodejs.org/en/about/releases/">
-  <img src="https://img.shields.io/node/v/@kivi-dev/core.svg" alt="node compatibility">
+    <img src="https://img.shields.io/node/v/@kivi-dev/core.svg" alt="node compatibility">
   </a>
-
+  <a href="https://pkg-size.dev/@kivi-dev/core">
+    <img src="https://pkg-size.dev/badge/install/8744705" title="Install size for @kivi-dev/core">
+  </a>
+  <a href="https://github.com/vikiboss/kivibot/blob/main/LICENSE">
+    <img alt="NPM" src="https://img.shields.io/npm/l/%40kivi-dev%2Fcore">
+  </a>
 </p>
 <br/>
 
 # Kivi
 
-> Just run の Bot on Tencent [IM](https://im.qq.com).
+> Just run の bot.
+>
+> 基于 [oicq](#) / [icqq](#)、面向 [Node.js](https://nodejs.org) 开发者的**轻量** QQ 机器人框架。
 
-## Usage
+## 为什么选择 Kivi ？
 
-1. create a project via `npm create kivi`
+- 🚲 轻量：无 UI、低占用、安装后大小不到 10MB
+- ⚡ 高效：内置协议、语言一致，由 `node` / `bun` 强力驱动
+- 📱 跨平台：Windows、Linux、手机平板、路由器、随身 WiFi...
+- 🔗 多协议：得益于 [oicq](#) / [icqq](#)，支持手机、平板、手表、macOS
+- 📦 注重体验: 一条 QQ 消息即可启用、禁用插件，管理 Bot
+- 🚤 极速开发: 极低门槛，几行 JS/TS 代码即能快速实现功能
+- 💻 开发者友好: **支持直接加载 TS 插件**、插件热重载、完备的 TS 类型
+
+本项目开发初衷在于提高群活跃氛围、方便群管理，仅供个人娱乐、学习和交流使用，**任何人不得将本项目用于任何非法用途**。
+
+## 快速上手
+
+1. 通过 `npm create kivi` 命令快速创建项目
 
 ```bash
 npm create kivi
 ```
 
-2. install dependencies
+2. 进入项目目录，并安装 `node` 依赖
 
 ```bash
 cd kivi-bot
 npm install
 ```
 
-3. run Kivi
-
-you might need to config your `sign_api_addr` in: `kivi.json` > `oicq_config` > `sign_api_addr`
+3. 通过 npm 命令启动 Kivi
 
 ```bash
 npm start
 ```
 
-send `.h` to bot to get more help info.
+向机器人发送 `.h` 或者 `.help` 开始你的 Bot 养成计划～
 
-## Plugin
+## 插件
 
-support TS/JS plugin out of the box.
+框架本身仅提供**插件管理**和**状态监控**的基础功能, 其他应用性功能你需要通过编写插件来实现。
 
-you can create a TS or JS file in `plugins/demo/index.ts`
+插件全部放在 `plugins` 的子目录下，每个插件都是一个单独的 `ESM` 模块，支持 TS/JS。对应插件的数据被存放在 `data/plugins/[pluginName]` 下，`pluginName` 为 `setup` 函数设置的名称。
+
+你可以在 `plugins/demo/index.ts` 创建一个文件，写入以下 TS 代码，请注意最后需要导出 `plugin`。
 
 ```typescript
-import {
-  //
-  setup,
-  //
-  useBot,
-  useInfo,
-  useConfig,
-  //
-  useOn,
-  useCron,
-  useMatch,
-  useMount,
-  useLogger,
-  useMessage,
-  useCommand,
-  //
-  registerApi,
-  useApi,
-  //
-  segment,
-  axios,
-} from '@kivi-dev/plugin'
+import { setup, logger } from '@kivi-dev/plugin'
 
-setup('Plugin Fot Test', '1.0.0')
-
-const logger = useLogger()
+setup('测试插件'， '1.0.0')
 
 useMount(async () => {
-  logger.info('plugin mount: ' + useInfo().botConfig)
+  logger.info('插件被启用了！')
 
-  const config = useConfig()
-  const bot = useBot()
+  return () => {
+    logger.info('插件被禁用了！')
+  }
+)
 
-  logger.log(config)
+export { plugin } from '@kivi-dev/plugin'
+```
 
-  config.value = [1, 2, 3]
-  config.value.push(4)
+然后发送 `.p on demo` 给 Bot 即可启用插件。
 
-  await bot.sendPrivateMsg(useInfo().mainAdmin, 'hi')
+## 插件例子
 
-  useCommand('/test', async (event) => {
-    await event.reply('test command')
-  })
+1. 收到 `hello` 消息时，回复 `world`。
 
-  useMatch([/hi/], (e) => {
-    logger.info('match hi')
-  })
+```typescript
+import { setup,useMount, useMatch } from '@kivi-dev/plugin'
 
-  registerApi('apiFromTest', (...args: any[]) => {
-    logger.info("args from 'apiFromTest': ", args)
-  })
+setup('测试插件'， '1.0.0')
 
-  useCron('*/3 * * * * *', () => {
-    logger.info('cron trigger')
-    bot.sendPrivateMsg(useInfo().mainAdmin, 'cron trigger')
-  })
-
-  useMessage((e) => e.reply('hi'), { type: 'private' })
-
-  useOn('message.group', async (event) => {
-    if (event.raw_message === 'hi') {
-      await event.reply('hi! ' + event.sender.nickname)
-    }
+useMount(() => {
+  useMatch('hello', (event) => {
+    event.reply('world')
   })
 })
 
 export { plugin } from '@kivi-dev/plugin'
 ```
 
-then send `.p on test` to bot to enable this plugin.
+2. 定时任务
+
+```typescript
+import { setup, bot, useMount, useCron, useInfo } from '@kivi-dev/plugin'
+
+setup('测试插件'， '1.0.0')
+
+useMount(() => {
+  const { mainAdmin } = useInfo()
+
+  useCron('*/3 * * * *', (event) => {
+    // 每 3 秒给主管理员发送一条消息
+    bot.sendPrivateMsg(mainAdmin, '定时任务触发了！')
+  })
+})
+
+export { plugin } from '@kivi-dev/plugin'
+```
+
+3. 处理命令
+
+```typescript
+import { setup, useMount, useCmd, logger } from '@kivi-dev/plugin'
+
+setup('测试插件'， '1.0.0')
+
+useMount(() => {
+  // 仅处理群聊中管理员的命令
+  useCmd(
+    '/hello',
+    (event, params, options) => {
+      logger.info(params, options)
+      event.reply('world')
+    },
+    {
+      role: 'admin',
+      type: 'group',
+    },
+  )
+})
+
+export { plugin } from '@kivi-dev/plugin'
+```
+
+4. 持久化数据
+
+```typescript
+import { setup, useMount, useConfig } from '@kivi-dev/plugin'
+
+setup('测试插件'， '1.0.0')
+
+useMount(() => {
+  const config = useConfig()
+
+  config.value = 132; // 检测到 config 变更将自动保存，下次启用自动读取
+})
+
+export { plugin } from '@kivi-dev/plugin'
+```
+
+## API
+
+> 完善中...
+
+- 参考 [plugin](./packages/plugin/src/index.ts#L414-L434) 源码。
+
+## 更多
+
+遇到困难？请尝试翻阅 [插件 API 源码](./packages/plugin/src/index.ts) 或者 [加入群聊](https://kivi.viki.moe) 礼貌提问。
+
+<img style="max-width: 240px" src="./docs/images/group-qrcode.jpg" alt="qrcode">
 
 ## License
 
-MPL-2.0
+[MPL-2.0](LICENSE)
