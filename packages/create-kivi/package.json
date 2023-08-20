@@ -1,6 +1,6 @@
 {
   "name": "create-kivi",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "CLI for Kivi",
   "bin": {
