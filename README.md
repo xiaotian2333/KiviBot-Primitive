@@ -1,6 +1,22 @@
+<p align="center">
+  <img width="180" src="https://keli.viki.moe/dimo.png" alt="Kivi logo">
+</p>
+<br/>
+<p align="center">
+  <a href="https://npmjs.com/package/@kivi-dev/core">
+  <img src="https://img.shields.io/npm/v/@kivi-dev/core.svg" alt="npm package">
+  </a>
+  <a href="https://pkg-size.dev/@kivi-dev/shared"><img src="https://pkg-size.dev/badge/install/46512092" title="Install size for @kivi-dev/shared"></a>
+  <a href="https://nodejs.org/en/about/releases/">
+  <img src="https://img.shields.io/node/v/@kivi-dev/core.svg" alt="node compatibility">
+  </a>
+
+</p>
+<br/>
+
 # Kivi
 
-Just run の Bot on Tencent [IM](https://im.qq.com).
+> Just run の Bot on Tencent [IM](https://im.qq.com).
 
 ## Usage
 
