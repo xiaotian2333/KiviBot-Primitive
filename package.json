@@ -10,7 +10,7 @@
     "dev": "pnpm -r --parallel run dev",
     "build": "pnpm -r --parallel --filter=\"@kivi-dev/*\" --filter=\"create-kivi\" run build",
     "prerelease": "esno ./scripts/release.mts",
-    "release": "pnpm -r publish --access public"
+    "release": "pnpm -r --filter=\"@kivi-dev/*\" --filter=\"create-kivi\" publish --access public"
   },
   "engines": {
     "node": "^16.3.0 || ^18.0.0 || ^20.0.0"
