@@ -443,7 +443,7 @@ export default class KiviClient {
 
         if (data?.data?.ticket) {
           clearInterval(timer)
-          return await this.bot?.submitSlider(data?.data?.ticket)
+          return this.bot?.submitSlider(data?.data?.ticket)
         }
 
         if (count >= 180) {

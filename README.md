@@ -17,7 +17,7 @@ cd kivi-bot
 npm install
 ```
 
-1. run Kivi
+3. run Kivi
 
 you might need to config your `sign_api_addr` in: `kivi.json` > `oicq_config` > `sign_api_addr`
 

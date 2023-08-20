@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import KiviClient from './kivi-client.js'
 
 export const start = async (dir?: string) => {
-  return await new KiviClient().start(dir)
+  return new KiviClient().start(dir)
 }
 
 export function dirname(meta: ImportMeta) {
