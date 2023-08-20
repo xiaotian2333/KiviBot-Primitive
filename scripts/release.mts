@@ -30,17 +30,17 @@ async function readProjectsFromDir(dir: string) {
   return projects
     .map((proj) => path.resolve(`${dir}/${proj}/package.json`))
     .filter((pkg) => fs.existsSync(pkg))
-    .map((e) => JSON.parse(fs.readFileSync(e, 'utf-8')))
-    .map((e) => ({ ...e, value: e.name, title: e.name }))
+    .map((e) => ({ path: e, pkg: JSON.parse(fs.readFileSync(e, 'utf-8')) as Record<string, any> }))
+    .map((e) => ({ ...e, value: e.pkg.name, title: e.pkg.name }))
 }
 
 async function handleCoreRelease() {
   const projects = await readProjectsFromDir('packages')
 
-  const currentVersion = projects[0].version || ''
+  const currentVersion = projects[0].pkg.version || ''
   const versions: semver.ReleaseType[] = ['prerelease', 'patch', 'minor', 'major']
 
-  const { version } = await prompts<string>({
+  const { version } = await prompts({
     type: 'select',
     name: 'version',
     message: '请选择发布版本',
@@ -60,7 +60,8 @@ async function handleCoreRelease() {
 
   if (confirm) {
     await $`pnpm run build`
-    await $`pnpm -r --filter="@kivi-dev/*" --filter="create-kivi" version ${version}`
+
+    bumpVersion(projects, version)
 
     await $`git add . -A`
     await $`git commit -m "release: v${version}"`
@@ -72,4 +73,11 @@ async function handleCoreRelease() {
 
 function handlePluginRelease() {
   console.log('// TODO')
+}
+
+function bumpVersion(projects: { pkg: Record<string, any>; path: string }[], version: string) {
+  projects.forEach((proj) => {
+    proj.pkg.version = version
+    fs.writeFileSync(proj.path, JSON.stringify(proj.pkg, null, 2))
+  })
 }
