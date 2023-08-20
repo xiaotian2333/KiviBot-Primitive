@@ -8,7 +8,7 @@
   "license": "MPL-2.0",
   "scripts": {
     "dev": "pnpm -r --parallel run dev",
-    "build": "pnpm -r --parallel --filter=@kivi-dev/* --filter=create-kivi run build",
+    "build": "pnpm -r --parallel --filter=\"@kivi-dev/*\" --filter=\"create-kivi\" run build",
     "release": "esno ./scripts/release.mts"
   },
   "engines": {
