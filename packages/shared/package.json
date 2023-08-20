@@ -18,6 +18,8 @@
     "./package.json": "./package.json"
   },
   "scripts": {
+    "predev": "rm -rf lib",
+    "prebuild": "rm -rf lib",
     "dev": "tsc -w",
     "build": "tsc"
   },

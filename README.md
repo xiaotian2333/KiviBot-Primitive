@@ -4,7 +4,7 @@ Just run の Bot on Tencent [IM](https://im.qq.com).
 
 ## Usage
 
-1. create a project via `npm create`
+1. create a project via `npm create kivi`
 
 ```bash
 npm create kivi
@@ -17,9 +17,9 @@ cd kivi-bot
 npm install
 ```
 
-> you might need to config `sign_api_addr` in: `kivi.json` > `oicq_config` > `sign_api_addr`
+1. run Kivi
 
-3. run Kivi
+you might need to config your `sign_api_addr` in: `kivi.json` > `oicq_config` > `sign_api_addr`
 
 ```bash
 npm start
@@ -29,7 +29,9 @@ send `.h` to bot to get more help info.
 
 ## Plugin
 
-create a TS file in `plugins/demo/index.ts`
+support TS/JS plugin out of the box.
+
+you can create a TS or JS file in `plugins/demo/index.ts`
 
 ```typescript
 import {
@@ -78,6 +80,10 @@ useMount(async () => {
 
   useMatch([/hi/], (e) => {
     logger.info('match hi')
+  })
+
+  registerApi('apiFromTest', (...args: any[]) => {
+    logger.info("args from 'apiFromTest': ", args)
   })
 
   useCron('*/3 * * * * *', () => {

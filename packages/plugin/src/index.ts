@@ -24,8 +24,6 @@ import type {
 import type { Client, EventMap } from 'icqq'
 import type { ScheduledTask } from 'node-cron'
 
-export { ref, watch }
-
 export class Plugin extends EventEmitter {
   #name = ''
   #version = ''
@@ -44,7 +42,17 @@ export class Plugin extends EventEmitter {
   #logger: Logger = new Logger('Plugin')
 
   get bot() {
+    this.#checkInit()
+
     return this.#bot!
+  }
+
+  get logger() {
+    return this.#logger
+  }
+
+  get admins() {
+    return this.#botConfig!.admins
   }
 
   init(bot: ClientWithApis, config: BotConfig, cwd: string) {
@@ -121,7 +129,7 @@ export class Plugin extends EventEmitter {
 
   #checkInit() {
     if (!this.#bot) {
-      this.#throwPluginError(`此时插件还未初始化！请在 ${b('useMount')} 中执行`)
+      this.#throwPluginError(`此时插件还未初始化！请在 ${b('useMount')} 中执行。`)
     }
   }
 
@@ -173,10 +181,6 @@ export class Plugin extends EventEmitter {
     this.#checkInit()
 
     return this.#pluginConfig
-  }
-
-  get admins() {
-    return this.#botConfig!.admins
   }
 
   #addHandler(eventName: string, handler: AnyFunc) {
@@ -268,7 +272,7 @@ export class Plugin extends EventEmitter {
     this.#addHandler('message', unsubscribe)
   }
 
-  __useCommand<T extends 'all' | 'private' | 'group' = 'all'>(
+  __useCmd<T extends 'all' | 'private' | 'group' = 'all'>(
     cmds: string | RegExp | (string | RegExp)[],
     handler: CommandHandler<T>,
     option?: {
@@ -328,10 +332,6 @@ export class Plugin extends EventEmitter {
     }
 
     return plugin.#bot!.apis[method] as T
-  }
-
-  __useLogger() {
-    return this.#logger
   }
 
   __useCron(cronExpression: string, handler: AnyFunc) {
@@ -412,19 +412,23 @@ export interface Plugin extends EventEmitter {
 }
 
 export * from 'icqq'
+export * from '@kivi-dev/shared'
+
+export { ref, watch }
 
 export const plugin = new Plugin()
+export const bot = plugin.bot
 export const setup = plugin.__setup.bind(plugin)
+export const logger = plugin.logger
 
-export const useOn = plugin.on.bind(plugin)
-export const useBot = () => plugin.bot
-export const useApi = plugin.__useApi.bind(plugin)
 export const useMount = plugin.__useMount.bind(plugin)
 export const useMessage = plugin.__useMessage.bind(plugin)
 export const useMatch = plugin.__useMatch.bind(plugin)
+export const useCmd = plugin.__useCmd.bind(plugin)
+export const useEvent = plugin.on.bind(plugin)
+export const useCron = plugin.__useCron.bind(plugin)
 export const useInfo = plugin.__useInfo.bind(plugin)
 export const useConfig = plugin.__useConfig.bind(plugin)
-export const useCron = plugin.__useCron.bind(plugin)
-export const useLogger = plugin.__useLogger.bind(plugin)
-export const useCommand = plugin.__useCommand.bind(plugin)
+
 export const registerApi = plugin.__registerApi.bind(plugin)
+export const useApi = plugin.__useApi.bind(plugin)

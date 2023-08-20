@@ -16,6 +16,8 @@
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MIT",
   "scripts": {
+    "predev": "rm -rf bin",
+    "prebuild": "rm -rf bin",
     "dev": "tsc -w",
     "build": "tsc"
   },
