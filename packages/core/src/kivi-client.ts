@@ -139,7 +139,7 @@ export default class KiviClient {
 
   #handleLoginError(p: { message: string; code: number }) {
     this.#mainLogger.fatal(`[错误码 ${p.code}] ${p.message}`)
-    process.exit(-1)
+    process.exit(0)
   }
 
   async #handleOnLogin() {
