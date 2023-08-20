@@ -158,12 +158,16 @@ export default class KiviClient {
   }
 
   async #loadPlugins() {
+    const pluginDir = path.join(this.#cwd, 'plugins')
+
+    if (!fs.existsSync(pluginDir)) fs.mkdirSync(pluginDir)
+
     const plugins = await searchAllPlugins(this.#cwd)
     const size = plugins.length
     const onSize = this.#botConfig?.plugins?.length || 0
 
     this.#mainLogger.info(
-      size ? `检测到 ${b(String(size))} 个插件，${b(String(onSize))} 个已开启` : '未检测到任何插件',
+      size ? `检测到 ${b(String(size))} 个插件，${b(String(onSize))} 个已启用` : '未检测到任何插件',
     )
 
     return Promise.all(
@@ -171,7 +175,7 @@ export default class KiviClient {
         .filter((p) => this.#botConfig?.plugins?.includes(p.name))
         .map(async (plugin) => {
           const relativePath = './' + path.relative(this.#cwd, plugin.path)
-          this.#mainLogger.info(b(`启用插件 ${plugin.name} -> ${relativePath}`))
+          this.#mainLogger.info(b(`加载插件 ${plugin.name} -> ${relativePath}`))
 
           const pluginInstance = await this.enablePlugin(plugin)
 
@@ -475,7 +479,7 @@ export default class KiviClient {
       })
 
       if (!ticket) {
-        return await inputTicket()
+        return inputTicket()
       }
 
       console.log('\n')

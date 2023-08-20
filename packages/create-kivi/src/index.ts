@@ -64,16 +64,14 @@ const { loginMode } = await prompts({
 
 const config: BotConfig = {
   uin,
-  prefix: '.',
   platform,
   admins: [mainAdmin, ...subAdmins],
   login_mode: loginMode,
+  log_level: 'debug',
   device_mode: 'sms',
   password: '',
   plugins: [],
-  oicq_config: {
-    sign_api_addr: '',
-  },
+  oicq_config: {},
 }
 
 if (loginMode === 'password') {

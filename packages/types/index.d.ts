@@ -77,7 +77,6 @@ export interface PluginConf {
 
 export interface BotConfig {
   uin: number
-  prefix: string
   platform: Platform
   admins: AdminArray
   login_mode: LoginMode
