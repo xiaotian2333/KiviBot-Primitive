@@ -130,7 +130,7 @@ useMount(() => {
   // 使用 crontab 表达式
   useCron('*/3 * * * *', (event) => {
     // 每 3 秒给主管理员发送一条消息
-    bot.sendPrivateMsg(mainAdmin, '定时任务触发了！')
+    bot().sendPrivateMsg(mainAdmin, '定时任务触发了！')
   })
 })
 

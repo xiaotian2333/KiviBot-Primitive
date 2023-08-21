@@ -413,7 +413,7 @@ export * from '@kivi-dev/shared'
 export { ref, watch }
 
 export const plugin = new Plugin()
-export const bot = plugin.bot
+export const bot = () => plugin.bot
 export const setup = plugin.__setup.bind(plugin)
 export const logger = plugin.logger
 
