@@ -133,9 +133,12 @@ importers:
       '@kivi-dev/plugin':
         specifier: workspace:*
         version: link:../../plugin
-      dayjs:
-        specifier: ^1.11.9
-        version: 1.11.9
+      '@kivi-dev/shared':
+        specifier: workspace:*
+        version: link:../../shared
+      '@kivi-dev/types':
+        specifier: workspace:*
+        version: link:../../types
       mustache:
         specifier: ^4.2.0
         version: 4.2.0
@@ -161,21 +164,9 @@ importers:
       icqq:
         specifier: '>= 0.5.0'
         version: 0.5.0
-      kleur:
-        specifier: ^4
-        version: 4.1.5
-      mri:
-        specifier: ^1
-        version: 1.2.0
       node-cron:
         specifier: ^3.0.2
         version: 3.0.2
-      obj-observer:
-        specifier: ^1
-        version: 1.0.4
-      string2argv:
-        specifier: ^1
-        version: 1.0.2
     devDependencies:
       '@types/node-cron':
         specifier: ^3.0.8

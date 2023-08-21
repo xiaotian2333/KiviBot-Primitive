@@ -83,8 +83,8 @@ export function randomInt(min: number, max: number): number {
  * @param {Array<T>} array 待操作数组
  * @return {T} 数组内的随机一项
  */
-export function randomItem<T = any>(array: [T, ...T[]]): T {
-  return array[randomInt(0, array.length - 1)]
+export function randomItem<T = any>(array: T[]): T | null {
+  return array.length ? array[randomInt(0, array.length - 1)] : null
 }
 
 /**  版本号比较，前者大时返回  1，后者大返回  -1，相同返回  0 */
