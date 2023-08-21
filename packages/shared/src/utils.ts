@@ -13,7 +13,7 @@ export function b(text?: string | number) {
   return kleur.cyan(text || '')
 }
 
-export function escapeColor(colorText: string) {
+export function escapeColor(colorText = '') {
   // eslint-disable-next-line no-control-regex
   return colorText.replace(/\u001b\[\d+m/gu, '')
 }

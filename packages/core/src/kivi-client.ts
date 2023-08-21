@@ -147,14 +147,17 @@ export default class KiviClient {
     this.#handleMessageForFramework()
 
     this.#mainLogger.info(`开始加载插件...`)
-    await this.#loadPlugins()
 
+    const count = await this.#loadPlugins()
     const welcome = `${this.#bot!.nickname}(${this.#bot!.uin}) 上线成功! `
+
     this.#mainLogger.info(kleur.green(welcome))
     this.#mainLogger.info(`向 ${b(`Bot`)} 发送 ${b(`.help`)} 查看所有命令`)
 
     const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
-    mainAdmin.sendMsg('✅ 上线成功，发送 .h 查看帮助')
+    const msg = count > 0 ? `启用了 ${count} 个插件` : `发送 .h 查看帮助`
+
+    mainAdmin.sendMsg(`✅ 上线成功，${msg}`)
   }
 
   async #loadPlugins() {
@@ -162,30 +165,36 @@ export default class KiviClient {
 
     if (!fs.existsSync(pluginDir)) fs.mkdirSync(pluginDir)
 
-    const plugins = await searchAllPlugins(this.#cwd)
-    const size = plugins.length
-    const onSize = this.#botConfig?.plugins?.length || 0
+    const localPlugins = await searchAllPlugins(this.#cwd)
+    const configPluginNames = this.#botConfig?.plugins || []
+    const size = localPlugins.length
+    const shouldEnables = localPlugins.filter((e) => configPluginNames?.includes(e.name))
 
     this.#mainLogger.info(
-      size ? `检测到 ${b(String(size))} 个插件，${b(String(onSize))} 个已启用` : '未检测到任何插件',
+      size
+        ? `检测到 ${b(String(size))} 个插件，${b(String(shouldEnables.length))} 个已启用`
+        : '未检测到任何插件',
     )
 
-    return Promise.all(
-      plugins
-        .filter((p) => this.#botConfig?.plugins?.includes(p.name))
-        .map(async (plugin) => {
-          const relativePath = './' + path.relative(this.#cwd, plugin.path)
-          this.#mainLogger.info(b(`加载插件 ${plugin.name} -> ${relativePath}`))
+    let enableCount = 0
 
-          const pluginInstance = await this.enablePlugin(plugin)
+    await Promise.all(
+      shouldEnables.map(async (plugin) => {
+        const relativePath = './' + path.relative(this.#cwd, plugin.path)
+        this.#mainLogger.info(b(`加载插件 ${plugin.name} -> ${relativePath}`))
 
-          if (!pluginInstance) {
-            this.#mainLogger.error(`插件 ${b(plugin.name)} 启用失败`)
-          } else {
-            this.#plugins?.set(plugin.name, pluginInstance)
-          }
-        }),
+        const pluginInstance = await this.enablePlugin(plugin)
+
+        if (!pluginInstance) {
+          this.#mainLogger.error(`插件 ${b(plugin.name)} 启用失败`)
+        } else {
+          enableCount++
+          this.#plugins?.set(plugin.name, pluginInstance)
+        }
+      }),
     )
+
+    return enableCount
   }
 
   async enablePlugin(pluginInfo: { name: string; path: string; pkg: Record<string, any> }) {

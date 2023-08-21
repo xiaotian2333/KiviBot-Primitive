@@ -1,5 +1,6 @@
 import { Logger } from '@kivi-dev/core'
 import { b, ensureArray } from '@kivi-dev/shared'
+import { defu as mergeDefaults } from 'defu'
 import mri from 'mri'
 import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
@@ -16,6 +17,7 @@ import type {
   AllMessageEvent,
   AnyFunc,
   BotConfig,
+  BotHandler,
   ClientWithApis,
   CommandHandler,
   FirstParam,
@@ -31,11 +33,11 @@ export class Plugin extends EventEmitter {
 
   #bot?: ClientWithApis
   #botConfig?: BotConfig
-  #pluginConfig: Record<string, any> = {}
+  #pluginConfig?: unknown
 
   #apiNames: Set<string> = new Set()
-  #mountFns: AnyFunc[] = []
-  #unmountFns: AnyFunc[] = []
+  #mountFns: BotHandler[] = []
+  #unmountFns: BotHandler[] = []
   #handlers: Map<string, AnyFunc[]> = new Map()
   #cronTasks: ScheduledTask[] = []
 
@@ -108,7 +110,7 @@ export class Plugin extends EventEmitter {
   }
 
   async destroy() {
-    await Promise.all(this.#unmountFns.map((fn) => typeof fn === 'function' && fn(this.#bot)))
+    await Promise.all(this.#unmountFns.map((fn) => typeof fn === 'function' && fn(this.#bot!)))
 
     this.#clearCronTasks()
     this.#removeAllHandler()
@@ -137,35 +139,34 @@ export class Plugin extends EventEmitter {
     }
   }
 
-  __useConfig(defaultConfig: Record<string, any> = {}) {
+  __useConfig<T extends Record<string | number, any> = Record<string, any>>(defaultConfig: T): T {
     if (this.#pluginConfig) {
-      return this.#pluginConfig
+      return this.#pluginConfig as T
     }
 
+    const config: T = defaultConfig as T
     const configPath = path.join(this.#dataDir, 'config.json')
 
     if (fs.existsSync(configPath)) {
       const configContent = fs.readFileSync(configPath, { encoding: 'utf-8' })
 
       try {
-        const config = JSON.parse(configContent)
-        this.#pluginConfig = ref(config)
-        watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
+        Object.assign(config, JSON.parse(configContent))
+        fs.writeFileSync(configPath, JSON.stringify(config), { encoding: 'utf-8' })
       } catch (e) {
-        this.#logger.error(e)
         this.#throwPluginError('插件配置文件格式错误，请检查')
       }
     } else {
       fs.writeFileSync(configPath, JSON.stringify(defaultConfig), { encoding: 'utf-8' })
-
-      this.#pluginConfig = ref(defaultConfig)
-      watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
     }
 
-    return this.#pluginConfig
+    this.#pluginConfig = ref(mergeDefaults(config, defaultConfig))
+    watch(this.#pluginConfig as T, (config) => this.#handleConfigChange(config))
+
+    return this.#pluginConfig as T
   }
 
-  __useMount(fn: AnyFunc) {
+  __useMount(fn: BotHandler) {
     this.#mountFns.push(fn)
   }
 
@@ -233,8 +234,8 @@ export class Plugin extends EventEmitter {
   }
 
   __useCmd<T extends 'all' | 'private' | 'group' = 'all'>(
-    cmds: string | RegExp | (string | RegExp)[],
-    handler: CommandHandler<T>,
+    cmds: string | string[],
+    handler: CommandHandler<T> | Record<string, CommandHandler<T>>,
     option?: {
       type?: T
       role?: 'admin' | 'all'
@@ -252,17 +253,25 @@ export class Plugin extends EventEmitter {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _: params, '--': __, ...options } = mri(str2argv(e.toString().trim()))
-      const inputCmd = params.shift() ?? ''
+      const inputCmd = params.shift() || ''
       const cmdList = ensureArray(cmds)
 
       for (const cmd of cmdList) {
-        const isReg = cmd instanceof RegExp
-        const hitReg = isReg && cmd.test(inputCmd)
-        const hitString = !isReg && cmd === inputCmd
+        if (cmd === inputCmd) {
+          if (typeof handler === 'function') {
+            handler(e as never, params, options)
+          } else {
+            const defaultHandler = (event: any) => {
+              const subCmds = Object.keys(handler)
+                .filter((e) => !['default', 'notFound'].includes(e))
+                .map((e) => `${cmd} ${e}`)
+              event.reply(subCmds.length ? subCmds.join('\n') : `${cmd} 未定义任何子命令`)
+            }
 
-        if (hitReg || hitString) {
-          // TODO: fix type error
-          handler(e as never, params, options)
+            const subHandler = handler[params[0] || 'default'] || defaultHandler
+
+            subHandler(e as never, params.slice(1), options)
+          }
           break
         }
       }
