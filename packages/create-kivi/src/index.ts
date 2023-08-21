@@ -2,12 +2,10 @@
 
 'use strict'
 
-import { b, md5, showLogo } from '@kivi-dev/shared'
-import kleur from 'kleur'
+import { b, md5, showLogo, kleur, prompts } from '@kivi-dev/shared'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import prompts from 'prompts'
 
 import { appJSCode, pkgJSON } from './constants.js'
 import { getProjectDir } from './get-project-dir.js'

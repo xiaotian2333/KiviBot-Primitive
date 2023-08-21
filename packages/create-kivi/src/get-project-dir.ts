@@ -1,7 +1,6 @@
-import kleur from 'kleur'
+import { kleur, prompts } from '@kivi-dev/shared'
 import fs from 'node:fs'
 import path from 'node:path'
-import prompts from 'prompts'
 
 const dirArg = process.argv[2] || ''
 const cwd = process.cwd()

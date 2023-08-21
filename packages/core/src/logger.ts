@@ -1,5 +1,4 @@
-import dayjs from 'dayjs'
-import kleur from 'kleur'
+import { kleur, dayjs } from '@kivi-dev/shared'
 
 import type { Level } from '@kivi-dev/types'
 export class Logger {

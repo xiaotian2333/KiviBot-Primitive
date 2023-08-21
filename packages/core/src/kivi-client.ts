@@ -1,17 +1,23 @@
-import { b, searchAllPlugins, showLogo } from '@kivi-dev/shared'
-import dayjs from 'dayjs'
+import {
+  b,
+  dayjs,
+  kleur,
+  mri,
+  watch,
+  ref,
+  prompts,
+  str2argv,
+  searchAllPlugins,
+  showLogo,
+  deepClone,
+} from '@kivi-dev/shared'
 import { axios, createClient } from 'icqq'
-import kleur from 'kleur'
-import mri from 'mri'
 import fs from 'node:fs'
 import path from 'node:path'
-import { watch, ref } from 'obj-observer'
-import prompts from 'prompts'
-import { str2argv } from 'string2argv'
 
 import command from './commands.js'
 import { Logger } from './logger.js'
-import { deepClone, handleException, loadModule, require, stringifySendable } from './utils.js'
+import { handleException, loadModule, require, stringifySendable } from './utils.js'
 
 import type { Plugin } from '@kivi-dev/plugin'
 import type { AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/types'

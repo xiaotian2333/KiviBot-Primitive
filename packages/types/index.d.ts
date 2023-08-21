@@ -18,6 +18,12 @@ export interface ClientWithApis extends Client {
   }
 }
 
+export interface ScheduledTask extends EventEmitter {
+  now: (now?: Date) => void
+  start: () => void
+  stop: () => void
+}
+
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
 export type AdminArray = [mainAdmin: number, ...subAdmins: number[]]
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent

@@ -25,6 +25,8 @@ const pkg = {
   dependencies: {
     '@kivi-dev/core': isDev ? 'workspace:*' : actualVersion,
     '@kivi-dev/plugin': isDev ? 'workspace:*' : actualVersion,
+    '@kivi-dev/shared': isDev ? 'workspace:*' : actualVersion,
+    '@kivi-dev/types': isDev ? 'workspace:*' : actualVersion,
   },
 }
 

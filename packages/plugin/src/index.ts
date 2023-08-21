@@ -1,13 +1,10 @@
 import { Logger } from '@kivi-dev/core'
-import { b, ensureArray } from '@kivi-dev/shared'
+import { b, mri, ensureArray, watch, ref, str2argv } from '@kivi-dev/shared'
 import { defu as mergeDefaults } from 'defu'
-import mri from 'mri'
 import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
 import fs from 'node:fs'
 import path from 'node:path'
-import { watch, ref } from 'obj-observer'
-import { str2argv } from 'string2argv'
 
 import { KiviEvents, MessageEvents, OicqEvents } from './events.js'
 
@@ -22,9 +19,9 @@ import type {
   CommandHandler,
   FirstParam,
   MessageHandler,
+  ScheduledTask,
 } from '@kivi-dev/types'
 import type { Client, EventMap } from 'icqq'
-import type { ScheduledTask } from 'node-cron'
 
 export class Plugin extends EventEmitter {
   #name = ''
@@ -318,7 +315,7 @@ export class Plugin extends EventEmitter {
 
     this.#cronTasks.push(task)
 
-    return task
+    return task as ScheduledTask
   }
 
   #checkInit() {
@@ -418,8 +415,6 @@ export interface Plugin extends EventEmitter {
 
 export * from 'icqq'
 export * from '@kivi-dev/shared'
-
-export { ref, watch }
 
 export const plugin = new Plugin()
 export const bot = () => plugin.bot

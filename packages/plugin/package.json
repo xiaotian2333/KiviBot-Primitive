@@ -27,21 +27,17 @@
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
   "license": "MPL-2.0",
   "dependencies": {
-    "@kivi-dev/types": "workspace:*",
-    "@types/node-cron": "^3.0.8",
     "defu": "^6.1.2",
-    "kleur": "^4.1.5",
-    "mri": "^1.2.0",
-    "node-cron": "^3.0.2",
-    "obj-observer": "^1.0.4",
-    "string2argv": "^1.0.2"
+    "node-cron": "^3.0.2"
   },
   "peerDependencies": {
     "@kivi-dev/core": "workspace:*",
     "@kivi-dev/shared": "workspace:*",
+    "@kivi-dev/types": "workspace:*",
     "icqq": ">= 0.5.0"
   },
   "devDependencies": {
+    "@types/node-cron": "^3.0.8",
     "typescript": "^5.1.6"
   }
 }

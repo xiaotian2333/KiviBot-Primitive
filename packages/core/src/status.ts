@@ -1,7 +1,5 @@
-import { searchAllPlugins } from '@kivi-dev/shared'
-import { filesize } from 'filesize'
+import { searchAllPlugins, filesize, prettyMs } from '@kivi-dev/shared'
 import os from 'node:os'
-import prettyMilliseconds from 'pretty-ms'
 
 import { require } from './utils.js'
 
@@ -38,7 +36,7 @@ export async function fetchStatus(bot: ClientWithApis, botConfig?: BotConfig) {
   const total = os.totalmem()
   const used = total - os.freemem()
   const rss = process.memoryUsage.rss()
-  const runTime = prettyMilliseconds(process.uptime() * 1000, { compact: true })
+  const runTime = prettyMs(process.uptime() * 1000, { compact: true })
 
   const per = (param: number) => ((param / total) * 100).toFixed(1)
 
