@@ -1,0 +1,17 @@
+services:
+  kivi:
+    image: kivi:latest
+    container_name: kivi
+    volumes:
+      - type: bind
+        source: ./kivi.json
+        target: /bot/kivi.json
+      - type: bind
+        source: ./data
+        target: /bot/data
+      - type: bind
+        source: ./logs
+        target: /bot/logs
+      - type: bind
+        source: ./plugins
+        target: /bot/plugins
