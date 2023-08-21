@@ -41,6 +41,8 @@
 
 ## 快速上手
 
+项目依赖 [Node.js](https://nodejs.org)，请确保本地已安装，且版本 >= 16.14。
+
 1. 通过 `npm create kivi` 命令快速创建项目
 
 ```bash
@@ -207,6 +209,15 @@ export { plugin } from '@kivi-dev/plugin'
 > 完善中...
 
 - 参考 [plugin](./packages/plugin/src/index.ts#L414-L434) 源码。
+
+## Docker 部署
+
+确保安装了 [Docker](https://www.docker.com/) 环境，拷贝仓库源码里的 `Dockerfile`、`.dockerignore` 和 `docker-compose.yml` 到你的项目根目录下，然后在项目根目录执行以下命令即可。
+
+```bash
+docker build -t kivi .
+docker compose up -d
+```
 
 ## 更多
 
