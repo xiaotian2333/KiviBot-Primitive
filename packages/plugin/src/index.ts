@@ -55,7 +55,7 @@ export class Plugin extends EventEmitter {
     return this.#botConfig!.admins
   }
 
-  init(bot: ClientWithApis, config: BotConfig, cwd: string) {
+  async init(bot: ClientWithApis, config: BotConfig, cwd: string) {
     if (!this.#name) {
       return this.#throwPluginError(`请在插件中调用 ${b('setup')} 函数设置插件名称`)
     }
@@ -68,32 +68,12 @@ export class Plugin extends EventEmitter {
       fs.mkdirSync(this.#dataDir, { recursive: true })
     }
 
-    const configPath = path.join(this.#dataDir, 'config.json')
-
-    if (fs.existsSync(configPath)) {
-      const configContent = fs.readFileSync(configPath, { encoding: 'utf-8' })
-
-      try {
-        const config = JSON.parse(configContent)
-        this.#pluginConfig = ref(config)
-        watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
-      } catch (e) {
-        this.#logger.error(e)
-        this.#throwPluginError('插件配置文件格式错误，请检查')
-      }
-    } else {
-      fs.writeFileSync(configPath, '{}', { encoding: 'utf-8' })
-
-      this.#pluginConfig = ref(config)
-      watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
-    }
-
     // 监听框架管理变动
     const unsubscribe = bot.on('kivi.admins', this.#adminChangeHandler)
     this.#addHandler('kivi.admins', unsubscribe)
 
     this.#mountFns.forEach(async (fn) => {
-      const un = fn()
+      const un = fn(this.#bot!)
       this.#unmountFns.push(un instanceof Promise ? await un : un)
     })
 
@@ -127,34 +107,14 @@ export class Plugin extends EventEmitter {
     })
   }
 
-  #checkInit() {
-    if (!this.#bot) {
-      this.#throwPluginError(`此时插件还未初始化！请在 ${b('useMount')} 中执行。`)
-    }
-  }
-
-  #handleConfigChange(config: Record<string, any>) {
-    const configPath = path.join(this.#dataDir, 'config.json')
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
-  }
-
   async destroy() {
-    await Promise.all(
-      this.#unmountFns.map(async (fn) => {
-        const res = typeof fn === 'function' && fn()
-        if (res instanceof Promise) return await res
-      }),
-    )
+    await Promise.all(this.#unmountFns.map((fn) => typeof fn === 'function' && fn(this.#bot)))
 
     this.#clearCronTasks()
     this.#removeAllHandler()
     this.#unregisterAllApi()
 
     this.#bot = undefined
-  }
-
-  #throwPluginError(message: string) {
-    this.#logger.error(message)
   }
 
   __setup(name: string, version: string) {
@@ -177,32 +137,32 @@ export class Plugin extends EventEmitter {
     }
   }
 
-  __useConfig() {
-    this.#checkInit()
+  __useConfig(defaultConfig: Record<string, any> = {}) {
+    if (this.#pluginConfig) {
+      return this.#pluginConfig
+    }
+
+    const configPath = path.join(this.#dataDir, 'config.json')
+
+    if (fs.existsSync(configPath)) {
+      const configContent = fs.readFileSync(configPath, { encoding: 'utf-8' })
+
+      try {
+        const config = JSON.parse(configContent)
+        this.#pluginConfig = ref(config)
+        watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
+      } catch (e) {
+        this.#logger.error(e)
+        this.#throwPluginError('插件配置文件格式错误，请检查')
+      }
+    } else {
+      fs.writeFileSync(configPath, JSON.stringify(defaultConfig), { encoding: 'utf-8' })
+
+      this.#pluginConfig = ref(defaultConfig)
+      watch(this.#pluginConfig, (config) => this.#handleConfigChange(config))
+    }
 
     return this.#pluginConfig
-  }
-
-  #addHandler(eventName: string, handler: AnyFunc) {
-    const handlers = this.#handlers.get(eventName)
-    this.#handlers.set(eventName, handlers ? [...handlers, handler] : [handler])
-  }
-
-  #removeAllHandler() {
-    for (const [_, handlers] of this.#handlers) {
-      handlers.forEach((unsubscribe) => unsubscribe())
-    }
-  }
-
-  #adminChangeHandler(event: { admins: AdminArray }) {
-    this.#botConfig = {
-      ...this.#botConfig,
-      admins: event.admins,
-    } as BotConfig
-  }
-
-  #clearCronTasks() {
-    this.#cronTasks.forEach((task) => task.stop())
   }
 
   __useMount(fn: AnyFunc) {
@@ -352,10 +312,46 @@ export class Plugin extends EventEmitter {
     return task
   }
 
+  #checkInit() {
+    if (!this.#bot) {
+      this.#throwPluginError(`此时插件还未初始化！请在 ${b('useMount')} 中执行。`)
+    }
+  }
+
+  #handleConfigChange(config: Record<string, any>) {
+    const configPath = path.join(this.#dataDir, 'config.json')
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
+  }
+
+  #throwPluginError(message: string) {
+    this.#logger.error(message)
+    throw new Error(message)
+  }
+
+  #addHandler(eventName: string, handler: AnyFunc) {
+    const handlers = this.#handlers.get(eventName)
+    this.#handlers.set(eventName, handlers ? [...handlers, handler] : [handler])
+  }
+
+  #removeAllHandler() {
+    for (const [_, handlers] of this.#handlers) {
+      handlers.forEach((unsubscribe) => unsubscribe())
+    }
+  }
+
+  #adminChangeHandler(event: { admins: AdminArray }) {
+    this.#botConfig = {
+      ...this.#botConfig,
+      admins: event.admins,
+    } as BotConfig
+  }
+
+  #clearCronTasks() {
+    this.#cronTasks.forEach((task) => task.stop())
+  }
+
   #unregisterAllApi() {
-    this.#apiNames.forEach((name) => {
-      delete plugin.#bot!.apis[name]
-    })
+    this.#apiNames.forEach((name) => delete plugin.#bot!.apis[name])
   }
 }
 
