@@ -9,9 +9,12 @@ useMount(() => {
 
   useCmd('.qa', {
     add(ctx, params, options) {
-      if (!params[0] || !params[1]) return ctx.reply('.qa add <关键词> <回复内容>')
+      const [key, value] = params
 
-      config.words.push([params[0], params[1]])
+      if (!key || value) return ctx.reply('.qa add <关键词> <回复内容>')
+
+      config.words.push([key, value, options.f ? 'fuzzy' : 'exact'])
+
       ctx.reply('添加成功')
     },
   })
@@ -19,7 +22,10 @@ useMount(() => {
   useMessage(async (ctx) => {
     const text = ctx.raw_message
     const isCmd = text.startsWith('.qa')
-    const word = config.words?.find(([key]: string[]) => text.includes(key))
+
+    const word = config.words?.find(([key, _, mode]: string[]) => {
+      return mode === 'fuzzy' ? text.includes(key) : text === key
+    })
 
     if (isCmd || !word) return
 

@@ -1,0 +1,21 @@
+{
+  "name": "qa",
+  "type": "module",
+  "version": "0.0.0-alpha.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
+  "license": "MIT",
+  "dependencies": {
+    "@kivi-dev/plugin": "workspace:*",
+    "@kivi-dev/types": "workspace:*",
+    "mustache": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.2.2"
+  }
+}

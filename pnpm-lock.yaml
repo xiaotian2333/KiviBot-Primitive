@@ -224,6 +224,22 @@ importers:
         specifier: '>= 0.5.0'
         version: 0.5.0
 
+  plugins/qa:
+    dependencies:
+      '@kivi-dev/plugin':
+        specifier: workspace:*
+        version: link:../../packages/plugin
+      '@kivi-dev/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      mustache:
+        specifier: ^4.2.0
+        version: 4.2.0
+    devDependencies:
+      '@types/mustache':
+        specifier: ^4.2.2
+        version: 4.2.2
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:

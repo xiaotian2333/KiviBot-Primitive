@@ -12,17 +12,11 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules",
-    "packages/*/node_modules",
-    "packages/*/dist",
-    "packages/*/build",
-    "packages/backup",
-    "rollup.config.ts"
-  ],
+  "exclude": ["node_modules", "dist", "build", "packages/backup", "rollup.config.ts"],
   "references": [
     {
       "path": "./packages/**/tsconfig.json"
-    }
+    },
+    { "path": "./tsconfig.plugin.json" }
   ]
 }
