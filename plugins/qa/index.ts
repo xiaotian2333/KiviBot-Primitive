@@ -1,4 +1,4 @@
-import { useCmd, bot, setup, useConfig, useMessage, useMount } from '@kivi-dev/plugin'
+import { setup, useCmd, useConfig, useMessage, useMount } from '@kivi-dev/plugin'
 
 import { cmdHandlersMap, msgHandler } from './handlers.js'
 

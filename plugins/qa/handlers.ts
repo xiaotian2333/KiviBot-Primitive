@@ -1,7 +1,7 @@
 import { bot, defineCmdMap, defineMsgHandler } from '@kivi-dev/plugin'
 
 import { config } from '.'
-import { render } from './utils'
+import { render } from './utils.js'
 
 export const cmdHandlersMap = defineCmdMap({
   default: (ctx) => ctx.reply('.qa <add|rm|ls|test>'),
