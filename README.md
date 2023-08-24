@@ -68,9 +68,11 @@ npm start
 
 框架本身仅提供**插件管理**和**状态监控**的基础功能, 其他应用性功能你需要通过编写插件来实现。
 
-插件全部放在 `plugins` 的子目录下，每个插件都是一个单独的 `ESM` 模块，支持 TS/JS。对应插件的数据被存放在 `data/plugins/[pluginName]` 下，`pluginName` 为 `setup` 函数设置的名称。
+插件全部放在 `plugins` 目录，每个插件都是一个单独的 `ESM` 模块，支持 TS/JS。
 
-你可以在 `plugins/demo/index.ts` 创建一个文件，写入以下 TS 代码。
+插件数据被存放在 `data/plugins/[pluginName]` 下，`pluginName` 为 `setup` 函数设置的名称。
+
+你可以在 `plugins/demo/index.ts` 创建一个文件，写入以下 TS 代码
 
 > 请注意最后需要导出 `plugin`。
 
@@ -149,7 +151,7 @@ useMount(() => {
   useCmd(
     '/hello',
     (event, params, options) => {
-      // 比如 /cmd param1 param2 -a -bc -n value --option1=test -option2=hello
+      // 比如 /hello param1 param2 -a -bc -n value --option1=test -option2=hello
       logger.info(params, options)
       event.reply('world')
     },
@@ -158,6 +160,14 @@ useMount(() => {
       type: 'group', // 仅群聊
     },
   )
+
+  // 支持直接声明子命令处理函数
+  useCmd('/hello', {
+    test(event, params, options) {
+      // 比如 /hello test param1 param2 -a -bc -n value --option1=test -option2=hello
+      console.log(params, options)
+    },
+  })
 })
 
 export { plugin } from '@kivi-dev/plugin'
