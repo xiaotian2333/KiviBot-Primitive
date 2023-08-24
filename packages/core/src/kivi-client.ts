@@ -209,7 +209,9 @@ export default class KiviClient {
   }
 
   async enablePlugin(pluginInfo: { name: string; path: string; pkg: Record<string, any> }) {
-    const entries = await globby(`${pluginInfo.path}/(src/)?index.{c,m}{j,t}s`)
+    const [indexEntry = ''] = await globby(`{src/,}index.{c,m,}{j,t}s`, {
+      cwd: pluginInfo.path,
+    })
 
     const exports =
       pluginInfo.pkg?.exports?.['.']?.import ||
@@ -218,10 +220,12 @@ export default class KiviClient {
       pluginInfo.pkg?.exports?.['.'] ||
       pluginInfo.pkg?.exports
 
-    const entry = entries[0] || pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
+    const entry = indexEntry || pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
+
     const pluginModule = loadModule(path.join(pluginInfo.path, entry))
 
     const idx = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
+
     idx && this.#botConfig?.plugins?.splice(idx, 1)
 
     const plugin = pluginModule?.plugin || pluginModule?.default?.plugin
