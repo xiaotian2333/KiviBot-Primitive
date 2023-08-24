@@ -114,8 +114,8 @@ useMount(() => {
         event.reply(['world ', segment.face(66)])
       }
     },
-    { type: 'group' },
-  ) // 仅群聊
+    { type: 'group' }, // 仅群聊
+  )
 })
 
 export { plugin } from '@kivi-dev/plugin'
@@ -149,25 +149,24 @@ import { setup, useMount, useCmd, logger } from '@kivi-dev/plugin'
 setup('测试插件', '1.0.0')
 
 useMount(() => {
-  // 仅处理群聊中管理员的命令
+  // 仅处理 群聊 中 管理员 的命令
   useCmd(
-    '/hello',
+    '/admin',
     (event, params, options) => {
-      // 比如 /hello param1 param2 -a -bc -n value --option1=test -option2=hello
+      // 比如 /admin param1 param2 -a -bc -n value --option1=test -option2=hello
       logger.info(params, options)
       event.reply('world')
     },
-    {
-      role: 'admin', // 仅管理员
-      type: 'group', // 仅群聊
-    },
+    { role: 'admin', type: 'group' },
   )
 
   // 支持直接声明子命令处理函数
   useCmd('/hello', {
+    // /hello test 的处理函数
     test(event, params, options) {
       // 比如 /hello test param1 param2 -a -bc -n value --option1=test -option2=hello
       console.log(params, options)
+      event.reply('world')
     },
   })
 })
@@ -183,7 +182,7 @@ import { setup, useMount, logger, useConfig } from '@kivi-dev/plugin'
 setup('测试插件', '1.0.0')
 
 useMount(() => {
-  const config = useConfig()
+  const config = useConfig({ value: undefined }) // 可选设置默认 config
 
   logger.info(config) // 第二次启用将会 输出 { value: 114514 }
 
@@ -195,7 +194,7 @@ export { plugin } from '@kivi-dev/plugin'
 
 5. 注册 API （插件间通信）
 
-提供了一种多个插件间通信的机制。
+提供了一种多个插件间通信的机制，通过 `registerApi` 注册 API，通过 `useApi` 使用 API。
 
 ```typescript
 import { setup, useMount, registerApi, useApi } from '@kivi-dev/plugin'
