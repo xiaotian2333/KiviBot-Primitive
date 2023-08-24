@@ -10,8 +10,12 @@ import {
 import mustache from 'mustacheee'
 import os from 'node:os'
 
-import type { GroupMessageEvent, ChainElem } from '@kivi-dev/plugin'
-import type { AllMessageEvent, ClientWithApis } from '@kivi-dev/types'
+import type {
+  GroupMessageEvent,
+  ChainElem,
+  AllMessageEvent,
+  ClientWithApis,
+} from '@kivi-dev/plugin'
 import type { RenderFunction, View } from 'mustacheee'
 
 const DELIMITER = '__ELEMENT__DELIMITER__'
@@ -31,10 +35,20 @@ function processString(template: string) {
   )
 }
 
+function getValueByKey(obj: Record<string, any>, path: string, defaultValue = undefined) {
+  const travel = (regexp: RegExp) =>
+    String.prototype.split
+      .call(path, regexp)
+      .filter(Boolean)
+      .reduce((res, key) => (res !== null && res !== undefined ? res[key] : res), obj)
+  const result = travel(/[,[\]]+?/) || travel(/[,[\].]+?/)
+  return result === undefined || result === obj ? defaultValue : result
+}
+
 function generateViewMap(bot: ClientWithApis, ctx: AllMessageEvent): View {
   const wrapFn = (fn: RenderFunction) => () => fn
 
-  const wrapDelimiter = (value: string | Record<string, any>) => {
+  const wrapDelimiter = (value: string | Record<string, any> = '') => {
     if (typeof value === 'object') {
       value = JSON.stringify(value)
     }
@@ -108,6 +122,11 @@ function generateViewMap(bot: ClientWithApis, ctx: AllMessageEvent): View {
       if (typeof data === 'string') return data
 
       return JSON.stringify(data, null, 2)
+    }),
+
+    key: wrapFn(async (text, render) => {
+      const [json, key] = (await render(text)).split(',')
+      return wrapDelimiter(getValueByKey(JSON.parse(json), key))
     }),
   }
 }

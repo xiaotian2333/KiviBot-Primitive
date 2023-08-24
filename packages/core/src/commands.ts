@@ -84,11 +84,12 @@ class Command {
       case 'list': {
         const ps = await searchAllPlugins(this.#config?.cwd)
         const infos = ps.map((p) => `${this.isPluginEnable(p.name) ? '●' : '○'} ${p.name}`)
+        const enableCount = ps.filter((p) => this.isPluginEnable(p.name)).length
 
         const message = [
           '〓 Kivi 插件列表 〓',
           infos.join('\n'),
-          `共 ${infos.length} 个，启用 ${ps.filter((p) => this.isPluginEnable(p.name)).length} 个`,
+          `共 ${infos.length} 个，启用 ${enableCount} 个`,
         ]
 
         this.#event?.reply(infos.length ? message.join('\n') : '〓 本地没有插件 〓')
@@ -114,16 +115,15 @@ class Command {
           return
         }
 
-        const res = await this.#kiviClient?.enablePlugin(plugin)
-        const isOK = res && typeof res !== 'string'
+        try {
+          await this.#kiviClient?.enablePlugin(plugin)
+          this.#config?.botConfig?.plugins?.push(pname)
 
-        if (!isOK) {
-          this.#event!.reply('〓 插件启用失败 〓\n报错信息如下: ' + escapeColor(isOK))
-          return
+          this.#event?.reply('〓 插件启用成功 〓')
+        } catch (e: any) {
+          const err = e?.message || JSON.stringify(e)
+          this.#event!.reply('〓 插件启用失败 〓\n报错信息如下: ' + escapeColor(err))
         }
-
-        this.#config?.botConfig?.plugins?.push(pname)
-        this.#event?.reply('〓 插件启用成功 〓')
 
         break
       }
@@ -139,17 +139,15 @@ class Command {
           return
         }
 
-        const isOK = await this.#kiviClient?.disablePlugin(pname)
-
-        if (isOK !== true) {
-          this.#event!.reply('〓 插件禁用失败 〓\n报错信息如下: ' + escapeColor(isOK))
-          return
-        } else {
+        try {
+          await this.#kiviClient?.disablePlugin(pname)
           const idx = this.#config?.botConfig?.plugins?.indexOf(pname)
           this.#config?.botConfig?.plugins?.splice(Number(idx), 1)
+          this.#event!.reply('〓 插件已禁用 〓')
+        } catch (e: any) {
+          const err = e?.message || JSON.stringify(e)
+          this.#event!.reply('〓 插件禁用失败 〓\n报错信息如下: ' + escapeColor(err))
         }
-
-        this.#event!.reply('〓 插件已禁用 〓')
 
         break
       }
@@ -161,18 +159,18 @@ class Command {
           return
         }
 
-        const isOK = await this.#kiviClient?.reloadPlugin(pname)
+        try {
+          await this.#kiviClient?.reloadPlugin(pname)
 
-        if (isOK !== true) {
-          this.#event!.reply('〓 插件重载失败 〓\n报错信息如下: ' + escapeColor(isOK))
+          this.#event!.reply('〓 重载成功 〓')
+        } catch (e: any) {
+          const err = e?.message || JSON.stringify(e)
 
           const idx = this.#config?.botConfig?.plugins?.indexOf(pname)
           this.#config?.botConfig?.plugins?.splice(Number(idx), 1)
 
-          return
+          this.#event!.reply('〓 插件重载失败 〓\n报错信息如下: ' + escapeColor(err))
         }
-
-        this.#event!.reply('〓 重载成功 〓')
 
         break
       }

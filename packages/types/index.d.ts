@@ -11,7 +11,9 @@ import type {
   ImageElem,
   AtElem,
   MiraiElem,
+  Platform,
 } from 'icqq'
+import type { EventEmitter } from 'node:events'
 
 export type AnyFunc = (...args: any[]) => any
 

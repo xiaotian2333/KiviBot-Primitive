@@ -10,6 +10,7 @@ import {
   searchAllPlugins,
   showLogo,
   deepClone,
+  globby,
 } from '@kivi-dev/shared'
 import { axios, createClient } from 'icqq'
 import fs from 'node:fs'
@@ -19,8 +20,7 @@ import command from './commands.js'
 import { Logger } from './logger.js'
 import { handleException, loadModule, require, stringifySendable } from './utils.js'
 
-import type { Plugin } from '@kivi-dev/plugin'
-import type { AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/types'
+import type { Plugin, AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/plugin'
 import type { Client, Friend, Group, Quotable, Sendable } from 'icqq'
 
 export default class KiviClient {
@@ -169,7 +169,10 @@ export default class KiviClient {
   async #loadPlugins() {
     const pluginDir = path.join(this.#cwd, 'plugins')
 
-    if (!fs.existsSync(pluginDir)) fs.mkdirSync(pluginDir)
+    if (!fs.existsSync(pluginDir)) {
+      fs.mkdirSync(pluginDir)
+      return 0
+    }
 
     const localPlugins = await searchAllPlugins(this.#cwd)
     const configPluginNames = this.#botConfig?.plugins || []
@@ -185,17 +188,19 @@ export default class KiviClient {
     let enableCount = 0
 
     await Promise.all(
-      shouldEnables.map(async (plugin) => {
-        const relativePath = './' + path.relative(this.#cwd, plugin.path)
-        this.#mainLogger.info(b(`加载插件 ${plugin.name} -> ${relativePath}`))
+      shouldEnables.map(async (pluginInfo) => {
+        const relativePath = './' + path.relative(this.#cwd, pluginInfo.path)
+        this.#mainLogger.info(b(`加载插件 ${pluginInfo.name} -> ${relativePath}`))
 
-        const pluginInstance = await this.enablePlugin(plugin)
-
-        if (!pluginInstance) {
-          this.#mainLogger.error(`插件 ${b(plugin.name)} 启用失败`)
-        } else {
+        try {
+          const pluginInstance = await this.enablePlugin(pluginInfo)
           enableCount++
-          this.#plugins?.set(plugin.name, pluginInstance)
+          this.#plugins?.set(pluginInfo.name, pluginInstance)
+        } catch (e: any) {
+          const info = e?.message || JSON.stringify(e)
+          this.#mainLogger.error(`插件 ${b(pluginInfo.name)} 启用失败:\n${info}`)
+          const mainAdmin = this.#bot!.pickFriend(this.#botConfig!.admins[0])
+          await mainAdmin.sendMsg(`〓 插件 ${pluginInfo.name} 启用失败 〓\n` + info)
         }
       }),
     )
@@ -204,113 +209,51 @@ export default class KiviClient {
   }
 
   async enablePlugin(pluginInfo: { name: string; path: string; pkg: Record<string, any> }) {
-    let res
+    const entries = await globby(`${pluginInfo.path}/(src/)?index.{c,m}{j,t}s`)
 
-    try {
-      res = loadModule(`${pluginInfo.path}/index`)
-    } catch (e: any) {
-      const info = e?.message || JSON.stringify(e)
+    const exports =
+      pluginInfo.pkg?.exports?.['.']?.import ||
+      pluginInfo.pkg?.exports?.['.']?.require ||
+      pluginInfo.pkg?.exports?.['.']?.default ||
+      pluginInfo.pkg?.exports?.['.'] ||
+      pluginInfo.pkg?.exports
 
-      if (!info.includes('Cannot find module')) {
-        this.#mainLogger.debug('插件加载失败：', e)
-      }
+    const entry = entries[0] || pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
+    const pluginModule = loadModule(path.join(pluginInfo.path, entry))
 
-      try {
-        res = loadModule(`${pluginInfo.path}/src/index`)
-      } catch (e: any) {
-        const info = e?.message || JSON.stringify(e)
+    const idx = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
+    idx && this.#botConfig?.plugins?.splice(idx, 1)
 
-        if (!info.includes('Cannot find module')) {
-          this.#mainLogger.debug('插件加载失败：', e)
-        }
+    const plugin = pluginModule?.plugin || pluginModule?.default?.plugin
+    await plugin.init(this.#bot!, deepClone(this.#botConfig), this.#cwd)
 
-        const exports =
-          pluginInfo.pkg?.exports ||
-          pluginInfo.pkg?.exports?.['.'] ||
-          pluginInfo.pkg?.exports?.['.']?.import ||
-          pluginInfo.pkg?.exports?.['.']?.require ||
-          pluginInfo.pkg?.exports?.['.']?.default
+    this.#plugins?.set(pluginInfo.name, plugin)
 
-        const entry = pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
-
-        try {
-          res = loadModule(path.join(pluginInfo.path, entry))
-        } catch {
-          const info = `未找到插件 ${b(pluginInfo.name)} 入口，启用失败`
-
-          const index = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
-          index && this.#botConfig?.plugins?.splice(index, 1)
-
-          this.#mainLogger.error(info)
-          return info
-        }
-      }
-    }
-
-    const plugin = res?.plugin || res?.default?.plugin
-
-    if (!plugin || !plugin.init) {
-      const info = `插件 ${b(pluginInfo.name)} 未导出 ${b('`plugin`')} 实例，启用失败`
-
-      const index = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
-      index && this.#botConfig?.plugins?.splice(index, 1)
-
-      this.#mainLogger.error(info)
-      return info
-    } else {
-      try {
-        await plugin.init(this.#bot!, deepClone(this.#botConfig), this.#cwd)
-
-        this.#plugins?.set(pluginInfo.name, plugin)
-        return plugin
-      } catch (e: any) {
-        const err = e?.message || JSON.stringify(e)
-        const info = `插件 ${b(pluginInfo.name)} 启用失败，错误信息：` + err
-
-        const index = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
-        index && this.#botConfig?.plugins?.splice(index, 1)
-
-        this.#mainLogger.error(info)
-        return info
-      }
-    }
+    return pluginModule
   }
 
   async disablePlugin(pluginName: string) {
     const plugin = this.#plugins?.get(pluginName)
 
     if (!plugin) {
-      const err = `插件 ${b(pluginName)} 未启用`
-      this.#mainLogger.warn(err)
-      return err
+      throw new Error(`插件 ${b(pluginName)} 未启用`)
     }
 
-    try {
-      await plugin.destroy()
-
-      this.#plugins?.delete(pluginName)
-
-      return true
-    } catch (e: any) {
-      return e.message || JSON.stringify(e)
-    }
+    await plugin.destroy()
+    this.#plugins?.delete(pluginName)
   }
 
   async reloadPlugin(pluginName: string) {
-    const isOffOK = await this.disablePlugin(pluginName)
+    await this.disablePlugin(pluginName)
+
     const plugins = await searchAllPlugins(this.#cwd)
     const plugin = plugins.find((p) => p.name === pluginName)
 
     if (!plugin) {
-      const info = `插件 ${b(pluginName)} 不存在`
-      this.#mainLogger.info(info)
-      return info
+      throw new Error(`插件 ${b(pluginName)} 不存在`)
     }
 
-    const isOnOK = await this.enablePlugin(plugin)
-    const isOK = isOffOK === true && isOnOK && typeof isOnOK !== 'string'
-
-    return isOK ? true : isOffOK && isOnOK
+    await this.enablePlugin(plugin)
   }
 
   #handleMessageForFramework() {

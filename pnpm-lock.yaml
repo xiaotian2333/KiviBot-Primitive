@@ -223,18 +223,21 @@ importers:
       icqq:
         specifier: '>= 0.5.0'
         version: 0.5.0
+    devDependencies:
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
 
   plugins/qa:
     dependencies:
       '@kivi-dev/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      '@kivi-dev/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       mustacheee:
         specifier: ^1.1.0
         version: 1.1.0
+
+  plugins/render-png: {}
 
 packages:
 
