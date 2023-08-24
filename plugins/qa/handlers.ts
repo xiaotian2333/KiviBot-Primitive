@@ -1,9 +1,9 @@
-import { bot, defineCmdMap } from '@kivi-dev/plugin'
+import { bot, defineCmdMap, defineMsgHandler } from '@kivi-dev/plugin'
 
 import { config } from '.'
 import { render } from './utils'
 
-export default defineCmdMap({
+export const cmdHandlersMap = defineCmdMap({
   default: (ctx) => ctx.reply('.qa <add|rm|ls|test>'),
 
   add(ctx, params, options) {
@@ -89,4 +89,21 @@ export default defineCmdMap({
 
     ctx.reply('✅ 修改成功')
   },
+})
+
+export const msgHandler = defineMsgHandler(async (ctx) => {
+  const text = ctx.raw_message
+  const isCmd = text.startsWith('.qa')
+
+  const word = config.words?.find(([key, _, mode]: string[]) => {
+    return mode === 'fuzzy' ? text.includes(key) : text === key
+  })
+
+  if (isCmd || !word) return
+
+  const res = await render(word[1], bot(), ctx)
+
+  if (res) {
+    ctx.reply(res)
+  }
 })
