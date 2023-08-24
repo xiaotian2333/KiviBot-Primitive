@@ -238,16 +238,9 @@ export default class KiviClient {
   async disablePlugin(pluginName: string) {
     const plugin = this.#plugins?.get(pluginName)
 
-    console.log(
-      '🚀 ~ file: kivi-client.ts:241 ~ KiviClient ~ disablePlugin ~ pluginName:',
-      pluginName,
-    )
-
     if (!plugin) {
       throw new Error(`插件 ${b(pluginName)} 未启用`)
     }
-
-    console.log('🚀 ~ file: kivi-client.ts:250 ~ KiviClient ~ disablePlugin ~ plugin:', plugin)
 
     await plugin.destroy()
 
