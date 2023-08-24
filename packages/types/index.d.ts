@@ -4,6 +4,13 @@ import type {
   PrivateMessageEvent,
   GroupMessageEvent,
   DiscussMessageEvent,
+  TextElem,
+  FaceElem,
+  BfaceElem,
+  MfaceElem,
+  ImageElem,
+  AtElem,
+  MiraiElem,
 } from 'icqq'
 
 export type AnyFunc = (...args: any[]) => any
@@ -12,6 +19,7 @@ export type DeviceMode = 'sms' | 'qrcode'
 export type LoginMode = 'password' | 'qrcode'
 export type MessageType = 'all' | 'private' | 'group'
 export type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
+export type ChainElem = TextElem | FaceElem | BfaceElem | MfaceElem | ImageElem | AtElem | MiraiElem
 
 export interface ClientWithApis extends Client {
   apis: {

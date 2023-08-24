@@ -10,7 +10,7 @@ import {
 import mustache from 'mustacheee'
 import os from 'node:os'
 
-import type { GroupMessageEvent } from '@kivi-dev/plugin'
+import type { GroupMessageEvent, ChainElem } from '@kivi-dev/plugin'
 import type { AllMessageEvent, ClientWithApis } from '@kivi-dev/types'
 import type { RenderFunction, View } from 'mustacheee'
 
@@ -27,7 +27,7 @@ function processString(template: string) {
       .split(DELIMITER)
       .filter((e) => Boolean(e.trim()))
       // 将 json 字符串解析成 oicq/icqq 可以识别的 element js 对象，比如 QQ 表情、图片
-      .map((e) => (/"type":"/.test(e) ? JSON.parse(e) : e))
+      .map((e) => (/"type":"/.test(e) ? (JSON.parse(e) as ChainElem) : e))
   )
 }
 
