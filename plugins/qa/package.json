@@ -13,9 +13,6 @@
   "dependencies": {
     "@kivi-dev/plugin": "workspace:*",
     "@kivi-dev/types": "workspace:*",
-    "mustache": "^4.2.0"
-  },
-  "devDependencies": {
-    "@types/mustache": "^4.2.2"
+    "mustacheee": "^1.1.0"
   }
 }

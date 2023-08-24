@@ -7,25 +7,17 @@ import {
   randomItem,
   getQQAvatarLink,
 } from '@kivi-dev/plugin'
-import mustache from 'mustache'
+import mustache from 'mustacheee'
 import os from 'node:os'
 
 import type { GroupMessageEvent } from '@kivi-dev/plugin'
 import type { AllMessageEvent, ClientWithApis } from '@kivi-dev/types'
-
-type Res = string | number
-
-interface View {
-  [attr: string]:
-    | Res
-    | (() => Res | Promise<Res>)
-    | (() => (text: string, render: (text: string) => string) => Res | Promise<Res>)
-}
+import type { View } from 'mustacheee/lib/types.js'
 
 const DELIMITER = '__ELEMENT__DELIMITER__'
 
 export async function render(template: string, bot: ClientWithApis, ctx: AllMessageEvent) {
-  return processString(mustache.render(template, await fetchVariables(bot, ctx), {}, ['[', ']']))
+  return processString(await mustache.render(template, fetchVariables(bot, ctx), {}, ['[', ']']))
 }
 
 function processString(template: string) {
@@ -37,26 +29,38 @@ function processString(template: string) {
 function fetchVariables(bot: ClientWithApis, ctx: AllMessageEvent): View {
   return {
     at_all: DELIMITER + JSON.stringify(segment.at('all')),
-    face: () => (text, render) => DELIMITER + JSON.stringify(segment.face(Number(render(text)))),
-    image: () => (text, render) => DELIMITER + JSON.stringify(segment.image(render(text))),
-    record: () => (text, render) => DELIMITER + JSON.stringify(segment.record(render(text))),
-    rps: () => (text, render) => DELIMITER + JSON.stringify(segment.rps(Number(render(text)))),
-    dice: () => (text, render) => DELIMITER + JSON.stringify(segment.dice(Number(render(text)))),
-    poke: () => (text, render) => DELIMITER + JSON.stringify(segment.poke(Number(render(text)))),
-    at: () => (text, render) => {
-      const [qq, _text, dummy] = render(text).split(',')
+    face: () => async (text, render) => {
+      return DELIMITER + JSON.stringify(segment.face(Number(await render(text))))
+    },
+    image: () => async (text, render) => {
+      return DELIMITER + JSON.stringify(segment.image(await render(text)))
+    },
+    record: () => async (text, render) => {
+      return DELIMITER + JSON.stringify(segment.record(await render(text)))
+    },
+    rps: () => async (text, render) => {
+      return DELIMITER + JSON.stringify(segment.rps(Number(await render(text))))
+    },
+    dice: () => async (text, render) => {
+      return DELIMITER + JSON.stringify(segment.dice(Number(await render(text))))
+    },
+    poke: () => async (text, render) => {
+      return DELIMITER + JSON.stringify(segment.poke(Number(await render(text))))
+    },
+    at: () => async (text, render) => {
+      const [qq, _text, dummy] = (await render(text)).split(',')
       return DELIMITER + JSON.stringify(segment.at(qq, _text, dummy === 'true'))
     },
-    bface: () => (text, render) => {
-      const [file, _text] = render(text).split(',')
+    bface: () => async (text, render) => {
+      const [file, _text] = (await render(text)).split(',')
       return DELIMITER + JSON.stringify(segment.bface(file, _text))
     },
-    sface: () => (text, render) => {
-      const [file, _text] = render(text).split(',')
+    sface: () => async (text, render) => {
+      const [file, _text] = (await render(text)).split(',')
       return DELIMITER + JSON.stringify(segment.bface(file, _text))
     },
-    n: () => (text, render) => {
-      const [min, max] = render(text).split(',').map(Number)
+    n: () => async (text, render) => {
+      const [min, max] = (await render(text)).split(',').map(Number)
       return randomInt(min, max)
     },
     rpl: DELIMITER + JSON.stringify('rpl'),
@@ -69,15 +73,16 @@ function fetchVariables(bot: ClientWithApis, ctx: AllMessageEvent): View {
       const memberIds = [...map.values()].map((e) => e.user_id)
       return randomItem(memberIds)!
     },
-    av: () => (text, render) =>
-      DELIMITER + JSON.stringify(getQQAvatarLink(Number(render(text)), 640, true)),
+    av: () => async (text, render) => {
+      return DELIMITER + JSON.stringify(getQQAvatarLink(Number(await render(text)), 640, true))
+    },
     timestamp: Date.now(),
-    t: () => (text, render) => dayjs(new Date()).format(render(text)),
-    time: () => (text, render) => dayjs(new Date()).format(render(text)),
+    t: () => async (text, render) => dayjs(new Date()).format(await render(text)),
+    time: () => async (text, render) => dayjs(new Date()).format(await render(text)),
     arch: os.arch(),
     bn: () => bot.nickname,
-    get: () => async (text, render) => (await axios.get(render(text))).data,
-    post: () => async (text, render) => (await axios.post(render(text))).data,
-    md5: () => (text, render) => md5(render(text), 'hex') as string,
+    get: () => async (text, render) => (await axios.get(await render(text))).data,
+    post: () => async (text, render) => (await axios.post(await render(text))).data,
+    md5: () => async (text, render) => md5(await render(text), 'hex') as string,
   }
 }
