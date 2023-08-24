@@ -1,23 +1,14 @@
 import { useCmd, bot, setup, useConfig, useMessage, useMount } from '@kivi-dev/plugin'
 
-import { render } from './utils'
+import cmdHandlerMap from './cmd.js'
+import { render } from './utils.js'
 
 setup('关键词', '1.0.0')
 
+export const config = useConfig<{ words: string[][] }>({ words: [] })
+
 useMount(() => {
-  const config = useConfig<{ words: string[][] }>({ words: [] })
-
-  useCmd('.qa', {
-    add(ctx, params, options) {
-      const [key, value] = params
-
-      if (!key || value) return ctx.reply('.qa add <关键词> <回复内容>')
-
-      config.words.push([key, value, options.f ? 'fuzzy' : 'exact'])
-
-      ctx.reply('添加成功')
-    },
-  })
+  useCmd(['.qa', 'qa'], cmdHandlerMap)
 
   useMessage(async (ctx) => {
     const text = ctx.raw_message

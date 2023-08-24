@@ -10,6 +10,7 @@ export type AnyFunc = (...args: any[]) => any
 
 export type DeviceMode = 'sms' | 'qrcode'
 export type LoginMode = 'password' | 'qrcode'
+export type MessageType = 'all' | 'private' | 'group'
 export type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
 
 export interface ClientWithApis extends Client {
@@ -30,7 +31,7 @@ export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussM
 export type OicqMessageHandler = (event: AllMessageEvent) => any
 export type BotHandler = (bot: ClientWithApis) => undefined | void | ((bot: ClientWithApis) => any)
 
-export type MessageHandler<T extends 'all' | 'group' | 'private' = 'all'> = T extends 'all'
+export type MessageHandler<T extends MessageType = 'all'> = T extends 'all'
   ? (event: AllMessageEvent) => any
   : T extends 'group'
   ? (event: GroupMessageEvent) => any
@@ -38,7 +39,7 @@ export type MessageHandler<T extends 'all' | 'group' | 'private' = 'all'> = T ex
   ? (event: PrivateMessageEvent) => any
   : never
 
-export type CommandHandler<T extends 'all' | 'group' | 'private' = 'all'> = T extends 'all'
+export type CommandHandler<T extends MessageType = 'all'> = T extends 'all'
   ? (event: AllMessageEvent, params: string[], options: { [arg: string]: any }) => any
   : T extends 'group'
   ? (event: GroupMessageEvent, params: string[], options: { [arg: string]: any }) => any
