@@ -223,7 +223,6 @@ export default class KiviClient {
     const entry = indexEntry || pluginInfo.pkg?.main || pluginInfo.pkg?.module || exports
 
     const pluginModule = loadModule(path.join(pluginInfo.path, entry))
-
     const idx = this.#botConfig?.plugins?.indexOf(pluginInfo.name)
 
     idx && this.#botConfig?.plugins?.splice(idx, 1)
@@ -231,19 +230,27 @@ export default class KiviClient {
     const plugin = pluginModule?.plugin || pluginModule?.default?.plugin
     await plugin.init(this.#bot!, deepClone(this.#botConfig), this.#cwd)
 
-    this.#plugins?.set(pluginInfo.name, plugin)
+    this.#plugins.set(pluginInfo.name, plugin)
 
-    return pluginModule
+    return plugin
   }
 
   async disablePlugin(pluginName: string) {
     const plugin = this.#plugins?.get(pluginName)
 
+    console.log(
+      '🚀 ~ file: kivi-client.ts:241 ~ KiviClient ~ disablePlugin ~ pluginName:',
+      pluginName,
+    )
+
     if (!plugin) {
       throw new Error(`插件 ${b(pluginName)} 未启用`)
     }
 
+    console.log('🚀 ~ file: kivi-client.ts:250 ~ KiviClient ~ disablePlugin ~ plugin:', plugin)
+
     await plugin.destroy()
+
     this.#plugins?.delete(pluginName)
   }
 

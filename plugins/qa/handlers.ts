@@ -1,9 +1,10 @@
-import { bot, defineCmdMap, defineMsgHandler } from '@kivi-dev/plugin'
+import { bot, useConfig, defineCmdMap, defineMsgHandler } from '@kivi-dev/plugin'
 
-import { config } from '.'
 import { render } from './utils.js'
 
 export const msgHandler = defineMsgHandler(async (ctx) => {
+  const config = useConfig<{ words: string[][] }>()
+
   const text = ctx.raw_message
   const isCmd = text.startsWith('.qa')
 
@@ -28,6 +29,7 @@ export const cmdHandlersMap = defineCmdMap({
   default: (ctx) => ctx.reply('.qa <add|rm|ls|test>'),
 
   add(ctx, params, options) {
+    const config = useConfig<{ words: string[][] }>()
     const [key, value] = params
 
     if (!key || !value) {
@@ -47,6 +49,7 @@ export const cmdHandlersMap = defineCmdMap({
 
   rm(ctx, params) {
     const [key] = params
+    const config = useConfig<{ words: string[][] }>()
 
     if (!key) {
       return ctx.reply('.qa rm <关键词>')
@@ -64,6 +67,7 @@ export const cmdHandlersMap = defineCmdMap({
   },
 
   ls(ctx) {
+    const config = useConfig<{ words: string[][] }>()
     const isEmpty = config.words.length === 0
 
     if (isEmpty) {
@@ -74,6 +78,7 @@ export const cmdHandlersMap = defineCmdMap({
   },
 
   async test(ctx, params) {
+    const config = useConfig<{ words: string[][] }>()
     const [key] = params
 
     if (!key) {
@@ -94,6 +99,7 @@ export const cmdHandlersMap = defineCmdMap({
   },
 
   chmod(ctx, params) {
+    const config = useConfig<{ words: string[][] }>()
     const [key, mode] = params
 
     if (!key || !mode) {

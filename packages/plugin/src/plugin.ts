@@ -1,5 +1,5 @@
 import { Logger } from '@kivi-dev/core'
-import { b, mri, ensureArray, watch, ref, str2argv } from '@kivi-dev/shared'
+import { b, mri, ensureArray, watch, ref, str2argv, deepClone } from '@kivi-dev/shared'
 import { defu as mergeDefaults } from 'defu'
 import nodeCron from 'node-cron'
 import EventEmitter from 'node:events'
@@ -137,12 +137,17 @@ export class Plugin extends EventEmitter {
     }
   }
 
-  __useConfig<T extends Record<string | number, any> = Record<string, any>>(defaultConfig: T): T {
+  __useConfig<T extends Record<string | number, any> = Record<string, any>>(
+    defaultConfig?: T,
+    options: {
+      minify?: boolean
+    } = { minify: false },
+  ): T {
     if (this.#pluginConfig) {
       return this.#pluginConfig as T
     }
 
-    const config: T = defaultConfig as T
+    const config: T = deepClone(defaultConfig || {}) as T
     const configPath = path.join(this.#dataDir, 'config.json')
 
     if (fs.existsSync(configPath)) {
@@ -150,15 +155,17 @@ export class Plugin extends EventEmitter {
 
       try {
         Object.assign(config, JSON.parse(configContent))
-        fs.writeFileSync(configPath, JSON.stringify(config), { encoding: 'utf-8' })
       } catch (e) {
         this.#throwPluginError('插件配置文件格式错误，请检查')
       }
-    } else {
-      fs.writeFileSync(configPath, JSON.stringify(defaultConfig), { encoding: 'utf-8' })
     }
 
-    this.#pluginConfig = ref(mergeDefaults(config, defaultConfig))
+    const finalConfig = mergeDefaults(config, defaultConfig || {})
+    const rawConfig = JSON.stringify(finalConfig, null, options?.minify ? undefined : 2)
+
+    fs.writeFileSync(configPath, rawConfig, { encoding: 'utf-8' })
+    this.#pluginConfig = ref(finalConfig)
+
     watch(this.#pluginConfig as T, (config) => this.#handleConfigChange(config))
 
     return this.#pluginConfig as T

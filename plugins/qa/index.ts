@@ -4,9 +4,9 @@ import { cmdHandlersMap, msgHandler } from './handlers.js'
 
 setup('关键词', '1.0.0')
 
-export const config = useConfig<{ words: string[][] }>({ words: [] })
-
 useMount(() => {
+  useConfig<{ words: string[][] }>({ words: [] })
+
   useCmd(['.qa', 'qa'], cmdHandlersMap)
 
   useMessage(msgHandler)
