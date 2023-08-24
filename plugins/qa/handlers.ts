@@ -3,6 +3,27 @@ import { bot, defineCmdMap, defineMsgHandler } from '@kivi-dev/plugin'
 import { config } from '.'
 import { render } from './utils.js'
 
+export const msgHandler = defineMsgHandler(async (ctx) => {
+  const text = ctx.raw_message
+  const isCmd = text.startsWith('.qa')
+
+  const word = config.words.find(([key, _, mode]: string[]) => {
+    const isFuzzy = mode === 'fuzzy' && text.includes(key)
+    const isExact = mode === 'exact' && text === key
+    const isRegExp = mode === 'regexp' && new RegExp(key).test(text)
+
+    return isFuzzy || isExact || isRegExp
+  })
+
+  if (isCmd || !word) return
+
+  const res = await render(word[1], bot(), ctx)
+
+  if (res) {
+    ctx.reply(res)
+  }
+})
+
 export const cmdHandlersMap = defineCmdMap({
   default: (ctx) => ctx.reply('.qa <add|rm|ls|test>'),
 
@@ -89,21 +110,4 @@ export const cmdHandlersMap = defineCmdMap({
 
     ctx.reply('✅ 修改成功')
   },
-})
-
-export const msgHandler = defineMsgHandler(async (ctx) => {
-  const text = ctx.raw_message
-  const isCmd = text.startsWith('.qa')
-
-  const word = config.words?.find(([key, _, mode]: string[]) => {
-    return mode === 'fuzzy' ? text.includes(key) : text === key
-  })
-
-  if (isCmd || !word) return
-
-  const res = await render(word[1], bot(), ctx)
-
-  if (res) {
-    ctx.reply(res)
-  }
 })
