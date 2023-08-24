@@ -110,7 +110,9 @@ useMount(() => {
 
   useMessage(
     (event) => {
-      event.reply(['world ', segment.face(66)])
+      if (event.raw_message === 'hi') {
+        event.reply(['world ', segment.face(66)])
+      }
     },
     { type: 'group' },
   ) // 仅群聊
@@ -119,7 +121,7 @@ useMount(() => {
 export { plugin } from '@kivi-dev/plugin'
 ```
 
-2. 定时任务
+1. 定时任务
 
 ```typescript
 import { setup, bot, useMount, useCron, useInfo } from '@kivi-dev/plugin'
@@ -176,14 +178,16 @@ export { plugin } from '@kivi-dev/plugin'
 4. 持久化数据
 
 ```typescript
-import { setup, useMount, useConfig } from '@kivi-dev/plugin'
+import { setup, useMount, logger, useConfig } from '@kivi-dev/plugin'
 
 setup('测试插件', '1.0.0')
 
 useMount(() => {
   const config = useConfig()
 
-  config.value = 132 // 检测到 config 变更将自动保存，下次启用自动读取
+  logger.info(config) // 第二次启用将会 输出 { value: 114514 }
+
+  config.value = 114514 // 检测到 config 变更将自动保存，下次启用自动读取
 })
 
 export { plugin } from '@kivi-dev/plugin'
