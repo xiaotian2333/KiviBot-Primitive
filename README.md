@@ -121,7 +121,7 @@ useMount(() => {
 export { plugin } from '@kivi-dev/plugin'
 ```
 
-1. 定时任务
+2. 定时任务
 
 ```typescript
 import { setup, bot, useMount, useCron, useInfo } from '@kivi-dev/plugin'
