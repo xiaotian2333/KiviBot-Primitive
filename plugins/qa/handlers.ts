@@ -7,8 +7,11 @@ import type { Forwardable } from '@kivi-dev/plugin'
 export const msgHandler = defineMsgHandler(async (ctx) => {
   const config = useConfig<{ words: string[][] }>()
 
+  const shouldIgnore = [536596616].includes(ctx.sender.user_id)
   const text = ctx.raw_message
-  const isCmd = text.startsWith('.qa')
+  const isCmd = text.startsWith('.qa') || text.startsWith('qa')
+
+  if (shouldIgnore || isCmd) return
 
   const word = config.words.find(([key, _, mode]: string[]) => {
     const isFuzzy = mode === 'fuzzy' && text.includes(key)
@@ -18,7 +21,7 @@ export const msgHandler = defineMsgHandler(async (ctx) => {
     return isFuzzy || isExact || isRegExp
   })
 
-  if (isCmd || !word) return
+  if (!word) return
 
   const res = await render(word[1], bot(), ctx)
 
