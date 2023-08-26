@@ -26,6 +26,13 @@
 > Just run の bot.
 >
 > 基于 [oicq](#) / [icqq](#)、面向 [Node.js](https://nodejs.org) 开发者的**轻量** QQ 机器人框架。
+>
+> <details>
+> <summary>more info</summary>
+>
+> The mascot is [Dimo](https://baike.baidu.com/item/%E8%BF%AA%E8%8E%AB/10570042), a star-level pet of the light element introduced in the game "Roco Kingdom" in 2012. It represents dreams and courage, and the image copyright belongs to [Roco Kingdom](https://roco.qq.com/).
+>
+> </details>
 
 ## 为什么选择 Kivi ？
 
