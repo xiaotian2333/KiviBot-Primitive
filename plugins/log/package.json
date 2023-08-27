@@ -1,0 +1,15 @@
+{
+  "name": "log",
+  "type": "module",
+  "version": "0.0.0-alpha.1",
+  "description": "",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
+  "license": "MIT",
+  "dependencies": {
+    "@kivi-dev/plugin": "workspace:*",
+    "mustacheee": "^1.1.0",
+    "entities": "^4.5.0"
+  }
+}
