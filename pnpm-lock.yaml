@@ -8,6 +8,18 @@ importers:
 
   .:
     devDependencies:
+      '@kivi-dev/core':
+        specifier: workspace:*
+        version: link:packages/core
+      '@kivi-dev/plugin':
+        specifier: workspace:*
+        version: link:packages/plugin
+      '@kivi-dev/shared':
+        specifier: workspace:*
+        version: link:packages/shared
+      '@kivi-dev/types':
+        specifier: workspace:*
+        version: link:packages/types
       '@types/prompts':
         specifier: ^2.4.4
         version: 2.4.4
@@ -233,13 +245,12 @@ importers:
       '@kivi-dev/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
-      mustacheee:
-        specifier: ^1.1.0
-        version: 1.1.0
-    devDependencies:
       entities:
         specifier: ^4.5.0
         version: 4.5.0
+      mustacheee:
+        specifier: ^1.1.0
+        version: 1.1.0
 
   plugins/qa:
     dependencies:
@@ -1391,7 +1402,7 @@ packages:
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
-    dev: true
+    dev: false
 
   /es-abstract@1.22.1:
     resolution: {integrity: sha512-ioRRcXMO6OFyRpyzV3kE1IIBd4WG5/kltnzdxSCqoP8CMGs/Li+M1uF5o7lOkZVFjDs+NLesthnF66Pg/0q0Lw==}
