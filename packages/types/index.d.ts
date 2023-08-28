@@ -39,7 +39,9 @@ export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R 
 export type AdminArray = [mainAdmin: number, ...subAdmins: number[]]
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
 export type OicqMessageHandler = (event: AllMessageEvent) => any
-export type BotHandler = (bot: ClientWithApis) => undefined | void | ((bot: ClientWithApis) => any)
+export type BotHandler = (
+  bot: ClientWithApis,
+) => void | Promise<void> | ((bot: ClientWithApis) => any)
 
 export type MessageHandler<T extends MessageType = 'all'> = T extends 'all'
   ? (event: AllMessageEvent) => any

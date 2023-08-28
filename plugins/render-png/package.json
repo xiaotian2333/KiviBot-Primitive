@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@kivi-dev/plugin": "workspace:*",
+    "puppeteer": "^21.1.0"
+  }
 }
