@@ -6,7 +6,7 @@ WORKDIR /bot
 
 COPY "package*.json" "./"
 
-RUN npm i --production
+RUN npm i
 
 COPY . .
 

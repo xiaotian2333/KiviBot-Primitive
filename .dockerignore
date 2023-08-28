@@ -1,13 +1,20 @@
+# Node.js
 node_modules
 
+# Kivi
 logs
 data
+plugins
 kivi.json
 
+# OS X
 .DS_Store
 
+#
 .git
 .gitignore
 
+# Docker
 Dockerfile
 .dockerignore
+docker-compose.yml
