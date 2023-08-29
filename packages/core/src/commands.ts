@@ -183,7 +183,7 @@ class Command {
 
     try {
       const status = await fetchStatus(bot, this.#config?.botConfig)
-      const res = await this.#kiviClient?.bot?.apis?.renderStatus(status)
+      const res = await this.#kiviClient?.bot?.apis?.renderStatus?.(status)
 
       this.#event?.reply(res ? segment.image(res) : status)
     } catch (e) {
