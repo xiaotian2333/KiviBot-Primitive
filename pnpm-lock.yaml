@@ -210,6 +210,9 @@ importers:
       mri:
         specifier: ^1.2.0
         version: 1.2.0
+      mustacheee:
+        specifier: ^1.2.0
+        version: 1.2.0
       obj-observer:
         specifier: ^1.0.4
         version: 1.0.4
@@ -249,8 +252,8 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0
       mustacheee:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.2.0
+        version: 1.2.0
 
   plugins/qa:
     dependencies:
@@ -258,10 +261,10 @@ importers:
         specifier: workspace:*
         version: link:../../packages/plugin
       mustacheee:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.2.0
+        version: 1.2.0
 
-  plugins/render-png:
+  plugins/render:
     dependencies:
       '@kivi-dev/plugin':
         specifier: workspace:*
@@ -2907,8 +2910,8 @@ packages:
     hasBin: true
     dev: false
 
-  /mustacheee@1.1.0:
-    resolution: {integrity: sha512-yr0ga7zR6GpIw+27r0Eu9Bc2R7BmYOJqQxZPSGBI368AHx4XNl3OOIhCe4N2dwS7Qsv1d/itBcnNL+O+gRuz3g==}
+  /mustacheee@1.2.0:
+    resolution: {integrity: sha512-Q9D9AnMtKehHrHpw1VXi68fi/OXlUiA5Et0lY3oskSyzBpGMU4e2HwTpp0xI36/Aq3zjHjK/P7q7g7DPljogdA==}
     dev: false
 
   /natural-compare-lite@1.4.0:

@@ -1,4 +1,4 @@
-import { useMount, setup, useMatch, segment } from '@kivi-dev/plugin'
+import { useMount, setup, useMatch, segment, registerApi } from '@kivi-dev/plugin'
 import fs from 'node:fs'
 import path from 'node:path'
 import puppeteer from 'puppeteer'
@@ -28,6 +28,10 @@ useMount(async () => {
   const msgHandler: MessageHandler<'all'> = async (e) => {
     e.reply(segment.image(await renderHtml(html)))
   }
+
+  registerApi('renderStatus', (status: string) => {
+    return renderHtml(`<h1>${status}</h1>`)
+  })
 
   useMatch('.test', msgHandler, { role: 'admin' })
 })

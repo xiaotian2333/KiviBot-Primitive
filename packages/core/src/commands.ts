@@ -1,4 +1,4 @@
-import { b, escapeColor, searchAllPlugins } from '@kivi-dev/shared'
+import { b, escapeColor, searchAllPlugins, stringifyError } from '@kivi-dev/shared'
 
 import { fetchStatus } from './status.js'
 
@@ -179,9 +179,19 @@ class Command {
 
   async status() {
     const bot = this.#kiviClient?.bot as ClientWithApis
-    const status = await fetchStatus(bot, this.#config?.botConfig)
 
-    this.#event!.reply(status)
+    try {
+      const status = await fetchStatus(bot, this.#config?.botConfig)
+
+      if (this.#kiviClient?.bot?.apis?.renderStatus) {
+        const res = await this.#kiviClient?.bot?.apis?.renderStatus(status)
+        this.#event?.reply(res)
+      } else {
+        this.#event?.reply(status)
+      }
+    } catch (e) {
+      this.#event?.reply(stringifyError(e))
+    }
   }
 
   async config() {}
