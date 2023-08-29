@@ -41,6 +41,11 @@ export class Plugin extends EventEmitter {
 
   #logger: Logger = new Logger('Plugin')
 
+  constructor() {
+    super()
+    this.setMaxListeners(Infinity)
+  }
+
   get bot() {
     this.#checkInit()
 
@@ -73,8 +78,15 @@ export class Plugin extends EventEmitter {
     this.#addHandler('kivi.admins', unsubscribe)
 
     this.#mountFns.forEach(async (fn) => {
-      const un = fn(this.#bot!)
-      this.#unmountFns.push(un instanceof Promise ? await un : un)
+      let un = fn(this.#bot!)
+
+      if (un instanceof Promise) {
+        un = await un
+      }
+
+      if (!un) return
+
+      this.#unmountFns.push(un)
     })
 
     KiviEvents.forEach((eventName) => {
@@ -378,8 +390,6 @@ export interface Plugin extends EventEmitter {
   getMaxListeners: never
   /** @deprecated 不推荐使用 */
   rawListeners: never
-  /** @deprecated 不推荐使用 */
-  setMaxListeners: never
   /** @deprecated 不推荐使用 */
   eventNames: never
   /** @deprecated 不推荐使用 */

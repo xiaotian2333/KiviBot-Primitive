@@ -21,7 +21,7 @@ useMount(async () => {
 
   async function renderHtml(html = '') {
     await page.setContent(html)
-    await page.setViewport({ width: 640, height: 480, deviceScaleFactor: 1 })
+    await page.setViewport({ width: 480, height: 328, deviceScaleFactor: 2 })
     return await page.screenshot()
   }
 
@@ -29,7 +29,7 @@ useMount(async () => {
     e.reply(segment.image(await renderHtml(html)))
   }
 
-  useMatch('/daily-news', msgHandler, { role: 'admin' })
+  useMatch('.test', msgHandler, { role: 'admin' })
 })
 
 export { plugin } from '@kivi-dev/plugin'
