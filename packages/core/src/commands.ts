@@ -5,6 +5,7 @@ import { fetchStatus } from './status.js'
 import type KiviClient from './kivi-client.js'
 import type { Logger } from './logger.js'
 import type { AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/types'
+import { segment } from 'icqq'
 
 class Command {
   #event?: AllMessageEvent
@@ -182,15 +183,11 @@ class Command {
 
     try {
       const status = await fetchStatus(bot, this.#config?.botConfig)
+      const res = await this.#kiviClient?.bot?.apis?.renderStatus(status)
 
-      if (this.#kiviClient?.bot?.apis?.renderStatus) {
-        const res = await this.#kiviClient?.bot?.apis?.renderStatus(status)
-        this.#event?.reply(res)
-      } else {
-        this.#event?.reply(status)
-      }
+      this.#event?.reply(res ? segment.image(res) : status)
     } catch (e) {
-      this.#event?.reply(stringifyError(e))
+      this.#event?.reply('〓 获取状态发生错误 〓\n错误信息：' + stringifyError(e))
     }
   }
 
