@@ -12,7 +12,11 @@ setup(name, version)
 const html = fs.readFileSync(path.join(__dirname, 'templates/daily-news.html'), 'utf-8')
 
 useMount(async () => {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-gpu', '--disable-setuid-sandbox', '--no-zygote'],
+  })
+
   const page = await browser.newPage()
 
   async function renderHtml(html = '') {
