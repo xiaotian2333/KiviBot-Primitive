@@ -307,7 +307,7 @@ export class Plugin extends EventEmitter {
 
     this.#apiNames.add(method)
 
-    plugin.#bot!.apis[method] = fn
+    plugin.#bot!.apis[method] = fn.bind(plugin.#bot!)
   }
 
   __useApi<T extends AnyFunc = AnyFunc>(method: string) {
