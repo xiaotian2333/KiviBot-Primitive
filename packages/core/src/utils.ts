@@ -42,12 +42,20 @@ export function stringifySendable(content: Sendable) {
 
   return msgs
     .map((message) => {
-      if (typeof message === 'string') {
-        return message
+      if (typeof message === 'string' || message.type === 'text') {
+        message = typeof message === 'string' ? message : message.text
+        const msg = message.trim().slice(0, 100)
+        return msg.length === message.length ? msg : `${msg}...`
       }
 
-      if (message.type === 'text') {
-        return message.text
+      if (message.type === 'image') {
+        // @ts-expect-error FIXME: type err
+        if (message.file?.type === 'Buffer') {
+          // @ts-expect-error FIXME: type err
+          return `[图片: buffer ${message.file.data.length} bytes]`
+        } else {
+          return `[图片: ${message.url}]`
+        }
       }
 
       return JSON.stringify(message)
