@@ -1,4 +1,4 @@
-import { b, ensureArray } from '@kivi-dev/shared'
+import { b, ensureArray, filesize } from '@kivi-dev/shared'
 import createJiti from 'jiti'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
@@ -50,10 +50,15 @@ export function stringifySendable(content: Sendable) {
 
       if (message.type === 'image') {
         if (message.file instanceof Buffer) {
-          return `[图片: buffer ${message.file.byteLength} bytes]`
+          return `[图片: ${filesize(message.file.byteLength)} Buffer]`
         } else {
           return `[图片: ${message.url || '未知'}]`
         }
+      }
+
+      if (message.type === 'video') {
+        const size = filesize(message.size || 0)
+        return `[视频: ${size}, ${message.seconds || 0}秒, fid${message.fid || ''}]`
       }
 
       return JSON.stringify(message)
