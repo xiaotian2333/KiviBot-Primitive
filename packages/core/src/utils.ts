@@ -61,6 +61,43 @@ export function stringifySendable(content: Sendable) {
         return `[视频: ${size}, ${message.seconds || 0}秒, fid${message.fid || ''}]`
       }
 
+      if (message.type === 'file') {
+        const size = filesize(message.size || 0)
+        return `[文件: ${size}, fid${message.fid || ''}]`
+      }
+
+      if (message.type === 'at') {
+        return `[at: ${message.qq || ''}]`
+      }
+
+      if (message.type === 'reply') {
+        return `[回复: ${message.id || ''}]`
+      }
+
+      if (message.type === 'share') {
+        return `[分享: ${message.url || ''}]`
+      }
+
+      if (message.type === 'xml') {
+        return `[XML: ${message.data || ''}]`
+      }
+
+      if (message.type === 'json') {
+        return `[JSON: ${message.data || ''}]`
+      }
+
+      if (message.type === 'face') {
+        return `[表情: ${message.id || ''}]`
+      }
+
+      if (message.type === 'poke') {
+        return `[戳: ${message.id || ''}]`
+      }
+
+      if (message.type === 'music') {
+        return `[音乐: ${message.id || ''}]`
+      }
+
       return JSON.stringify(message)
     })
     .join('')
