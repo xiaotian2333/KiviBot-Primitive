@@ -49,12 +49,10 @@ export function stringifySendable(content: Sendable) {
       }
 
       if (message.type === 'image') {
-        // @ts-expect-error FIXME: type err
-        if (message.file?.type === 'Buffer') {
-          // @ts-expect-error FIXME: type err
-          return `[图片: buffer ${message.file.data.length} bytes]`
+        if (message.file instanceof Buffer) {
+          return `[图片: buffer ${message.file.byteLength} bytes]`
         } else {
-          return `[图片: ${message.url}]`
+          return `[图片: ${message.url || '未知'}]`
         }
       }
 

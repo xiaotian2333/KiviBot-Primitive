@@ -13,7 +13,7 @@ const html = fs.readFileSync(path.join(__dirname, 'templates/daily-news.html'), 
 
 useMount(async () => {
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: 'new',
     args: ['--no-sandbox', '--disable-gpu', '--disable-setuid-sandbox', '--no-zygote'],
   })
 

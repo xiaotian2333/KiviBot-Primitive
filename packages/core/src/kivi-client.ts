@@ -294,7 +294,7 @@ export default class KiviClient {
       head = `↓ [${type}:${group}-${nick}]`
     }
 
-    const message = event.toString()
+    const message = stringifySendable(event.message)
 
     this.#mainLogger.info(`${kleur.dim(head)} ${message}`)
   }
