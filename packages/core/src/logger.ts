@@ -11,6 +11,7 @@ export class Logger {
     warn: 3,
     error: 4,
     fatal: 5,
+    off: 6,
   }
 
   constructor(name?: string | number) {

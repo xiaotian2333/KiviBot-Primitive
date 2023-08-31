@@ -20,7 +20,7 @@ export type AnyFunc = (...args: any[]) => any
 export type DeviceMode = 'sms' | 'qrcode'
 export type LoginMode = 'password' | 'qrcode'
 export type MessageType = 'all' | 'private' | 'group'
-export type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
+export type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal' | 'off'
 export type CronNow = Date | 'manual' | 'init'
 export type ChainElem = TextElem | FaceElem | BfaceElem | MfaceElem | ImageElem | AtElem | MiraiElem
 

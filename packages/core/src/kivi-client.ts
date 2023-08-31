@@ -38,7 +38,7 @@ export default class KiviClient {
     this.#mainLogger.debug('初始化 Kivi Client 实例')
 
     if (config) {
-      this.#mainLogger.debug('检测到 config，将使用传入的 config 作为配置启动')
+      this.#mainLogger.debug('检测到传入了 config，将使用传入的 config 作为配置启动')
       this.#botConfig = ref<BotConfig>(config)
       watch(this.#botConfig, (config) => this.#handleConfigChange(config))
     }
@@ -49,7 +49,7 @@ export default class KiviClient {
   #handleConfigChange(config: BotConfig) {
     const filePath = path.join(this.#cwd, 'kivi.json')
     fs.writeFileSync(filePath, JSON.stringify(config, null, 2))
-    this.#mainLogger.debug('检测到 config 变更，已自动保存')
+    this.#mainLogger.debug('检测到 config 发生变更，已自动更新 kivi.json')
   }
 
   async start(dir?: string) {
@@ -140,7 +140,7 @@ export default class KiviClient {
     bot.on('system.login.device', (p) => this.#handleDeviceLogin(p))
     bot.on('system.login.slider', (p) => this.#handleSliderVerify(p.url))
 
-    bot.once('system.online', () => this.#handleOnLogin())
+    bot.once('system.online', () => this.#handleOnFirstLogin())
   }
 
   #handleLoginError(p: { message: string; code: number }) {
@@ -148,7 +148,7 @@ export default class KiviClient {
     process.exit(0)
   }
 
-  async #handleOnLogin() {
+  async #handleOnFirstLogin() {
     this.#bindSendMsg()
     this.#handleMessageForFramework()
 
@@ -178,12 +178,9 @@ export default class KiviClient {
     const configPluginNames = this.#botConfig?.plugins || []
     const size = localPlugins.length
     const shouldEnables = localPlugins.filter((e) => configPluginNames?.includes(e.name))
+    const pInfo = `检测到 ${b(String(size))} 个插件，${b(String(shouldEnables.length))} 个已启用`
 
-    this.#mainLogger.info(
-      size
-        ? `检测到 ${b(String(size))} 个插件，${b(String(shouldEnables.length))} 个已启用`
-        : '未检测到任何插件',
-    )
+    this.#mainLogger.info(size ? pInfo : '未检测到任何插件')
 
     let enableCount = 0
 
