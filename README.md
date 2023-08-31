@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/node/v/@kivi-dev/core.svg" alt="node compatibility">
   </a>
   <a href="https://pkg-size.dev/@kivi-dev/core">
-    <img src="https://pkg-size.dev/badge/install/9005796" title="Install size for @kivi-dev/core">
+    <img src="https://pkg-size.dev/badge/install/9063116" title="Install size for @kivi-dev/core">
   </a>
   <img src="https://img.shields.io/badge/group-868781587-527dec?logo=TencentQQ&logoColor=ffffff">
   <a href="https://github.com/vikiboss/kivibot/blob/main/LICENSE">
@@ -169,7 +169,7 @@ const handlersMap = defineCmdMap({
   // 处理 /hello test 命令
   test(event, params, options) {
     // 比如 /hello test -abc -key value --option1=test -option2=hello
-    console.log(params, options)
+    logger.log(params, options)
     event.reply('world')
   },
 })
