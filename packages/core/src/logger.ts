@@ -22,7 +22,7 @@ export class Logger {
   }
 
   get tag() {
-    const color = this.#name === 'Client' ? 'yellow' : 'cyan'
+    const color = this.#name.match(/^client$/i) ? 'yellow' : 'cyan'
     return this.#name ? kleur[color](` [${this.#name}]`) : ''
   }
 

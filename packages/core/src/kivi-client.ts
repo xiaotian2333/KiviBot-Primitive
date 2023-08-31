@@ -25,7 +25,7 @@ import type { Client, Friend, Group, Quotable, Sendable } from 'icqq'
 
 export default class KiviClient {
   #cwd = process.cwd()
-  #mainLogger: Logger = new Logger('Client')
+  #mainLogger: Logger = new Logger('client')
   #loggers: Map<string, Logger> = new Map()
   #bot?: ClientWithApis
   #botConfig?: BotConfig

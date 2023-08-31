@@ -84,12 +84,16 @@ npm start
 > 请注意最后需要导出 `plugin`。
 
 ```typescript
-import { setup, logger, useMount } from '@kivi-dev/plugin'
+import { setup, logger, useInfo, useMount } from '@kivi-dev/plugin'
 
 setup('测试插件', '1.0.0')
 
-useMount(async () => {
-  logger.info('插件被启用了！')
+useMount(async (bot) => {
+  logger.info('日志：插件被启用了！')
+
+  const { mainAdmin } = useInfo()
+
+  bot.sendPrivateMsg(mainAdmin, '私聊消息：插件被启用了！')
 
   return () => {
     logger.info('插件被禁用了！')
@@ -103,26 +107,26 @@ export { plugin } from '@kivi-dev/plugin'
 
 ## 插件例子
 
-1. 收到 `hello` 和群聊的 `hi` 时，回复 `world` + 爱心。
+1. 收到 `hello` 或者群聊的 `hi` 时，回复 `world` + 爱心。
 
 ```typescript
-import { setup, useMount, segment, useMessage, useMatch } from '@kivi-dev/plugin'
+import { setup, defineMsgHandler, useMount, segment, useMessage, useMatch } from '@kivi-dev/plugin'
 
 setup('测试插件', '1.0.0')
+
+const handler = defineMsgHandler((event) => {
+  if (event.raw_message === 'hi') {
+    event.reply(['world ', segment.face(66)])
+  }
+})
 
 useMount(() => {
   useMatch('hello', (event) => {
     event.reply(['world ', segment.face(66)])
   })
 
-  useMessage(
-    (event) => {
-      if (event.raw_message === 'hi') {
-        event.reply(['world ', segment.face(66)])
-      }
-    },
-    { type: 'group' }, // 仅群聊
-  )
+  // 仅群聊
+  useMessage(handler, { type: 'group' })
 })
 
 export { plugin } from '@kivi-dev/plugin'
@@ -139,7 +143,7 @@ useMount(() => {
   const { mainAdmin } = useInfo()
 
   // 使用 crontab 表达式
-  useCron('*/3 * * * *', (event) => {
+  useCron('*/3 * * * *', (event, now, cron) => {
     // 每 3 秒给主管理员发送一条消息
     bot().sendPrivateMsg(mainAdmin, '定时任务触发了！')
   })
@@ -151,31 +155,31 @@ export { plugin } from '@kivi-dev/plugin'
 3. 处理命令
 
 ```typescript
-import { setup, useMount, useCmd, logger } from '@kivi-dev/plugin'
+import { setup, defineCmdHandler, defineCmdMap, useMount, useCmd, logger } from '@kivi-dev/plugin'
 
 setup('测试插件', '1.0.0')
 
+const handler = defineCmdHandler((event, params, options) => {
+  // 比如 /admin p1 p2 -abc -key value --option1=test -option2=hello
+  logger.info(params, options)
+  event.reply('world')
+})
+
+const handlersMap = defineCmdMap({
+  // 处理 /hello test 命令
+  test(event, params, options) {
+    // 比如 /hello test -abc -key value --option1=test -option2=hello
+    console.log(params, options)
+    event.reply('world')
+  },
+})
+
 useMount(() => {
   // 仅处理 群聊 中 管理员 的命令
-  useCmd(
-    '/admin',
-    (event, params, options) => {
-      // 比如 /admin param1 param2 -a -bc -n value --option1=test -option2=hello
-      logger.info(params, options)
-      event.reply('world')
-    },
-    { role: 'admin', type: 'group' },
-  )
+  useCmd('/admin', handler, { role: 'admin', type: 'group' })
 
-  // 支持直接声明子命令处理函数
-  useCmd('/hello', {
-    // /hello test 的处理函数
-    test(event, params, options) {
-      // 比如 /hello test param1 param2 -a -bc -n value --option1=test -option2=hello
-      console.log(params, options)
-      event.reply('world')
-    },
-  })
+  // 支持 直接声明 子命令处理函数
+  useCmd('/hello', handlersMap)
 })
 
 export { plugin } from '@kivi-dev/plugin'
@@ -189,7 +193,8 @@ import { setup, useMount, logger, useConfig } from '@kivi-dev/plugin'
 setup('测试插件', '1.0.0')
 
 useMount(() => {
-  const config = useConfig({ value: undefined }) // 可选设置默认 config
+  const config = useConfig({ value: 0 }) // 可选设置默认 config 和配置其它参数
+  // const config = useConfig({ value: 0 }, { filename: 'data.json', minify: false })
 
   logger.info(config) // 第二次启用将会 输出 { value: 114514 }
 
@@ -199,7 +204,7 @@ useMount(() => {
 export { plugin } from '@kivi-dev/plugin'
 ```
 
-5. 注册 API （插件间通信）
+5. 插件间通信 （注册 API）
 
 提供了一种多个插件间通信的机制，通过 `registerApi` 注册 API，通过 `useApi` 使用 API。
 
@@ -210,9 +215,7 @@ setup('测试插件', '1.0.0')
 
 // 插件 A
 useMount(() => {
-  registerApi('testFunc', (a, b) => {
-    return a + b
-  })
+  registerApi('testFunc', (a, b) => a + b)
 })
 
 // 插件 B

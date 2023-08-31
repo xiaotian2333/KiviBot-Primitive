@@ -21,6 +21,7 @@ export type DeviceMode = 'sms' | 'qrcode'
 export type LoginMode = 'password' | 'qrcode'
 export type MessageType = 'all' | 'private' | 'group'
 export type Level = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
+export type CronNow = Date | 'manual' | 'init'
 export type ChainElem = TextElem | FaceElem | BfaceElem | MfaceElem | ImageElem | AtElem | MiraiElem
 
 export interface ClientWithApis extends Client {
@@ -29,19 +30,24 @@ export interface ClientWithApis extends Client {
   }
 }
 
-export interface ScheduledTask extends EventEmitter {
-  now: (now?: Date) => void
-  start: () => void
-  stop: () => void
-}
-
 export type FirstParam<Fn extends AnyFunc> = Fn extends (p: infer R) => any ? R : never
 export type AdminArray = [mainAdmin: number, ...subAdmins: number[]]
 export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussMessageEvent
 export type OicqMessageHandler = (event: AllMessageEvent) => any
-export type BotHandler = (
+export type BotHandler = (bot: ClientWithApis) => any
+export type CronHandler = (bot: ClientWithApis, now: CronNow, cron: string) => any
+
+export type MountHandler = (
   bot: ClientWithApis,
 ) => void | Promise<void> | ((bot: ClientWithApis) => any)
+
+export type MatchHandler<T extends MessageType = 'all'> = T extends 'all'
+  ? (event: AllMessageEvent, matches: RegExpMatchArray | null) => any
+  : T extends 'group'
+  ? (event: GroupMessageEvent, matches: RegExpMatchArray | null) => any
+  : T extends 'private'
+  ? (event: PrivateMessageEvent, matches: RegExpMatchArray | null) => any
+  : never
 
 export type MessageHandler<T extends MessageType = 'all'> = T extends 'all'
   ? (event: AllMessageEvent) => any
@@ -51,7 +57,7 @@ export type MessageHandler<T extends MessageType = 'all'> = T extends 'all'
   ? (event: PrivateMessageEvent) => any
   : never
 
-export type CommandHandler<T extends MessageType = 'all'> = T extends 'all'
+export type CmdHandler<T extends MessageType = 'all'> = T extends 'all'
   ? (event: AllMessageEvent, params: string[], options: { [arg: string]: any }) => any
   : T extends 'group'
   ? (event: GroupMessageEvent, params: string[], options: { [arg: string]: any }) => any
