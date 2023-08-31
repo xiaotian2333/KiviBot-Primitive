@@ -36,10 +36,9 @@ export type AllMessageEvent = PrivateMessageEvent | GroupMessageEvent | DiscussM
 export type OicqMessageHandler = (event: AllMessageEvent) => any
 export type BotHandler = (bot: ClientWithApis) => any
 export type CronHandler = (bot: ClientWithApis, now: CronNow, cron: string) => any
-
-export type MountHandler = (
-  bot: ClientWithApis,
-) => void | Promise<void> | ((bot: ClientWithApis) => any)
+export type MountReturn = void | ((bot?: ClientWithApis) => any)
+export type PromiseMountReturn = MountReturn | Promise<MountReturn>
+export type MountHandler = (bot?: ClientWithApis) => PromiseMountReturn
 
 export type MatchHandler<T extends MessageType = 'all'> = T extends 'all'
   ? (event: AllMessageEvent, matches: RegExpMatchArray | null) => any

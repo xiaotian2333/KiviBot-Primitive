@@ -34,6 +34,10 @@ useMount(async () => {
   })
 
   useMatch('.test', msgHandler, { role: 'admin' })
+
+  return async () => {
+    await browser.close()
+  }
 })
 
 export { plugin } from '@kivi-dev/plugin'
