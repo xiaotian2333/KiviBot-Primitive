@@ -231,7 +231,7 @@ export { plugin } from '@kivi-dev/plugin'
 
 > 完善中...
 
-- 参考 [plugin](./packages/plugin/src/index.ts#L414-L434) 源码。
+- 参考 [plugin](./packages/plugin/src/plugin.ts) 源码。
 
 ## Docker 部署
 
@@ -244,7 +244,7 @@ docker compose up -d
 
 ## 更多
 
-遇到困难？请尝试翻阅 [插件 API 源码](./packages/plugin/src/index.ts) 或者加入企鹅群 [868781587](#) 礼貌提问。
+遇到困难？请尝试翻阅 [插件 API 源码](./packages/plugin/src/plugin.ts) 或者加入企鹅群 [868781587](#) 礼貌提问。
 
 <img style="max-width: 200px" src="./docs/images/group-qrcode.png" alt="qrcode">
 
