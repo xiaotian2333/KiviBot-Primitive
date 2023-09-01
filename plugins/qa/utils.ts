@@ -35,6 +35,7 @@ function processString(template: string) {
   )
 }
 
+// from lodash
 function getValueByKey(obj: Record<string, any>, path: string, defaultValue = undefined) {
   const travel = (regexp: RegExp) =>
     String.prototype.split

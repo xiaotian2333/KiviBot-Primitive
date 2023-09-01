@@ -1,4 +1,4 @@
-import { bot, useConfig, defineCmdMap, defineMsgHandler } from '@kivi-dev/plugin'
+import { bot, useConfig, defineCmdMap, defineMsgHandler, logger } from '@kivi-dev/plugin'
 
 import { render } from './utils.js'
 
@@ -16,7 +16,7 @@ export const msgHandler = defineMsgHandler(async (ctx) => {
   const word = config.words.find(([key, _, mode]: string[]) => {
     const isFuzzy = mode === 'fuzzy' && text.includes(key)
     const isExact = mode === 'exact' && text === key
-    const isRegExp = mode === 'regexp' && new RegExp(key).test(text)
+    const isRegExp = mode === 'regexp' && new RegExp(key.replace(/\\\\/g, '\\')).test(text)
 
     return isFuzzy || isExact || isRegExp
   })
@@ -31,11 +31,11 @@ export const msgHandler = defineMsgHandler(async (ctx) => {
 })
 
 export const cmdHandlersMap = defineCmdMap({
-  default: (ctx) => ctx.reply('.qa <add|rm|ls|test>'),
+  notFound: (ctx) => ctx.reply('.qa <add|rm|ls|test>'),
 
   add(ctx, params, options) {
     const config = useConfig<{ words: string[][] }>()
-    const [key, value] = params
+    const [key, ...value] = params
 
     if (!key || !value) {
       return ctx.reply('.qa add <关键词> <回复内容>')
@@ -47,7 +47,7 @@ export const cmdHandlersMap = defineCmdMap({
       return ctx.reply('❌ 关键词已存在')
     }
 
-    config.words.push([key, value, options.f ? 'fuzzy' : options.r ? 'regexp' : 'exact'])
+    config.words.push([key, value.join(' '), options.f ? 'fuzzy' : options.r ? 'regexp' : 'exact'])
 
     ctx.reply('✅ 添加成功')
   },
