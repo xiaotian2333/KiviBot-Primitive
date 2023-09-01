@@ -12,6 +12,6 @@
   "license": "MIT",
   "dependencies": {
     "@kivi-dev/plugin": "workspace:*",
-    "mustacheee": "^1.2.0"
+    "mustacheee": "^1.2.1"
   }
 }
