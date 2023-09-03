@@ -346,11 +346,16 @@ export default class KiviClient {
     const sendMsg = target.sendMsg.bind(target)
 
     const showKeliLog = (content: Sendable) => {
-      const str = kleur.reset(stringifySendable(content))
-      const lines = str.split('\n').filter(Boolean)
+      const str = stringifySendable(content)
 
-      for (const line of lines) {
-        this.#mainLogger.info(kleur.dim(`${head} ${line}`))
+      const lines = str
+        .split('\n')
+        .filter(Boolean)
+        .map((line) => kleur.reset(line))
+
+      for (const [idx, line] of lines.entries()) {
+        const headStr = idx === 0 ? head : head.replace('↑', ' ')
+        this.#mainLogger.info(kleur.dim(`${headStr} ${line}`))
       }
     }
 
