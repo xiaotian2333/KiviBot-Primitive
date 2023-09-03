@@ -1,11 +1,16 @@
-import { useMount, setup, useMatch, segment, registerApi } from '@kivi-dev/plugin'
+import {
+  useMount,
+  defineMatchHandler,
+  setup,
+  useMatch,
+  segment,
+  registerApi,
+} from '@kivi-dev/plugin'
 import fs from 'node:fs'
 import path from 'node:path'
 import puppeteer from 'puppeteer'
 
 import { name, version } from './package.json'
-
-import type { MessageHandler } from '@kivi-dev/plugin'
 
 setup(name, version)
 
@@ -25,10 +30,11 @@ useMount(async () => {
     return await page.screenshot()
   }
 
-  const msgHandler: MessageHandler<'all'> = async (e) => {
+  const msgHandler = defineMatchHandler(async (e) => {
     e.reply(segment.image(await renderHtml(html)))
-  }
+  })
 
+  // 注册 api 给框架使用，用于渲染框架的状态
   registerApi('renderStatus', (status: string) => {
     return renderHtml(`<h1>${status}</h1>`)
   })
@@ -36,6 +42,7 @@ useMount(async () => {
   useMatch('.test', msgHandler, { role: 'admin' })
 
   return async () => {
+    // 插件被禁用时，关闭浏览器
     await browser.close()
   }
 })
