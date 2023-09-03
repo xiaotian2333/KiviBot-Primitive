@@ -346,7 +346,12 @@ export default class KiviClient {
     const sendMsg = target.sendMsg.bind(target)
 
     const showKeliLog = (content: Sendable) => {
-      return this.#mainLogger.info(kleur.dim(`${head} ${kleur.reset(stringifySendable(content))}`))
+      const str = kleur.reset(stringifySendable(content))
+      const lines = str.split('\n').filter(Boolean)
+
+      for (const line of lines) {
+        this.#mainLogger.info(kleur.dim(`${head} ${line}`))
+      }
     }
 
     target.sendMsg = async function (content: Sendable, source?: Quotable | undefined) {
