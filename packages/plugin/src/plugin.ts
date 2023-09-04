@@ -7,9 +7,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { KiviEvents, MessageEvents, OicqEvents } from './events.js'
+import { resolveSubCmdAlias } from './utils.js'
 
 import type { KiviEventMap } from './events.js'
-import type { HandlerMap } from './utils.js'
+import type { HandlerMap, SubCmdAlias } from './utils.js'
 import type {
   AdminArray,
   AllMessageEvent,
@@ -269,6 +270,7 @@ export class Plugin extends EventEmitter {
     handler: CmdHandler<T> | HandlerMap<T>,
     option?: {
       type?: T
+      subCmdAlias?: SubCmdAlias
       role?: 'admin' | 'all'
     },
   ) {
@@ -291,7 +293,7 @@ export class Plugin extends EventEmitter {
           if (typeof handler === 'function') {
             handler(e as never, params, options)
           } else {
-            const notFoundHandler = (event: any) => {
+            const defaultNotFoundHandler = (event: any) => {
               const subCmds = Object.keys(handler)
                 .filter((e) => !['notFound'].includes(e))
                 .map((e) => `${cmd} ${e}`)
@@ -299,9 +301,15 @@ export class Plugin extends EventEmitter {
               event.reply(subCmds.length ? subCmds.join('\n') : `${cmd} 未定义任何子命令`)
             }
 
-            const subHandler = handler[params[0] || 'notFound'] || notFoundHandler
+            const subHandler = resolveSubCmdAlias(
+              params.shift(),
+              handler,
+              option?.subCmdAlias ?? {},
+            )
 
-            subHandler(e as never, params.slice(1), options)
+            const fn = subHandler || handler.notFound || defaultNotFoundHandler
+
+            fn(e as never, params, options)
           }
           break
         }
