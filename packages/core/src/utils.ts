@@ -44,8 +44,8 @@ export function stringifySendable(content: Sendable) {
     .map((message) => {
       if (typeof message === 'string' || message.type === 'text') {
         message = typeof message === 'string' ? message : message.text
-        const msg = message.trim().slice(0, 100)
-        return msg.length === message.length ? msg : `${msg}...`
+        const msg = message.trim().slice(0, 160)
+        return msg.length === message.length ? msg : `${msg}...(文本过长已截断)`
       }
 
       if (message.type === 'image') {
@@ -58,12 +58,12 @@ export function stringifySendable(content: Sendable) {
 
       if (message.type === 'video') {
         const size = filesize(message.size || 0)
-        return `[视频: ${size}, ${message.seconds || 0}秒, fid${message.fid || ''}]`
+        return `[视频: ${size}, ${message.seconds || 0}s, ${message.fid || ''}]`
       }
 
       if (message.type === 'file') {
         const size = filesize(message.size || 0)
-        return `[文件: ${size}, fid${message.fid || ''}]`
+        return `[文件: ${size}, ${message.fid || ''}]`
       }
 
       if (message.type === 'at') {
