@@ -1,8 +1,34 @@
-import { bot, useConfig, defineCmdMap, defineMsgHandler, logger } from '@kivi-dev/plugin'
+import {
+  bot,
+  useConfig,
+  defineCmdMap,
+  defineMsgHandler,
+  logger,
+  defineCmdHandler,
+} from '@kivi-dev/plugin'
 
 import { render } from './utils.js'
 
 import type { Forwardable } from '@kivi-dev/plugin'
+
+const list = defineCmdHandler(async (ctx) => {
+  const config = useConfig<{ words: string[][] }>()
+  const isEmpty = config.words.length === 0
+
+  if (isEmpty) {
+    return ctx.reply('关键词列表为空')
+  }
+
+  const msgs: Forwardable[] = config.words
+    .map(([key, value, mode]) => [`关键词：${key}\n匹配模式：${mode}\n回复内容：${value}`])
+    .map((e) => ({
+      user_id: bot().uin,
+      message: e,
+      nickname: bot().nickname,
+    }))
+
+  ctx.reply(await bot().makeForwardMsg(msgs))
+})
 
 export const msgHandler = defineMsgHandler(async (ctx) => {
   const config = useConfig<{ words: string[][] }>()
@@ -75,24 +101,8 @@ export const cmdHandlersMap = defineCmdMap({
     ctx.reply('✅ 删除成功')
   },
 
-  async ls(ctx) {
-    const config = useConfig<{ words: string[][] }>()
-    const isEmpty = config.words.length === 0
-
-    if (isEmpty) {
-      return ctx.reply('关键词列表为空')
-    }
-
-    const msgs: Forwardable[] = config.words
-      .map(([key, value, mode]) => [`关键词：${key}\n匹配模式：${mode}\n回复内容：${value}`])
-      .map((e) => ({
-        user_id: bot().uin,
-        message: e,
-        nickname: bot().nickname,
-      }))
-
-    ctx.reply(await bot().makeForwardMsg(msgs))
-  },
+  ls: list,
+  list,
 
   async test(ctx, params) {
     const config = useConfig<{ words: string[][] }>()

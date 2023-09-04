@@ -1,11 +1,11 @@
 import { b, escapeColor, searchAllPlugins, stringifyError } from '@kivi-dev/shared'
+import { segment } from 'icqq'
 
 import { fetchStatus } from './status.js'
 
 import type KiviClient from './kivi-client.js'
 import type { Logger } from './logger.js'
 import type { AllMessageEvent, BotConfig, ClientWithApis } from '@kivi-dev/types'
-import { segment } from 'icqq'
 
 class Command {
   #event?: AllMessageEvent
@@ -82,6 +82,7 @@ class Command {
     const [secondCmd, pname] = this.#params
 
     switch (secondCmd) {
+      case 'ls':
       case 'list': {
         const ps = await searchAllPlugins(this.#config?.cwd)
         const infos = ps.map((p) => `${this.isPluginEnable(p.name) ? '●' : '○'} ${p.name}`)
