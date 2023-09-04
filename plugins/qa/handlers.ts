@@ -23,7 +23,11 @@ export const msgHandler = defineMsgHandler(async (ctx) => {
 
   if (!word) return
 
-  const res = await render(word[1], bot(), ctx)
+  const isRegExp = word[2] === 'regexp'
+  const reg = new RegExp(word[0].replace(/\\\\/g, '\\'))
+  const matches = isRegExp ? text.match(reg) : null
+
+  const res = await render(word[1], bot(), ctx, matches)
 
   if (res) {
     ctx.reply(res)
@@ -92,19 +96,23 @@ export const cmdHandlersMap = defineCmdMap({
 
   async test(ctx, params) {
     const config = useConfig<{ words: string[][] }>()
-    const [key] = params
+    const [text] = params
 
-    if (!key) {
+    if (!text) {
       return ctx.reply('.qa test <关键词>')
     }
 
-    const word = config.words.find(([k]) => k === key)
+    const word = config.words.find(([k]) => k === text)
 
     if (!word) {
       return ctx.reply('❌ 关键词不存在')
     }
 
-    const res = await render(word[1], bot(), ctx)
+    const isRegExp = word[2] === 'regexp'
+    const reg = new RegExp(word[0].replace(/\\\\/g, '\\'))
+    const matches = isRegExp ? text.match(reg) : null
+
+    const res = await render(word[1], bot(), ctx, matches)
 
     if (res) {
       ctx.reply(res)

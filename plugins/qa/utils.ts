@@ -20,8 +20,13 @@ import type { RenderFunction, View } from 'mustacheee'
 
 const DELIMITER = '__ELEMENT__DELIMITER__'
 
-export async function render(template: string, bot: ClientWithApis, ctx: AllMessageEvent) {
-  const view = generateViewMap(bot, ctx)
+export async function render(
+  template: string,
+  bot: ClientWithApis,
+  ctx: AllMessageEvent,
+  matches: RegExpMatchArray | null,
+) {
+  const view = generateViewMap(bot, ctx, matches)
   return processString(await mustache.render(template, view, {}, ['[', ']']))
 }
 
@@ -46,7 +51,11 @@ function getValueByKey(obj: Record<string, any>, path: string, defaultValue = un
   return result === undefined || result === obj ? defaultValue : result
 }
 
-function generateViewMap(bot: ClientWithApis, ctx: AllMessageEvent): View {
+function generateViewMap(
+  bot: ClientWithApis,
+  ctx: AllMessageEvent,
+  matches: RegExpMatchArray | null,
+): View {
   const wrapFn = (fn: RenderFunction) => () => fn
 
   const wrapDelimiter = (value: string | Record<string, any> = '') => {
@@ -58,6 +67,17 @@ function generateViewMap(bot: ClientWithApis, ctx: AllMessageEvent): View {
   }
 
   return {
+    $1: matches?.[1] ?? '',
+    $2: matches?.[2] ?? '',
+    $3: matches?.[3] ?? '',
+    $4: matches?.[4] ?? '',
+    $5: matches?.[5] ?? '',
+    $6: matches?.[6] ?? '',
+    $7: matches?.[7] ?? '',
+    $8: matches?.[8] ?? '',
+    $9: matches?.[9] ?? '',
+    $10: matches?.[10] ?? '',
+
     at_all: wrapDelimiter(segment.at('all')),
 
     // t is text, and r is render
