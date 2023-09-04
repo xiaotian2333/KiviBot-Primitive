@@ -56,6 +56,8 @@ function generateViewMap(
   ctx: AllMessageEvent,
   matches: RegExpMatchArray | null,
 ): View {
+  console.log('🚀 ~ file: utils.ts:60 ~ matches:', matches)
+
   const wrapFn = (fn: RenderFunction) => () => fn
 
   const wrapDelimiter = (value: string | Record<string, any> = '') => {
@@ -75,8 +77,6 @@ function generateViewMap(
     $6: matches?.[6] ?? '',
     $7: matches?.[7] ?? '',
     $8: matches?.[8] ?? '',
-    $9: matches?.[9] ?? '',
-    $10: matches?.[10] ?? '',
 
     at_all: wrapDelimiter(segment.at('all')),
 
