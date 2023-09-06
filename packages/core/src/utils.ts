@@ -52,7 +52,8 @@ export function stringifySendable(content: Sendable) {
         if (message.file instanceof Buffer) {
           return `[图片: ${filesize(message.file.byteLength)} Buffer]`
         } else {
-          return `[图片: ${message.url || '未知'}]`
+          const shortUrl = message.url?.replace(/\d+-\d+-(\w+)\/0/, '0-0-$1/0')
+          return `[图片: ${shortUrl || '未知'}]`
         }
       }
 
