@@ -74,10 +74,10 @@ importers:
     devDependencies:
       '@rollup/plugin-terser':
         specifier: ^0.4.3
-        version: 0.4.3(rollup@3.28.1)
+        version: 0.4.3(rollup@3.29.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.3
-        version: 11.1.3(rollup@3.28.1)(tslib@2.6.2)(typescript@5.2.2)
+        version: 11.1.3(rollup@3.29.0)(tslib@2.6.2)(typescript@5.2.2)
       '@types/node':
         specifier: ^18.17.14
         version: 18.17.14
@@ -106,11 +106,11 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       rollup:
-        specifier: ^3.28.1
-        version: 3.28.1
+        specifier: ^3.29.0
+        version: 3.29.0
       rollup-plugin-dts:
         specifier: ^5.3.1
-        version: 5.3.1(rollup@3.28.1)(typescript@5.2.2)
+        version: 5.3.1(rollup@3.29.0)(typescript@5.2.2)
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -236,8 +236,8 @@ importers:
   packages/types:
     dependencies:
       icqq:
-        specifier: '>= 0.5.0'
-        version: 0.5.0
+        specifier: '>= 0.5.3'
+        version: 0.5.3
     devDependencies:
       typescript:
         specifier: ^5.2.2
@@ -684,7 +684,7 @@ packages:
       - supports-color
     dev: false
 
-  /@rollup/plugin-terser@0.4.3(rollup@3.28.1):
+  /@rollup/plugin-terser@0.4.3(rollup@3.29.0):
     resolution: {integrity: sha512-EF0oejTMtkyhrkwCdg0HJ0IpkcaVg1MMSf2olHb2Jp+1mnLM04OhjpJWGma4HobiDTF0WCyViWuvadyE9ch2XA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -693,13 +693,13 @@ packages:
       rollup:
         optional: true
     dependencies:
-      rollup: 3.28.1
+      rollup: 3.29.0
       serialize-javascript: 6.0.1
       smob: 1.4.0
       terser: 5.19.2
     dev: true
 
-  /@rollup/plugin-typescript@11.1.3(rollup@3.28.1)(tslib@2.6.2)(typescript@5.2.2):
+  /@rollup/plugin-typescript@11.1.3(rollup@3.29.0)(tslib@2.6.2)(typescript@5.2.2):
     resolution: {integrity: sha512-8o6cNgN44kQBcpsUJTbTXMTtb87oR1O0zgP3Dxm71hrNgparap3VujgofEilTYJo+ivf2ke6uy3/E5QEaiRlDA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -712,14 +712,14 @@ packages:
       tslib:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.3(rollup@3.28.1)
+      '@rollup/pluginutils': 5.0.3(rollup@3.29.0)
       resolve: 1.22.4
-      rollup: 3.28.1
+      rollup: 3.29.0
       tslib: 2.6.2
       typescript: 5.2.2
     dev: true
 
-  /@rollup/pluginutils@5.0.3(rollup@3.28.1):
+  /@rollup/pluginutils@5.0.3(rollup@3.29.0):
     resolution: {integrity: sha512-hfllNN4a80rwNQ9QCxhxuHCGHMAvabXqxNdaChUSSadMre7t4iEUI6fFAhBOn/eIYTgYVhBv7vCLsAJ4u3lf3g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -731,7 +731,7 @@ packages:
       '@types/estree': 1.0.1
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 3.28.1
+      rollup: 3.29.0
     dev: true
 
   /@tootallnate/quickjs-emscripten@0.23.0:
@@ -781,6 +781,7 @@ packages:
 
   /@types/node@20.5.9:
     resolution: {integrity: sha512-PcGNd//40kHAS3sTlzKB9C9XL4K0sTup8nbG5lC14kzEteTNuAFh9u5nA0o5TWnSG2r/JNPRXFVcHJIIeRlmqQ==}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -3417,7 +3418,7 @@ packages:
       glob: 7.2.3
     dev: true
 
-  /rollup-plugin-dts@5.3.1(rollup@3.28.1)(typescript@5.2.2):
+  /rollup-plugin-dts@5.3.1(rollup@3.29.0)(typescript@5.2.2):
     resolution: {integrity: sha512-gusMi+Z4gY/JaEQeXnB0RUdU82h1kF0WYzCWgVmV4p3hWXqelaKuCvcJawfeg+EKn2T1Ie+YWF2OiN1/L8bTVg==}
     engines: {node: '>=v14.21.3'}
     peerDependencies:
@@ -3425,14 +3426,14 @@ packages:
       typescript: ^4.1 || ^5.0
     dependencies:
       magic-string: 0.30.2
-      rollup: 3.28.1
+      rollup: 3.29.0
       typescript: 5.2.2
     optionalDependencies:
       '@babel/code-frame': 7.22.13
     dev: true
 
-  /rollup@3.28.1:
-    resolution: {integrity: sha512-R9OMQmIHJm9znrU3m3cpE8uhN0fGdXiawME7aZIpQqvpS/85+Vt1Hq1/yVIcYfOmaQiHjvXkQAoJukvLpau6Yw==}
+  /rollup@3.29.0:
+    resolution: {integrity: sha512-nszM8DINnx1vSS+TpbWKMkxem0CDWk3cSit/WWCBVs9/JZ1I/XLwOsiUglYuYReaeWWSsW9kge5zE5NZtf/a4w==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:

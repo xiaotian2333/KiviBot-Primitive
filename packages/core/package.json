@@ -47,7 +47,7 @@
     "esno": "^0.16.3",
     "prettier": "^2.8.8",
     "rimraf": "^3.0.2",
-    "rollup": "^3.28.1",
+    "rollup": "^3.29.0",
     "rollup-plugin-dts": "^5.3.1",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2"
