@@ -1,6 +1,7 @@
 import type {
   CmdHandler,
   CronHandler,
+  MatchHandler,
   MessageHandler,
   MessageType,
   MountHandler,
@@ -14,7 +15,7 @@ export const defineMountHandler = (handler: MountHandler) => handler
 export const defineCronHandler = (handler: CronHandler) => handler
 export const defineCmdMap = <T extends MessageType = 'all'>(cmdMap: HandlerMap<T>) => cmdMap
 export const defineCmdHandler = <T extends MessageType = 'all'>(handler: CmdHandler<T>) => handler
-export const defineMatchHandler = <T extends MessageType = 'all'>(handler: MessageHandler<T>) =>
+export const defineMatchHandler = <T extends MessageType = 'all'>(handler: MatchHandler<T>) =>
   handler
 export const defineMsgHandler = <T extends MessageType = 'all'>(handler: MessageHandler<T>) =>
   handler
