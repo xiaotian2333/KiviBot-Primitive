@@ -1,7 +1,7 @@
 {
   "name": "@kivi-dev/core",
-  "version": "0.8.3",
-  "update": "",
+  "version": "0.8.4",
+  "update": "2023-09-06",
   "type": "module",
   "packageManager": "pnpm@8.2.0",
   "description": "Just run の Bot, based on Node.js & oicq/icqq",
