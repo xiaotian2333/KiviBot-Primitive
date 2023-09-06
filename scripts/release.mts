@@ -1,3 +1,4 @@
+import { dayjs } from '@kivi-dev/shared'
 import prompts from 'prompts'
 import semver from 'semver'
 import 'zx/globals'
@@ -64,7 +65,7 @@ async function handleCoreRelease() {
   if (confirm) {
     await $`pnpm run build`
 
-    bumpVersion(projects, version)
+    bumpVersionAndUpdate(projects, version)
 
     await $`git add . -A`
     await $`git commit -m "release: v${version}"`
@@ -78,9 +79,13 @@ function handlePluginRelease() {
   console.log('// TODO')
 }
 
-function bumpVersion(projects: { pkg: Record<string, any>; path: string }[], version: string) {
+function bumpVersionAndUpdate(
+  projects: { pkg: Record<string, any>; path: string }[],
+  version: string,
+) {
   projects.forEach((proj) => {
     proj.pkg.version = version
+    proj.pkg.update = dayjs().format('YYYY-MM-DD')
     fs.writeFileSync(proj.path, JSON.stringify(proj.pkg, null, 2))
   })
 }

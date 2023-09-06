@@ -1,6 +1,7 @@
 {
   "name": "kivi-monorepo",
   "private": true,
+  "update": "",
   "type": "module",
   "packageManager": "pnpm@8.6.12",
   "prettier": "@vmoe/prettier-config",

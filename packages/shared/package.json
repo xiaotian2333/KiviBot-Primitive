@@ -1,6 +1,7 @@
 {
   "name": "@kivi-dev/shared",
   "version": "0.8.3",
+  "update": "",
   "type": "module",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
