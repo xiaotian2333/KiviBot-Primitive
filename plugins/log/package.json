@@ -9,7 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "@kivi-dev/plugin": "workspace:*",
-    "mustacheee": "^1.2.0",
-    "entities": "^4.5.0"
+    "entities": "^4.5.0",
+    "mustacheee": "^1.2.1"
   }
 }

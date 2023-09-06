@@ -38,6 +38,6 @@
   },
   "devDependencies": {
     "@types/node-cron": "^3.0.8",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   }
 }
